@@ -1,36 +1,28 @@
 # AGENTS · Pharma Content Skills
 
-面向在本仓库内维护 Skill、协助业务跑 Skill 的代理。
-
 ## 项目边界
 
-- 本仓 = **医药向通用 Skill 集合**，轻量、可独立交付。
-- **不要**把连锁药店内容工作室（出片管线、金样库、设备安装、数字人渲染）搬进本仓。
-- 需要高保真出片时：产出交接物（方案卡 + 槽位表），提示对接生产仓或其他 Skill，而不是在本仓实现整条渲染链。
+- 本仓 = **独立轻量** 医药 Skill 集合。  
+- **禁止** 依赖、引用或要求安装其他内容生产仓库 / 设备 / 数字人管线。  
+- 主 Skill 产出：模板包 + 可打开 PPTX + 换题清单。  
 
-## 改 Skill 时
+## 跑 Skill
 
-1. 先读目标 Skill 的 `SKILL.md` 与 `references/`。
-2. **一个 Skill 一个职责**；新能力优先新建 `skills/<name>/`，不要无限加长现有 Skill。
-3. 事实单源：红线、输出 schema、页型语汇放在 `references/`，`SKILL.md` 只写流程与入口。
-4. 改输出契约时同步 `templates/` 与 `docs/multi-skill-collab.md`。
-5. 业务可纠正的规则写入 `tasks/lessons.md`。
+1. 读 `skills/pharma-courseware-replication/SKILL.md`  
+2. 产物只写 `workspace/<template-id>/`  
+3. PPT 色板：从 **业务参考** 抽取；课型预制绿/蓝仅作快捷默认  
+4. 插图：课型配套优先，回落门店活力；禁止用插图风换 PPT 皮  
+5. 包装真图业务提供；不编造药效  
+6. 生成 PPTX：`scripts/build_pptx.py` + 模板包 `visual/tokens.json`  
 
-## 跑 Skill 时（业务会话）
+## 改 Skill
 
-1. 确认用户意图落在哪个 Skill；不匹配则说明并建议正确 Skill。
-2. 产物默认写到 `workspace/<run-id>/`（本机），不要污染 `skills/`。
-3. 医药红线：不编造适应症、数据、功效；缺审定文案就标「待业务提供」。
-4. 参考素材：只学结构与版式逻辑；不把参考像素当可商用生产资产。
-
-## 多 Skill 协同
-
-- 上游产物必须是约定格式（见 `docs/multi-skill-collab.md`）。
-- 下游 Skill 只消费契约字段，不假设上游实现细节。
-- 禁止「一个超级 Skill 包办从参考到成片」。
+- 事实在 `references/`；契约变更同步 `templates/` 与 `docs/`  
+- 业务纠正写入 `tasks/lessons.md`  
+- 不添加对外部 monorepo 的路径依赖  
 
 ## 禁止
 
-- 在本仓提交业务包装实拍、未授权金样像素、个人密钥。
-- 向业务承诺「任意参考一次像素级复刻」。
-- 要求业务为了用本 Skill 先装完整生产大仓。
+- 提交业务包装实拍、密钥到公开远程  
+- 承诺像素级 1:1 任意复刻  
+- 要求业务安装「大仓」才能用本 Skill  

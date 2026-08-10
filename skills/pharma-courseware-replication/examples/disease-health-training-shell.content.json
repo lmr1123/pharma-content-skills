@@ -1,0 +1,219 @@
+{
+  "schema_version": "courseware-content/0.1",
+  "meta": {
+    "title": "疾病健康知识培训（结构壳示例）",
+    "subtitle": "课型蓝图演示 · 非医学审定正文",
+    "organization": "内部培训",
+    "internal_notice": "仅限于内部学习 · 示例占位勿作临床依据",
+    "style_id": "ppt-health-training-blue-v1",
+    "course_type_id": "disease-health-training-v1",
+    "notes": [
+      "18页结构壳 + 健康培训蓝色板（Skill 自有）",
+      "正文占位，非审定稿"
+    ],
+    "illustration_style_id": "illustration-medical-flat-blue-v1"
+  },
+  "slides": [
+    {
+      "page_index": 1,
+      "page_type": "cover",
+      "title": "【病名】健康知识培训",
+      "subtitle": "健康顾问专业力系列",
+      "body": "仅限于内部学习 · 用药须遵医嘱与说明书"
+    },
+    {
+      "page_index": 2,
+      "page_type": "agenda",
+      "title": "目录",
+      "bullets": [
+        "疾病概览",
+        "临床表现",
+        "检查方法",
+        "治疗用药",
+        "用药注意事项",
+        "专业关怀",
+        "一页通总结"
+      ]
+    },
+    {
+      "page_index": 3,
+      "page_type": "disease_overview",
+      "title": "01 疾病概览",
+      "body": "【待审定定义】一句话说明疾病是什么。",
+      "bullets": [
+        "病因要点 1",
+        "病因要点 2",
+        "传播/诱因（若适用）"
+      ]
+    },
+    {
+      "page_index": 4,
+      "page_type": "symptoms",
+      "title": "02 临床表现",
+      "cards": [
+        {
+          "title": "类型/场景 A",
+          "body": "【待填】问诊关注点"
+        },
+        {
+          "title": "类型/场景 B",
+          "body": "【待填】问诊关注点"
+        },
+        {
+          "title": "类型/场景 C",
+          "body": "【待填】问诊关注点"
+        }
+      ]
+    },
+    {
+      "page_index": 5,
+      "page_type": "custom",
+      "title": "03 检查方法",
+      "bullets": [
+        "体格检查要点【待填】",
+        "实验室提示【待填】",
+        "转诊信号【待填】"
+      ]
+    },
+    {
+      "page_index": 6,
+      "page_type": "treatment_block",
+      "title": "04 治疗用药 · 一般治疗",
+      "body": "【待审定】休息、饮食、退热等一般措施。"
+    },
+    {
+      "page_index": 7,
+      "page_type": "treatment_block",
+      "title": "04 治疗用药 · 全身用药原则",
+      "body": "【待审定】不可模型编造抗感染指征。"
+    },
+    {
+      "page_index": 8,
+      "page_type": "treatment_block",
+      "title": "04 治疗用药 · 局部用药",
+      "body": "【待审定】局部对症处理框架。"
+    },
+    {
+      "page_index": 9,
+      "page_type": "drug_table",
+      "title": "04 对症用药表",
+      "table": {
+        "headers": [
+          "临床症状",
+          "对症用药（示例坑位）"
+        ],
+        "rows": [
+          [
+            "症状 A",
+            "【药名坑位】"
+          ],
+          [
+            "症状 B",
+            "【药名坑位】"
+          ],
+          [
+            "症状 C",
+            "【药名坑位】"
+          ]
+        ]
+      }
+    },
+    {
+      "page_index": 10,
+      "page_type": "caution",
+      "title": "用药注意事项 · 示例药 1",
+      "bullets": [
+        "【待审定】注意点",
+        "含「禁用」的表述方可标红强调"
+      ]
+    },
+    {
+      "page_index": 11,
+      "page_type": "caution",
+      "title": "用药注意事项 · 示例药 2",
+      "bullets": [
+        "【待审定】",
+        "无内容则删除本页"
+      ]
+    },
+    {
+      "page_index": 12,
+      "page_type": "caution",
+      "title": "用药注意事项 · 示例药 3",
+      "bullets": [
+        "【待审定】"
+      ]
+    },
+    {
+      "page_index": 13,
+      "page_type": "caution",
+      "title": "用药注意事项 · 示例药 4",
+      "bullets": [
+        "【待审定】"
+      ]
+    },
+    {
+      "page_index": 14,
+      "page_type": "caution",
+      "title": "用药注意事项 · 示例药 5",
+      "bullets": [
+        "【待审定】"
+      ]
+    },
+    {
+      "page_index": 15,
+      "page_type": "care",
+      "title": "05 专业关怀",
+      "cards": [
+        {
+          "title": "急性期",
+          "body": "【待审定】"
+        },
+        {
+          "title": "恢复期",
+          "body": "【待审定】"
+        },
+        {
+          "title": "生活方式",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 16,
+      "page_type": "care",
+      "title": "05 特殊人群与预防",
+      "cards": [
+        {
+          "title": "儿童/老人",
+          "body": "【待审定】"
+        },
+        {
+          "title": "孕哺",
+          "body": "【待审定】"
+        },
+        {
+          "title": "疫苗/预防",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 17,
+      "page_type": "outro",
+      "title": "专业服务 · 助力健康",
+      "body": "【可替换系列收束语】"
+    },
+    {
+      "page_index": 18,
+      "page_type": "one_page_summary",
+      "title": "一页通总结",
+      "bullets": [
+        "概览：【一句话】",
+        "表现：【要点】",
+        "用药：【表浓缩】",
+        "关怀：【要点】"
+      ]
+    }
+  ]
+}

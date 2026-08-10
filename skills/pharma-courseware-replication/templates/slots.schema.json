@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "pharma-courseware-replication/slots-0.1",
+  "$id": "pharma-courseware-replication/slots-0.2",
   "title": "Pharma courseware replication slots",
   "type": "object",
   "required": ["schema_version", "skill_id", "title", "pages"],
@@ -8,12 +8,13 @@
   "properties": {
     "schema_version": {
       "type": "string",
-      "const": "0.1"
+      "const": "0.2"
     },
     "skill_id": {
       "type": "string",
       "const": "pharma-courseware-replication"
     },
+    "template_id": { "type": "string" },
     "title": { "type": "string", "minLength": 1 },
     "courseware_tag": {
       "type": "string",
@@ -26,6 +27,19 @@
         "unknown"
       ]
     },
+    "course_type_id": {
+      "type": "string",
+      "description": "e.g. disease-product-scenario-v1, disease-health-training-v1"
+    },
+    "visual_style_id": {
+      "type": "string",
+      "description": "PPT chrome/style, usually extracted-from-reference or a brand id — NOT illustration default"
+    },
+    "illustration_style_id": {
+      "type": "string",
+      "description": "Illustration style for system_generate art, default store-vitality-v1"
+    },
+    "pptx_path": { "type": ["string", "null"] },
     "source": {
       "type": "object",
       "additionalProperties": false,

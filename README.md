@@ -1,82 +1,62 @@
 # Pharma Content Skills
 
-医药向 **通用 Skill 集合**（轻量、可独立交付、可多 Skill 协同）。
+医药向 **独立、轻量** Skill 仓库：通过 **Git 安装** 后即可使用。
 
-与「连锁药店内容工作室」生产大仓解耦：本仓只放 **方法型 Skill**（拆参考、定槽位、行业红线、协同约定），不绑死某一套历史金样，也不塞完整出片/数字人工程。
+**不依赖** 其他内容生产仓库、设备或数字人环境。
 
-## 给谁用
+## 这个 Skill 做什么（两件事）
 
-| 角色 | 怎么用 |
-|------|--------|
-| 业务（WorkBuddy 等） | 安装/引用本仓某个 Skill，对话完成复刻与填空 |
-| 制作 / 产品 | 维护 Skill 文档与输出契约；需要高保真出片时再对接生产仓 |
-| 工程 | 后续按 Skill 拆分上传 Git；多 Skill 靠统一产物格式衔接 |
+| | 能力 | 说明 |
+|--|------|------|
+| **1** | **沉淀模板** | 业务参考 → 可批量复用的模板包（结构 + 色板 + 换题清单 + 样例 PPTX） |
+| **2** | **用模板生成主题** | 同一模板生成其他病种/单品；支持 **批量** 多主题，风格与页序锁定 |
+
+## 通过 Git 安装
+
+```bash
+git clone https://github.com/lmr1123/pharma-content-skills.git
+cd pharma-content-skills
+# 可选：pip install python-pptx
+```
+
+详细：[`docs/install-via-git.md`](docs/install-via-git.md)  
+业务口令：[`docs/business-usage.md`](docs/business-usage.md)  
+Skill 入口：[`skills/pharma-courseware-replication/SKILL.md`](skills/pharma-courseware-replication/SKILL.md)
+
+若代理支持「从 Git 安装 Skill」：仓库地址用上表 clone URL，入口指向 `skills/pharma-courseware-replication/SKILL.md`。
 
 ## 仓库结构
 
 ```text
 pharma-content-skills/
-├── README.md                 # 本文件
-├── AGENTS.md                 # 代理开发约定
-├── docs/                     # 产品边界与协同说明
-├── skills/                   # 每个 Skill 一个子目录
-│   └── pharma-courseware-replication/   # v1：医药课件结构复刻
-├── workspace/                # 本地跑 Skill 的产物（默认不提交）
-└── tasks/                    # 开发任务与教训
+├── docs/
+│   ├── install-via-git.md      # Git 安装
+│   └── business-usage.md       # 业务两套口令（沉淀 / 生成·批量）
+├── skills/pharma-courseware-replication/
+└── workspace/                  # 本机模板与成品（不进 git）
+    ├── templates/              # 沉淀的可复用模板
+    └── runs/                   # 各主题生成结果
 ```
 
-## 当前 Skill
+## 快速口令
 
-| Skill | 状态 | 一句话 |
-|-------|------|--------|
-| [`pharma-courseware-replication`](skills/pharma-courseware-replication/SKILL.md) | v0.1 草案 | 参考 PPT/截图 → 复刻方案卡 + 槽位表；可按新主题重填 |
-
-后续可并列增加（**不要**塞进同一个 Skill）：
-
-- 医药培训话术整理 / 审核清单
-- 素材授权与缺件清单
-- 数字人分镜大纲（结构级，非渲染）
-- 与内容工作室高保真出片的「交接 Skill」
-
-## 业务怎么用（WorkBuddy 示意）
-
-1. 获取本仓（clone / 拷贝 / 内网发布，路径以你们交付为准）。
-2. 让代理读取：`skills/pharma-courseware-replication/SKILL.md`。
-3. 说人话，例如：
+**沉淀模板：**
 
 ```text
-请按 pharma-courseware-replication 技能，参考我这份 PPT，拆出可复用的结构和槽位。
+请读 skills/pharma-courseware-replication/SKILL.md，按「模式 1 · 沉淀模板」，
+参考【路径】，产物写到 workspace/templates/【template-id】/。
 ```
+
+**批量生成：**
 
 ```text
-按刚才的槽位表，换成「穿心莲」主题，生成填写清单（不要编造功效数据）。
+请按「模式 2b · 批量生成」，模板 workspace/templates/【id】/，
+主题列表：A、B、C…… 输出到 workspace/runs/【id】/ 下各主题目录。
 ```
 
-## 设计原则（摘要）
+## 原则
 
-1. **一个 Skill 只做一件事**；复杂交付靠多 Skill 接力，不靠一个巨型项目。
-2. **通用内核 + 医药行业包**：流程通用，红线与课型语汇偏医药内训。
-3. **参考源由业务指定**，历史金样只是可选示例，不是唯一标准。
-4. **v1 默认到「结构级复刻」**；像素级出片、settled 入库、TTS/数字人渲染属其他系统。
-5. **产物可机读**：方案卡 + 槽位表，便于下游 Skill 或生产仓消费。
-
-## 与内容工作室的关系
-
-```text
-业务参考 ──► 本仓复刻 Skill ──► 方案卡 / 槽位表
-                              │
-                              ├─►（可选）其他轻量 Skill
-                              └─►（可选）chain-pharmacy-content-studio 高保真出片
-```
-
-本仓 **不依赖** 生产仓即可使用；生产仓是增强后端，不是安装前置。
-
-## 开发与 Git
-
-- 本目录为 **独立项目**，后续单独建远程仓库上传。
-- 本地初始化：`git init`（若尚未初始化）后按常规提交。
-- 不要把 `workspace/` 里的业务参考原片、包装图大批量提交进公开仓。
-
-## 许可与使用范围
-
-默认 **公司内部培训制作** 用途。参考课件仅用于学习结构与版式逻辑，禁止直接盗用未授权插画/摄影/包装素材。
+1. 模板可批量复用：tokens + 页序锁定，只换清单上的项  
+2. PPT 视觉跟业务参考；门店活力仅插图回落  
+3. 不编造药效；不生成假包装  
+4. 零外部项目依赖  

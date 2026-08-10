@@ -1,6 +1,7 @@
 # Local skill runs (business references, packshots, drafts)
 workspace/*
 !workspace/.gitkeep
+# templates/ and runs/ live under workspace/ and stay local
 
 # OS / editor
 .DS_Store

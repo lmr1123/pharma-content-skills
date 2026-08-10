@@ -1,13 +1,17 @@
 {
-  "schema_version": "0.1",
+  "schema_version": "0.2",
   "skill_id": "pharma-courseware-replication",
+  "template_id": "tpl-example-product-3p",
   "title": "示例·单品培训结构（脱敏）",
   "courseware_tag": "product_training",
+  "course_type_id": "disease-product-scenario-v1",
+  "visual_style_id": "extracted-from-reference",
+  "pptx_path": "output/courseware.pptx",
   "source": {
     "description": "虚构示例，非真实课件",
     "path": null,
     "page_count": 3,
-    "notes": "仅演示 slots.json 形状"
+    "notes": "仅演示 slots.json 0.2 形状"
   },
   "notes": [
     "示例正文均为占位，不得当作审定话术",
@@ -33,7 +37,7 @@
           "slot_id": "p01_bg_decor",
           "kind": "image",
           "role": "framework",
-          "label_zh": "封面装饰背景",
+          "label_zh": "封面装饰",
           "value": null,
           "status": "empty",
           "constraints": "换主题可保留版式逻辑"
@@ -62,15 +66,6 @@
           "value": null,
           "status": "pending_business",
           "constraints": "禁止生成图冒充实拍包装"
-        },
-        {
-          "slot_id": "p02_positioning",
-          "kind": "text",
-          "role": "content",
-          "label_zh": "产品定位一句话",
-          "value": null,
-          "status": "pending_review",
-          "constraints": "须审定来源，禁止模型编造"
         }
       ]
     },
@@ -91,5 +86,6 @@
         }
       ]
     }
-  ]
+  ],
+  "illustration_style_id": "store-vitality-v1"
 }

@@ -1,15 +1,18 @@
-# 复刻方案卡
+# 复刻 / 沉淀方案卡
 
-> 由 `pharma-courseware-replication` 生成 · 结构级复刻（非成品出片）
+> 由 `pharma-courseware-replication` 生成 · 模板包（结构 + 视觉 + PPTX）
 
 ## 元信息
 
 | 项 | 内容 |
 |----|------|
-| 运行 ID | `{{run_id}}` |
+| 模板 ID | `{{template_id}}` |
+| 运行 / 沉淀日期 | `{{run_id}}` |
 | 参考来源 | `{{source_desc}}` |
 | 页数 | `{{page_count}}` |
-| 课型标签 | `{{courseware_tag}}` |
+| 课型 | `{{courseware_tag}}` / `{{course_type_id}}` |
+| PPT 视觉 | `{{visual_style_id}}`（跟参考/品牌） |
+| 插图画风 | `{{illustration_style_id}}`（缺图默认门店活力） |
 | 业务目标 | `{{business_goal}}` |
 
 ## 一句话结构
@@ -22,11 +25,17 @@
 |------|------|----------|----------------|
 | 1 | … | … | … |
 
+## 视觉策略
+
+- PPT 版式：从参考抽取（禁止用插图默认风换皮）
+- 插图：缺图/不匹配/业务要求补图 → 门店活力等 illustration style
+- 优化摘要：见 `visual/before-after.md`
+
 ## 必须由业务提供
 
 - [ ] …
 
-## 可系统占位（非终稿）
+## 可系统生成（非包装）
 
 - …
 
@@ -37,18 +46,18 @@
 
 ## 换主题最少输入
 
-1. 主题名称（病种/单品/成分）
+1. 主题名称（病种/单品）
 2. 审定文案或明确「仅结构演示、正文后补」
 3. 授权包装图/logo（若有包装页）
 
-## 下游建议
+## 产物路径
 
-- [ ] 继续本 Skill「主题重填」→ `fill-checklist.md`
-- [ ] 话术审核类 Skill（若有）
-- [ ] 高保真出片：交接 `slots.json` + 授权素材 → 生产仓或其他出片 Skill
+- 模板包：`workspace/{{template_id}}/`
+- PPTX：`output/courseware.pptx`
+- 更新点：`reuse/change-list.md`
 
 ## 明确不做
 
-- 不直接盗用参考中的插画/摄影像素
 - 不编造药效与数据
-- 不在本 Skill 内完成渲染与设备安装
+- 不用生成图冒充实拍包装
+- 不要求安装其他内容工程

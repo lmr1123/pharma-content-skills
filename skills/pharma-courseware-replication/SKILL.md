@@ -1,97 +1,118 @@
 ---
 name: pharma-courseware-replication
-version: 0.1.0
+version: 0.2.4
 description: >
-  医药/连锁药店内训场景：把业务指定的参考课件（PPT/PDF/截图）拆成可复用的结构与槽位，
-  并支持按新病种/单品重填。用于「参考这份来做」「沉淀结构以便复用」，不是生产仓出片或数字人渲染。
-  触发词：课件复刻、结构拆解、按参考做PPT、槽位表、医药培训模板拆解、换成XX主题。
+  医药内训课件独立 Skill（Git 可安装）：(1) 沉淀可批量复用的模板包；
+  (2) 用模板生成/批量生成其他主题课件并导出 PPTX。
+  含结构槽位、从参考提取的 PPT 色板、插图策略、换主题清单。
+  触发词：课件复刻、沉淀模板、换主题、批量生成、槽位表、模板包、培训PPT。
 ---
 
-# 医药课件结构复刻
+# 医药课件模板沉淀与批量复用
 
 ## 定位
 
 | 做 | 不做 |
 |----|------|
-| 拆参考的页序、页型、文案槽、视觉槽 | 像素级自动复刻任意参考 |
-| 区分固定框架 vs 可换内容 vs 须业务提供资产 | 编造适应症、数据、功效话术 |
-| 输出方案卡 + 机读槽位表 | 写入生产仓 settled / 设备安装 |
-| 按同一结构生成新主题填写清单 | TTS、数字人口型、完整渲染管线 |
+| **模式 1** 业务参考 → 可批量复用模板包 | 依赖其他内容 monorepo / 设备 |
+| **模式 2 / 2b** 同一模板 → 单主题或批量多主题 PPTX | 用插图默认风整课换皮 |
+| 风格与页序锁定，只换 content / 业务图 / 主题插图 | 生成假包装、编造药效 |
 
-**参考源由业务指定。** 历史金样只可作示例，不是唯一标准。
+- 安装：`docs/install-via-git.md`  
+- 业务口令：`docs/business-usage.md`  
 
-## 何时启用
+## 两条主路径（必须都支持）
 
-- 用户给出参考 PPT/PDF/多页截图，要求「按这个结构和风格做」
-- 用户要把某份认可的课件「沉淀成可复用结构」（非入库生产系统）
-- 用户要在已拆结构上「换成另一病种/单品」并列出待填项
+### 模式 1 · 沉淀模板（Deposit）
 
-不启用：只要下载现成生产模板出片 → 应走内容工作室业务路径；只要改几个字 → 普通编辑即可。
+**目标：** 产出以后能反复、批量调用的模板，而不是一次性 PPT。
+
+1. 读参考，拆页序/页型/槽位  
+2. 提取 PPT 色板 → `visual/tokens.json`（跟参考，不换皮）  
+3. 素材地图；缺知识图可补；包装 `business_asset`  
+4. 写 **`reuse/change-list.md`**（批量复用时的唯一变更清单结构）  
+5. 导出样例 `output/courseware.pptx`  
+6. **写入** `workspace/templates/<template-id>/`  
+
+成功标准：换主题时只读该目录 + change-list，无需再拆参考。
+
+### 模式 2 · 用模板生成主题（Refill，单次）
+
+1. **只读** `workspace/templates/<template-id>/`  
+2. 不改 `visual/tokens`、不改 framework 页序  
+3. 按 change-list 填 content / 业务图 / 主题插图  
+4. 输出到 `workspace/runs/<template-id>/<theme-id>/`  
+   - `courseware.pptx`、`courseware.content.json`  
+   - `fill-checklist.md`、slots 副本  
+
+### 模式 2b · 批量生成（Batch）
+
+1. 同一模板 + 主题列表（有几条做几条）  
+2. 每个主题独立 `workspace/runs/<template-id>/<theme-id>/`  
+3. 全员共用模板色板与骨架  
+4. 写 `workspace/runs/<template-id>/batch-summary.md`  
+5. 缺件主题标「部分完成」，不阻断其他主题  
+
+**批量可复用性靠：** 模板只读、slots 契约、tokens 锁定、统一 change-list、列表不硬凑条数。
+
+## 两层风格
+
+| 层 | 规则 |
+|----|------|
+| PPT 版式 | 跟业务参考；课型预制绿/蓝仅快捷默认 |
+| 知识插图 | 绿/蓝配套优先，回落 `store-vitality-v1`；不改 PPT 母版 |
+
+见 `references/style-selection.md`。
 
 ## 开始前读取
 
-1. `references/compliance-redlines.md` — 医药红线（必守）
-2. `references/page-type-vocabulary.md` — 页型语汇（优先用表内名称）
-3. `references/output-contract.md` — 产物字段说明
-4. 输出模板：`templates/replication-plan.md`、`templates/slots.schema.json`
+1. `references/compliance-redlines.md`  
+2. `references/output-contract.md`  
+3. `references/page-type-vocabulary.md`  
+4. `references/visual-optimization.md`  
+5. `references/style-selection.md`  
+6. 课型（可选）`references/course-types/*`  
+7. `scripts/build_pptx.py`  
 
-## 工作流
+## 目录约定
 
-### A. 拆参考（Replication）
+```text
+workspace/
+  templates/<template-id>/     # 模式 1：可批量复用的模板
+    template-manifest.md
+    structure/slots.json
+    visual/tokens.json
+    reuse/change-list.md
+    assets/
+    output/courseware.pptx
+  runs/<template-id>/          # 模式 2 / 2b
+    <theme-id>/
+      courseware.pptx
+      fill-checklist.md
+      ...
+    batch-summary.md           # 仅批量时
+```
 
-1. **收集输入**
-   - 参考文件路径或已粘贴的页说明
-   - 业务一句话目标（门店培训 / 总部课件 / 仅结构学习）
-   - 是否已有审定文案（有则绑定，无则槽位留空并标记 `pending_business`）
+## 课型快捷（可选）
 
-2. **逐页观察**（有文件则读；仅截图则按图；信息不足就问，不猜关键药学结论）
-   - 页码、标题、主要区块
-   - 文案：哪些像固定话术框架，哪些是主题相关
-   - 图：包装实拍 / 示意图 / 装饰 / 图标
-   - 布局：左右分栏、卡片网格、流程、对比、总结
+| 课型 | PPT 预制 | 插图预制 |
+|------|----------|----------|
+| disease-product-scenario-v1 | ppt-courseware-green-v1 | illustration-medical-flat-green-v1 |
+| disease-health-training-v1 | ppt-health-training-blue-v1 | illustration-medical-flat-blue-v1 |
 
-3. **归类每个槽位**
-   - `framework`：版式/装饰，换主题通常保留逻辑
-   - `content`：随主题替换的文案或数据（须审定来源）
-   - `business_asset`：包装图、logo、证照等必须业务提供
-   - `system_generate`：可用中性示意图占位（不得冒充实拍包装）
-
-4. **写产物**到 `workspace/<run-id>/`（若在仓库内跑）：
-   - `replication-plan.md` — 用 `templates/replication-plan.md`
-   - `slots.json` — 符合 `templates/slots.schema.json`
-   - 可选 `handoff-note.md` — 未决问题、建议的下游 Skill
-
-5. **向用户交代**
-   - 共几页、核心结构
-   - 换主题最少要提供什么
-   - 合规与素材风险各一条
-   - 明确：当前是结构级复刻，不是成品出片
-
-### B. 主题重填（Refill）
-
-前置：已有本 Skill 产出的 `slots.json`（或同等结构）。
-
-1. 读入槽位表 + 新主题名称与业务提供的材料清单。
-2. 只填充 `content` / 已提供的 `business_asset` 路径；**禁止**用模型编造药效数据与适应症。
-3. 输出 `fill-checklist.md`：已填 / 待业务 / 待审核。
-4. 更新 `slots.json` 的 `values` 与 `status` 字段；不擅自删框架槽。
-
-### C. 交给下游（可选）
-
-若用户要高保真 PPT/视频：
-
-- 交付 `replication-plan.md` + `slots.json` + 授权素材列表
-- 说明可对接：内容工作室生产仓，或其他出片 Skill
-- **本 Skill 到此结束**，不在本仓启动渲染
+业务参考有自有色 → **以参考为准**。
 
 ## 质量自检
 
-- [ ] 每页有页型标签（尽量来自页型语汇表）
-- [ ] 每个视觉槽有角色：`business_asset` / `system_generate` / `framework`
-- [ ] 无「看起来像药效结论但无来源」的已填正文
-- [ ] 方案卡写明「学结构不搬参考像素」
-- [ ] 未要求业务安装生产大仓
+### 沉淀
 
-## 协同
+- [ ] 路径在 `workspace/templates/`  
+- [ ] 有 slots + tokens + change-list + 可打开 pptx  
+- [ ] change-list 足够指导批量换题  
 
-见仓库根目录 `docs/multi-skill-collab.md`。本 Skill 是链上的 **结构入口**，不是终点工厂。
+### 生成 / 批量
+
+- [ ] 未改模板 tokens 与页序骨架  
+- [ ] 每主题独立 run 目录  
+- [ ] 批量有 summary；缺件不编造  
+- [ ] 包装为真图或占位  

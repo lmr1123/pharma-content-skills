@@ -1,0 +1,295 @@
+{
+  "schema_version": "courseware-content/0.1",
+  "meta": {
+    "title": "疾病+商品场景培训（结构壳示例）",
+    "subtitle": "课型蓝图演示 · 非医学审定正文",
+    "organization": "内部培训",
+    "internal_notice": "仅限于内部学习 · 示例占位勿作临床依据",
+    "style_id": "ppt-courseware-green-v1",
+    "course_type_id": "disease-product-scenario-v1",
+    "notes": [
+      "18页结构壳 + 商品培训绿色板（Skill 自有）",
+      "正文占位，非审定稿"
+    ],
+    "illustration_style_id": "illustration-medical-flat-green-v1"
+  },
+  "slides": [
+    {
+      "page_index": 1,
+      "page_type": "cover",
+      "title": "疾病 + 商品场景培训",
+      "subtitle": "辨证知识 · 商品知识 · 销售场景",
+      "body": "模板壳示例 · 请替换为业务主题名"
+    },
+    {
+      "page_index": 2,
+      "page_type": "objectives",
+      "title": "开篇认知",
+      "body": "【待业务填写】本课希望学员建立的核心认知一句话。",
+      "bullets": [
+        "识别目标证候/疾病的关键特征",
+        "掌握主推商品的信息与边界",
+        "能在 1～2 个门店场景中完成专业沟通"
+      ]
+    },
+    {
+      "page_index": 3,
+      "page_type": "agenda",
+      "title": "目录",
+      "bullets": [
+        "疾病篇 — 定义与鉴别",
+        "商品篇 — 信息与优势",
+        "场景篇 — 何时推荐与话术",
+        "关怀与权重品（可选）"
+      ]
+    },
+    {
+      "page_index": 4,
+      "page_type": "disease_overview",
+      "title": "1.1 疾病/证候定义",
+      "body": "【待业务提供审定定义】用通俗语言说明「是什么」。",
+      "bullets": [
+        "标签1",
+        "标签2",
+        "标签3"
+      ]
+    },
+    {
+      "page_index": 5,
+      "page_type": "symptoms",
+      "title": "1.2 典型表现",
+      "cards": [
+        {
+          "title": "表现 A",
+          "body": "【待填】要点描述"
+        },
+        {
+          "title": "表现 B",
+          "body": "【待填】要点描述"
+        },
+        {
+          "title": "表现 C",
+          "body": "【待填】要点描述"
+        },
+        {
+          "title": "表现 D",
+          "body": "【待填】要点描述"
+        }
+      ]
+    },
+    {
+      "page_index": 6,
+      "page_type": "comparison",
+      "title": "1.3 鉴别对照",
+      "table": {
+        "headers": [
+          "维度",
+          "类型甲",
+          "类型乙"
+        ],
+        "rows": [
+          [
+            "要点1",
+            "【待填】",
+            "【待填】"
+          ],
+          [
+            "要点2",
+            "【待填】",
+            "【待填】"
+          ],
+          [
+            "要点3",
+            "【待填】",
+            "【待填】"
+          ]
+        ]
+      }
+    },
+    {
+      "page_index": 7,
+      "page_type": "medication_advice",
+      "title": "1.4 处理总原则",
+      "cards": [
+        {
+          "title": "01 原则",
+          "body": "【待审定】"
+        },
+        {
+          "title": "02 原则",
+          "body": "【待审定】"
+        },
+        {
+          "title": "03 原则",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 8,
+      "page_type": "disease_overview",
+      "title": "1.5 常见分型/细分",
+      "cards": [
+        {
+          "title": "分型一",
+          "body": "表现：…\n思路：…"
+        },
+        {
+          "title": "分型二",
+          "body": "表现：…\n思路：…"
+        }
+      ]
+    },
+    {
+      "page_index": 9,
+      "page_type": "product_intro",
+      "title": "2.1 商品信息",
+      "body": "【品名待填】请替换为说明书要点字段。",
+      "bullets": [
+        "【成分】待业务提供",
+        "【性状】待业务提供",
+        "【规格】待业务提供",
+        "包装图：业务授权实拍"
+      ]
+    },
+    {
+      "page_index": 10,
+      "page_type": "ingredient",
+      "title": "2.2 机理与优势（框架）",
+      "cards": [
+        {
+          "title": "机理",
+          "body": "【待审定】不可模型编造"
+        },
+        {
+          "title": "优势一",
+          "body": "【待审定】"
+        },
+        {
+          "title": "优势二",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 11,
+      "page_type": "summary",
+      "title": "2.3 核心优势总结",
+      "bullets": [
+        "总结点 1",
+        "总结点 2",
+        "总结点 3"
+      ]
+    },
+    {
+      "page_index": 12,
+      "page_type": "indication_scene",
+      "title": "3.1 何时推荐",
+      "cards": [
+        {
+          "title": "适合",
+          "body": "【待审定边界】"
+        },
+        {
+          "title": "需谨慎/转介",
+          "body": "【待审定】"
+        },
+        {
+          "title": "人群提示",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 13,
+      "page_type": "indication_scene",
+      "title": "3.2 专业问诊框架",
+      "cards": [
+        {
+          "title": "望",
+          "body": "观察与第一印象（话术框架可保留）"
+        },
+        {
+          "title": "问",
+          "body": "关键提问清单【待业务】"
+        },
+        {
+          "title": "推",
+          "body": "方案表达框架【待业务】"
+        }
+      ]
+    },
+    {
+      "page_index": 14,
+      "page_type": "indication_scene",
+      "title": "3.3 场景 1",
+      "body": "主诉：【待填】",
+      "bullets": [
+        "辨证沟通要点",
+        "推荐表达（审定）",
+        "联合提醒（审定）"
+      ]
+    },
+    {
+      "page_index": 15,
+      "page_type": "indication_scene",
+      "title": "3.4 场景 2",
+      "body": "主诉：【待填】",
+      "bullets": [
+        "症状辨析",
+        "推荐表达（审定）",
+        "注意事项"
+      ]
+    },
+    {
+      "page_index": 16,
+      "page_type": "care",
+      "title": "4.1 日常叮嘱",
+      "cards": [
+        {
+          "title": "宜",
+          "body": "【待审定】"
+        },
+        {
+          "title": "忌",
+          "body": "【待审定】"
+        }
+      ]
+    },
+    {
+      "page_index": 17,
+      "page_type": "weighted_product",
+      "title": "5.1 权重品（可选·可整页删除）",
+      "body": "无权重品需求时删除本页及下一页。",
+      "bullets": [
+        "编码",
+        "主推理由（审定）",
+        "规格"
+      ]
+    },
+    {
+      "page_index": 18,
+      "page_type": "comparison",
+      "title": "5.2 权重品对比（可选）",
+      "table": {
+        "headers": [
+          "对比维度",
+          "品项 A",
+          "品项 B"
+        ],
+        "rows": [
+          [
+            "定位",
+            "【待填】",
+            "【待填】"
+          ],
+          [
+            "规格",
+            "【待填】",
+            "【待填】"
+          ]
+        ]
+      }
+    }
+  ]
+}
