@@ -28,7 +28,9 @@ const contentPath =
   argv[0] ||
   path.join(__dirname, "content/急性上呼吸道感染.content.json");
 const data = JSON.parse(fs.readFileSync(contentPath, "utf8"));
-const assetsDir = path.join(__dirname, "assets");
+const assetsDir = process.env.ASSETS_DIR
+  ? path.resolve(process.env.ASSETS_DIR)
+  : path.join(__dirname, "assets");
 const placeholdersDir = path.join(assetsDir, "placeholders");
 const outName = PRESENTER
   ? `${data.meta.topic}_疾病健康知识培训_讲解安全版_v1.pptx`
