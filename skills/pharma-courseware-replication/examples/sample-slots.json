@@ -1,0 +1,95 @@
+{
+  "schema_version": "0.1",
+  "skill_id": "pharma-courseware-replication",
+  "title": "示例·单品培训结构（脱敏）",
+  "courseware_tag": "product_training",
+  "source": {
+    "description": "虚构示例，非真实课件",
+    "path": null,
+    "page_count": 3,
+    "notes": "仅演示 slots.json 形状"
+  },
+  "notes": [
+    "示例正文均为占位，不得当作审定话术",
+    "包装图槽位必须业务提供"
+  ],
+  "pages": [
+    {
+      "page_index": 1,
+      "page_type": "cover",
+      "page_type_label_zh": "封面",
+      "purpose": "点明培训主题与对象",
+      "slots": [
+        {
+          "slot_id": "p01_title",
+          "kind": "text",
+          "role": "content",
+          "label_zh": "课程主标题",
+          "value": null,
+          "status": "pending_business",
+          "constraints": "建议不超过 20 字；须业务确认"
+        },
+        {
+          "slot_id": "p01_bg_decor",
+          "kind": "image",
+          "role": "framework",
+          "label_zh": "封面装饰背景",
+          "value": null,
+          "status": "empty",
+          "constraints": "换主题可保留版式逻辑"
+        }
+      ]
+    },
+    {
+      "page_index": 2,
+      "page_type": "product_intro",
+      "page_type_label_zh": "单品介绍",
+      "purpose": "认识品名与包装",
+      "slots": [
+        {
+          "slot_id": "p02_product_name",
+          "kind": "text",
+          "role": "content",
+          "label_zh": "商品名",
+          "value": null,
+          "status": "pending_business"
+        },
+        {
+          "slot_id": "p02_packshot",
+          "kind": "image",
+          "role": "business_asset",
+          "label_zh": "包装实拍",
+          "value": null,
+          "status": "pending_business",
+          "constraints": "禁止生成图冒充实拍包装"
+        },
+        {
+          "slot_id": "p02_positioning",
+          "kind": "text",
+          "role": "content",
+          "label_zh": "产品定位一句话",
+          "value": null,
+          "status": "pending_review",
+          "constraints": "须审定来源，禁止模型编造"
+        }
+      ]
+    },
+    {
+      "page_index": 3,
+      "page_type": "summary",
+      "page_type_label_zh": "要点总结",
+      "purpose": "回顾可带走要点",
+      "slots": [
+        {
+          "slot_id": "p03_bullets",
+          "kind": "list",
+          "role": "content",
+          "label_zh": "总结要点列表",
+          "value": null,
+          "status": "pending_business",
+          "constraints": "有几条写几条，不硬凑条数"
+        }
+      ]
+    }
+  ]
+}

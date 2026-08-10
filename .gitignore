@@ -1,0 +1,28 @@
+# Local skill runs (business references, packshots, drafts)
+workspace/*
+!workspace/.gitkeep
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Secrets
+.env
+.env.*
+*.pem
+
+# Large / binary dumps often dropped by mistake
+*.pptx
+*.ppt
+*.pdf
+!skills/**/examples/**

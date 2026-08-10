@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "pharma-courseware-replication/slots-0.1",
+  "title": "Pharma courseware replication slots",
+  "type": "object",
+  "required": ["schema_version", "skill_id", "title", "pages"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "skill_id": {
+      "type": "string",
+      "const": "pharma-courseware-replication"
+    },
+    "title": { "type": "string", "minLength": 1 },
+    "courseware_tag": {
+      "type": "string",
+      "enum": [
+        "disease_edu",
+        "product_training",
+        "ingredient_edu",
+        "scenario_combo",
+        "mixed",
+        "unknown"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": { "type": "string" },
+        "path": { "type": ["string", "null"] },
+        "page_count": { "type": ["integer", "null"], "minimum": 0 },
+        "notes": { "type": "string" }
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "pages": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["page_index", "page_type", "slots"],
+        "additionalProperties": false,
+        "properties": {
+          "page_index": { "type": "integer", "minimum": 1 },
+          "page_type": { "type": "string", "minLength": 1 },
+          "page_type_label_zh": { "type": "string" },
+          "purpose": { "type": "string" },
+          "slots": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["slot_id", "kind", "role", "label_zh", "status"],
+              "additionalProperties": false,
+              "properties": {
+                "slot_id": { "type": "string", "minLength": 1 },
+                "kind": {
+                  "type": "string",
+                  "enum": ["text", "image", "list", "table", "other"]
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "framework",
+                    "content",
+                    "business_asset",
+                    "system_generate"
+                  ]
+                },
+                "label_zh": { "type": "string" },
+                "value": {},
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "empty",
+                    "from_reference",
+                    "filled",
+                    "pending_business",
+                    "pending_review"
+                  ]
+                },
+                "constraints": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
