@@ -10,8 +10,7 @@
 ### 方式 A · clone（推荐）
 
 ```bash
-# 替换为你的实际仓库地址（push 后见 README）
-git clone https://github.com/<org-or-user>/pharma-content-skills.git
+git clone https://github.com/lmr1123/pharma-content-skills.git
 cd pharma-content-skills
 ```
 
