@@ -27,3 +27,8 @@ venv/
 *.ppt
 *.pdf
 !skills/**/examples/**
+
+# Engine deps / local build outputs
+**/node_modules/
+skills/**/engines/**/*.pptx
+skills/**/engines/**/samples/out-*.pptx

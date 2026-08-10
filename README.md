@@ -37,6 +37,15 @@ cd pharma-content-skills
 
 1. 先问 1 还是 2，再用大白话带材料  
 2. 模板可批量复用：版式锁定，只换该换的  
-3. 颜色跟业务认可的参考，不乱换皮  
+3. **签样课型（穿心莲绿 / 参课蓝）用 `skills/.../engines/` 生产迁入引擎出片**，不是通用框  
 4. 不编造药效；不生成假包装  
-5. 零外部项目依赖  
+5. 运行时零外部 monorepo 路径依赖（引擎已自包含拷贝）  
+
+## 生产级引擎（v0.3）
+
+| 课型 | 目录 | 首次 |
+|------|------|------|
+| 疾病+商品场景 | `skills/pharma-courseware-replication/engines/disease-product-scenario-pptx-v1` | `npm i` |
+| 疾病健康培训·参课蓝 | `skills/pharma-courseware-replication/engines/disease-health-shenke-blue-v1` | `npm i` |
+
+说明：`skills/pharma-courseware-replication/engines/README.md`  

@@ -1,10 +1,11 @@
 ---
 name: pharma-courseware-replication
-version: 0.2.6
+version: 0.3.0
 description: >
   医药内训课件独立 Skill（Git 可安装）。业务入口口语二选一：
   (1) 复刻 PPT 模板；(2) 选模板生成 PPT（可批量）。
-  生成路径：先按材料或代理初始化「完整内容初稿」给业务审，确认/改完后再出 PPT；禁止先交空白清单。
+  两套已签样课型用生产仓迁入的完整引擎出片（版式/字色/插图/规范），
+  不是通用壳。内容：先写满初稿审过再出片。
   触发词：复刻模板、选模板生成、换主题、批量出课、内容初稿、审核后再生成。
 ---
 
@@ -40,9 +41,23 @@ description: >
 
 | 做 | 不做 |
 |----|------|
-| **1 复刻模板** → 可批量复用模板包 | 依赖其他 monorepo |
-| **2 选模板生成** → 先完整内容初稿 → 审/改 → 再 PPTX | **先交空白/全是「待填」的空文档当交付** |
+| **1 复刻模板** → 可批量复用模板包 | 运行时依赖其他 monorepo 路径 |
+| **2 选模板生成** → 先完整内容初稿 → 审/改 → **生产级引擎**出片 | **先交空白/全是「待填」的空文档当交付** |
 | 有材料按材料写；没材料也起草一版标「待审」 | 把草稿说成已审定药效；假包装图 |
+| 穿心莲/参课蓝课型用迁入引擎的版式字色插图 | 用 `scripts/build_pptx.py` 通用壳当正式交付 |
+
+## 生产级引擎（必读 · v0.3）
+
+两套金样对应能力已从生产仓**自包含迁入** `engines/`（版式、chrome、字阶、色板、插图、填写规范）。详见 `engines/README.md`。
+
+| 课型 | 引擎 | 内容契约 | 出片 |
+|------|------|----------|------|
+| 疾病+商品场景（绿 · 穿心莲骨架） | `engines/disease-product-scenario-pptx-v1/` | `disease-product-scenario-script/v1`（`input-schema.json`） | `scripts/build_with_engine.sh disease-product-scenario <script.json> <out.pptx>` |
+| 疾病健康培训（参课蓝） | `engines/disease-health-shenke-blue-v1/` | 生成器 `content/*.content.json` | `scripts/build_with_engine.sh disease-health-shenke-blue <content.json> <out.pptx>` |
+
+- 首次使用：在对应引擎目录执行 `npm i`（仅 pptxgenjs）。  
+- `scripts/build_pptx.py` = **通用壳烟测 only**，不得当作穿心莲/参课蓝正式复用结果。  
+- 换主题：锁引擎布局，只换内容 JSON + 业务授权图；非金样主题勿拷贝穿心莲医学关键词（引擎硬阻断）。
 
 ## 两条主路径
 
@@ -95,9 +110,12 @@ description: >
 
 仅当业务明确同意（「通过 / 可以出 / 按这个生成」等）后：
 
-1. 用确认后的内容 → `courseware.content.json`  
-2. 模板 tokens 出 `courseware.pptx`  
-3. 更新 `fill-checklist.md` 阶段为「已出 PPT」  
+1. 把确认稿整理成引擎输入：  
+   - 绿课型 → `disease-product-scenario-script/v1` JSON（对照 `engines/.../input-schema.json` + `samples/neutral-theme.json`）  
+   - 蓝课型 → 参课蓝 `content/*.content.json` 结构  
+2. **用对应引擎出片**（`build_with_engine.sh`），禁止通用壳冒充  
+3. 业务包装图：路径写入 JSON；缺图用引擎占位，不伪造品牌包装  
+4. 更新 `fill-checklist.md` 阶段为「已出 PPT」  
 
 ### 模式 2b · 批量生成 — 同样内容先行
 
@@ -113,21 +131,21 @@ description: >
 
 | 层 | 规则 |
 |----|------|
-| PPT 版式 | 跟业务参考；课型绿/蓝仅快捷默认 |
-| 知识插图 | 绿/蓝配套优先，回落门店活力；不改 PPT 母版 |
+| PPT 版式 | **签样课型用迁入引擎**；业务另有参考时从参考抽 tokens 并尽量对齐引擎 chrome |
+| 知识插图 | 参课蓝用引擎 `assets/`；绿课型用业务图 + 引擎占位；缺知识图可补门店活力画风，不改母版 |
 
 出片阶段再补插图亦可；**内容审过之前以文案草稿为主**。
 
 ## 开始前读取
 
-1. `references/compliance-redlines.md`  
-2. `references/output-contract.md`  
-3. `references/page-type-vocabulary.md`  
-4. `references/visual-optimization.md`  
+1. `engines/README.md`（生产迁入引擎）  
+2. `references/course-types/PROVENANCE.md`  
+3. `references/compliance-redlines.md`  
+4. `references/output-contract.md`  
 5. `references/style-selection.md`  
-6. 课型（可选）`references/course-types/*`  
+6. 课型 `references/course-types/*` + 对应引擎 `本课型怎么填.md`  
 7. `templates/content-draft.md`、`templates/fill-checklist.md`  
-8. `scripts/build_pptx.py`  
+8. 正式出片：`scripts/build_with_engine.sh`（通用壳 `scripts/build_pptx.py` 仅烟测）  
 
 ## 目录约定
 
@@ -153,5 +171,6 @@ workspace/
 - [ ] **先有** 写满的 `content-draft.md`（非空壳）  
 - [ ] 业务可见「待审」标注，未冒充已审定  
 - [ ] **确认后** 才出正式 pptx  
-- [ ] 未改模板 tokens / 页序骨架  
+- [ ] 正式片走 **engines/** 对应引擎，不是通用壳  
+- [ ] chrome / 字号体系 / 页骨架与签样课型一致  
 - [ ] 包装真图或命名占位，无假包装  

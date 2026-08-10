@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Build an editable 16:9 PPTX from courseware.content.json + style tokens.
+"""Generic 16:9 PPTX shell — SMOKE / unknown course types ONLY.
 
-Usage:
+For signed courseware reuse (disease+product green, shenke blue health),
+use production-ported engines via scripts/build_with_engine.sh — NOT this file.
+
+Usage (smoke only):
   python3 build_pptx.py <content.json> <out.pptx> [--tokens tokens.json]
 """
 

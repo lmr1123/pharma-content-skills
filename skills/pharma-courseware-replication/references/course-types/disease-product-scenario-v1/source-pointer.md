@@ -4,20 +4,19 @@
 |----|-----|
 | course_type_id | `disease-product-scenario-v1` |
 | 业务名 | 疾病+商品场景培训 PPT |
-| 角色 | Skill **内置课型蓝图**（结构 + 换题动作） |
+| 角色 | **生产签样课型**（版式引擎自包含迁入） |
 | 预制 PPT 视觉 | `ppt-courseware-green-v1` |
-| 预制插图 | `illustration-medical-flat-green-v1` |
+| 引擎 | `engines/disease-product-scenario-pptx-v1/` |
+| 内容契约 | `disease-product-scenario-script/v1` |
+| 填写说明 | `engines/disease-product-scenario-pptx-v1/本课型怎么填.md` |
 
-## 板块骨架（可删可增）
+## 板块骨架（引擎页序）
 
-1. 疾病/辨证知识  
-2. 商品知识  
-3. 销售场景与话术  
-4. 日常关怀（可选）  
-5. 权重/对标商品（可选）  
+封面 → 开篇 → 目录 → 定义 → 症状 → 鉴别 → 原则 → 分型 → 商品信息 → 优势 → 总结 → 人群 → 问诊 → 场景×N → 日常关怀 → 权重品×N → 权重对比  
 
 ## 使用
 
-- 业务参考接近本骨架 → 对照 `page-map.md`、`change-list.md`  
-- 视觉：优先从 **业务自己的参考** 抽色板；若无指定且用本课型演示壳，可用预制绿  
-- 详见 `page-map.md`  
+1. 对照 `page-map.md` / `change-list.md` 与引擎 `input-schema.json` 写内容  
+2. 中性样例：`engines/disease-product-scenario-pptx-v1/samples/neutral-theme.json`  
+3. 出片：`scripts/build_with_engine.sh disease-product-scenario <script.json> <out.pptx>`  
+4. **禁止**用 `scripts/build_pptx.py` 当本课型正式交付  

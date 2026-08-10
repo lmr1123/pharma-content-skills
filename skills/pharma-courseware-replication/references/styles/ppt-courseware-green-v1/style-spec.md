@@ -3,30 +3,25 @@
 | 项 | 值 |
 |----|-----|
 | style_id | `ppt-courseware-green-v1` |
+| style_pack_id | `style-pack.dashenlin-courseware-green-v1` |
 | kind | ppt_chrome |
 | 适用课型 | `disease-product-scenario-v1`（疾病+商品场景） |
+| 引擎 | `engines/disease-product-scenario-pptx-v1/export.mjs` |
+| 来源 | 生产仓已签样引擎 + dashenlin 绿 tokens（自包含迁入） |
 
 ## 何时用
 
-- 业务参考本身是绿系商品/场景培训风，或业务指定用本预制绿  
-- 跑 Skill 内「疾病+商品场景」结构壳演示  
+- 业务选「疾病+商品场景」课型，或参考接近穿心莲骨架绿系  
+- **正式出片必须跑引擎**，不是通用壳  
 
 ## 何时不用
 
-- 业务参考是其他品牌色 → **从业务参考重新抽取** tokens，写入该模板包 `visual/`
+- 业务参考是其他品牌色 → **从业务参考重新抽取** tokens，写入该模板包 `visual/`，布局仍优先用本引擎骨架  
 
-## 色板
+## 色板 / 字阶
 
-| Token | Hex | 用途 |
-|-------|-----|------|
-| primary | `#009900` | 主绿、编号、强调 |
-| accent | `#45A817` | 次强调 |
-| primary_deep | `#066A2F` | 深条 |
-| primary_soft | `#E9F7EE` | 浅底 |
-| bg | `#F4FAF5` | 页底 |
-| ink | `#1F2A24` | 正文 |
-| danger | `#E60012` | 警示（慎用） |
+见同目录 `tokens.json`（与生产 `dashenlin-courseware-green-v1` 一致：Microsoft YaHei，主绿 `#009900` 等）。
 
 ## 配套插图
 
-`illustration-medical-flat-green-v1`（缺图时优先，避免暖色插图与绿母版打架）
+引擎输入里的 `image` 字段；演示用 `engines/.../assets/placeholders/`。缺知识图可用 `illustration-medical-flat-green-v1` 补，不改 PPT chrome。
