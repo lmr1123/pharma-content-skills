@@ -1,148 +1,102 @@
-# 业务使用说明 · 医药课件模板沉淀 Skill
+# 业务怎么用（口语版）
 
-面向：门店培训 / 总部内容同学（WorkBuddy 或同类对话代理）  
-仓库：`pharma-content-skills`（**独立轻量**，通过 Git 安装即可）
-
-安装步骤见：`docs/install-via-git.md`。
+仓库：`pharma-content-skills`  
+安装：`docs/install-via-git.md`
 
 ---
 
-## 两件核心事
+## 你只要会这一句（推荐）
+
+打开代理（WorkBuddy 等），直接发：
 
 ```text
-① 沉淀模板          参考课件 → 可批量复用的模板包
-② 用模板生成主题    同一模板 → 多个病种/单品课件（可批量）
+请安装并运行这个项目（Git：https://github.com/lmr1123/pharma-content-skills.git），
+读 skills/pharma-courseware-replication/SKILL.md，然后一步步带我用。
+
+先别急着干活，先问我选哪一个：
+
+1. 复刻 PPT 模板
+   （我有一份看好的课件，想存成以后能反复用的模板）
+
+2. 选模板生成 PPT
+   （模板已经有了，我要换成别的病种/商品；可以一次做一个，也可以一次做好几个）
 ```
 
-| | 沉淀模板 | 用模板生成（含批量） |
-|--|----------|----------------------|
-| 何时 | 第一次，或版式大改时 | 日常换主题、一课多品 |
-| 输入 | 你认可的参考 PPT/截图 | 已沉淀的 `template-id` + 主题材料 |
-| 锁定 | 页序骨架 + PPT 色板 + 插图策略 | **不改** 骨架与色板 |
-| 输出 | `workspace/templates/<id>/` | `workspace/runs/<id>/<主题>/` |
+代理应先确认你选 **1** 还是 **2**，再往下要材料，不要甩一堆专业词。
 
 ---
 
-## ① 沉淀模板
+## 两个选项分别是什么（人话）
 
-### 口令（复制即用）
+| 你选 | 人话 | 什么时候用 |
+|------|------|------------|
+| **1. 复刻 PPT 模板** | 把你手里这份 PPT「学成模板」存下来：页怎么排、颜色长什么样、以后换主题改哪儿 | 第一次；或你想换一套新版式时 |
+| **2. 选模板生成 PPT** | 用已经存好的模板，换病种/商品出新课件；可以批量 | 模板有了，日常出课 |
+
+注意：
+
+- **1 不是**「随便换个皮肤」——颜色和排版要跟你认可的那份参考走。  
+- **2 不是**「重新设计」——版式锁定，只换内容、包装图、该换的插图。  
+- 商品包装必须用你提供的真图，AI 不能瞎画假包装。
+
+---
+
+## 选了 1 之后，代理会问你什么
+
+用大白话准备就行：
+
+1. 你的参考 PPT / 截图放哪了？  
+2. 这个模板想叫什么名字？（没有就让代理起一个）  
+3. 有没有已经审过的文案？没有也能先出结构，空着标「待你补」。  
+
+做完你会在本机看到类似：
+
+`workspace/templates/某某模板/` 里有可打开的 PPT，以及「以后换主题要改啥」的清单。
+
+---
+
+## 选了 2 之后，代理会问你什么
+
+1. 用哪一套已存模板？（让代理列 `workspace/templates/` 里有哪些）  
+2. 这次要出几个主题？  
+   - 一个：直接说病名/商品名  
+   - 多个：列个清单，代理批量做  
+3. 每个主题的文案、包装图有没有？没有就写「待补」，先出能打开的稿，缺的标出来。  
+
+成品在：`workspace/runs/模板名/主题名/` 下的 PPT。
+
+---
+
+## 更短的口令（复制用）
+
+**只开场：**
 
 ```text
-请读取本仓库技能：skills/pharma-courseware-replication/SKILL.md
-按「模式 1 · 沉淀模板」执行。
-
-参考文件：【本地路径】
-模板命名建议：tpl-【课型或简称】-【日期】
-
-要求：
-1. 大框架（页序/板块）跟参考
-2. PPT 视觉跟参考（只在同一套里对齐优化，不要换皮）
-3. 缺的知识插图可补；包装位留给真图，禁止假包装
-4. 写出 reuse/change-list.md，保证以后换主题/批量复用只改清单上的项
-5. 产物写到：workspace/templates/【template-id】/
-6. 生成可打开的 output/courseware.pptx（可用占位正文演示结构）
+请装好 pharma-content-skills 这个技能，带我用。
+先问我：1 复刻 PPT 模板，还是 2 选模板生成 PPT？
 ```
 
-### 沉淀成功的标志
-
-`workspace/templates/<template-id>/` 内至少有：
-
-| 路径 | 作用 |
-|------|------|
-| `template-manifest.md` | 模板身份证 |
-| `structure/slots.json` | 机读槽位（批量复用的契约） |
-| `visual/tokens.json` | 色板锁定 |
-| `reuse/change-list.md` | ★ 换主题/批量时改什么 |
-| `output/courseware.pptx` | 可打开样例 |
-
-**之后批量生成时，代理只读这份模板，不再重新发明版式。**
-
----
-
-## ② 用模板生成其他主题（单次）
+**已经确定要复刻：**
 
 ```text
-请读取 skills/pharma-courseware-replication/SKILL.md
-按「模式 2 · 用模板生成主题」执行。
-
-模板：workspace/templates/【template-id】/
-新主题：【病名或商品名】
-材料：【文案路径 / 包装图路径；没有写「待补」】
-
-要求：
-- 禁止改页序骨架与 visual/tokens（PPT 风格锁定）
-- 只改 change-list 上的 content / 业务图 / 主题插图
-- 缺审定内容标 pending，不编造功效
-- 输出到：workspace/runs/【template-id】/【theme-id】/
-  含 courseware.pptx、fill-checklist.md、更新后的 slots 副本
+选 1：复刻 PPT 模板。
+我的参考在：【路径】
+按参考的排版和颜色来，不要换成别的风格。
+存成可反复用的模板，并告诉我以后换主题要改啥。
 ```
 
----
-
-## ②′ 批量复用（一模板 × 多主题）
-
-### 口令
+**已经确定要用模板出课：**
 
 ```text
-请读取 skills/pharma-courseware-replication/SKILL.md
-按「模式 2b · 批量生成」执行。
-
-模板：workspace/templates/【template-id】/
-
-主题列表（有几条做几条，不要硬凑）：
-1. 主题名：【A】；材料：【路径或待补】
-2. 主题名：【B】；材料：【路径或待补】
-3. 主题名：【C】；材料：【路径或待补】
-
-要求：
-- 每个主题独立目录 workspace/runs/【template-id】/【theme-id】/
-- 全员共用同一 visual/tokens 与页序，禁止中途换皮
-- 每个主题各自 change-list 执行结果 + fill-checklist + courseware.pptx
-- 汇总表写到 workspace/runs/【template-id】/batch-summary.md
-  （主题 | 状态 | PPTX 路径 | 缺件）
-- 任一主题缺包装/审定文案：该主题标「部分完成」，继续做其他主题
+选 2：选模板生成 PPT。
+模板用：【模板名，或让你列出现有模板】
+主题：【一个或多个病名/商品名】
+有材料的给路径，没有的标待补；不要编功效、不要假包装。
 ```
 
-### 批量时模板如何保证可复用
-
-| 机制 | 说明 |
-|------|------|
-| 模板只读 | `workspace/templates/` 在批量中不改写（或仅增 run 索引） |
-| 槽位契约 | `slots.json` 的 framework 槽不动，只填 content / business_asset |
-| 色板锁定 | 所有 run 引用同一 `visual/tokens.json` |
-| 变更清单 | 每个主题都按同一 `change-list` 结构勾选 |
-| 有几条写几条 | 列表/对症表不按模板示例条数硬凑 |
-
 ---
 
-## 演示壳（可选，看形态）
+## 给代理看的（业务可忽略）
 
-安装仓库后若本地尚无 demo，可让代理生成，或管理员预先生成：
-
-```bash
-cd skills/pharma-courseware-replication
-python3 scripts/build_pptx.py \
-  examples/disease-product-scenario-shell.content.json \
-  ../../workspace/templates/demo-green-shell/output/courseware.pptx \
-  --tokens references/styles/ppt-courseware-green-v1/tokens.json
-```
-
-演示正文为占位，**不能**当审定医学内容。
-
----
-
-## 红线
-
-1. 不编造适应症、数据、「第一/最好」  
-2. 不生成假包装顶真图  
-3. `workspace/` 默认仅本机；外传前去掉敏感包装  
-4. 产出 ≠ 医学/法务已审定  
-
----
-
-## 管理员交付清单
-
-- [ ] 仓库已 push 到 Git，业务能 clone / 通过 Git 安装 Skill  
-- [ ] 业务拿到本页 + `docs/install-via-git.md`  
-- [ ] 业务会说两句口令：沉淀模板 / 用模板生成（含批量）  
-- [ ] 本机可选 `python-pptx`  
+内部对应关系：选项 1 = 模式 1 沉淀 → `workspace/templates/`；选项 2 = 模式 2/2b 生成 → `workspace/runs/`。  
+细则见 `skills/pharma-courseware-replication/SKILL.md`。
