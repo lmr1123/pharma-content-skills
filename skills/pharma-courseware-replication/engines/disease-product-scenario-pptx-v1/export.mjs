@@ -780,9 +780,15 @@ await fs.mkdir(path.dirname(outPath), { recursive: true });
 await pptx.writeFile({ fileName: outPath });
 
 // Font patch (Microsoft YaHei)
-const fontPatch = spawnSync("python3", [FONT_PATCH, outPath, FONT], { encoding: "utf8" });
-if (fontPatch.status !== 0) {
-  console.warn(`WARN: font patch failed: ${fontPatch.stderr || fontPatch.stdout}`);
+const skipFontPatch = !process.argv.includes("--font-patch"); // default off: WPS/mac 兼容
+let fontPatch = { status: 0 };
+if (!skipFontPatch) {
+  fontPatch = spawnSync("python3", [FONT_PATCH, outPath, FONT], { encoding: "utf8" });
+  if (fontPatch.status !== 0) {
+    console.warn(`WARN: font patch failed: ${fontPatch.stderr || fontPatch.stdout}`);
+  }
+} else {
+  console.warn("WARN: font patch skipped (default; pass --font-patch to enable)");
 }
 
 const report = {
@@ -802,7 +808,7 @@ const report = {
   missing_images: missingAssets.map((m) => m.owner),
   forbidden_input_hits: inputForbiddenHits,
   font: FONT,
-  font_patched: fontPatch.status === 0,
+  font_patched: (!skipFontPatch) && fontPatch.status === 0,
 };
 if (qaDir) {
   await fs.mkdir(qaDir, { recursive: true });

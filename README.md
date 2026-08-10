@@ -49,3 +49,5 @@ cd pharma-content-skills
 | 疾病健康培训·参课蓝 | `skills/pharma-courseware-replication/engines/disease-health-shenke-blue-v1` | `npm i` |
 
 说明：`skills/pharma-courseware-replication/engines/README.md`  
+
+**沉淀与复用同一路径**（要达到可可康那种复用效果）：[`docs/deposit-to-reuse.md`](docs/deposit-to-reuse.md)  

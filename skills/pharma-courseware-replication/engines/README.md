@@ -39,4 +39,16 @@ node build-editable.mjs content/急性上呼吸道感染.content.json
 # 或换病：复制 content JSON 改字段后再跑
 ```
 
-Skill 模式 2 确认内容后，**必须**走对应引擎出片，禁止退回通用壳 `scripts/build_pptx.py` 当正式交付。
+Skill **模式 1 沉淀**与 **模式 2 复用**必须走这里（或新建同类引擎），禁止退回通用壳 `scripts/build_pptx.py` 当正式交付。
+
+## 沉淀如何用上引擎（达到可可康那种复用效果）
+
+详见仓库 `docs/deposit-to-reuse.md`。
+
+| 情况 | 做法 |
+|------|------|
+| 新主题仍属绿/蓝课型 | **不要**新写布局；模板只指向本目录引擎，换 `script.json` / `content.json` + 图 |
+| 新参考是另一套版式 | 新建 `engines/<course-type-id>/`（pptxgenjs 布局 + schema + assets + 填写说明），再沉淀 `workspace/templates/` |
+| 出片后 WPS 打不开 | 默认勿开字体强制补丁；用 LibreOffice 重存一版再交 |
+
+**合格沉淀** = 业务换主题时，代理只改内容/图，仍调用同一 `export.mjs` / `build-editable.mjs` 出片。  

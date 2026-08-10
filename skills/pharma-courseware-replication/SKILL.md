@@ -1,12 +1,11 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.0
+version: 0.3.1
 description: >
   医药内训课件独立 Skill（Git 可安装）。业务入口口语二选一：
-  (1) 复刻 PPT 模板；(2) 选模板生成 PPT（可批量）。
-  两套已签样课型用生产仓迁入的完整引擎出片（版式/字色/插图/规范），
-  不是通用壳。内容：先写满初稿审过再出片。
-  触发词：复刻模板、选模板生成、换主题、批量出课、内容初稿、审核后再生成。
+  (1) 复刻/沉淀 PPT 模板；(2) 选模板生成 PPT（可批量）。
+  沉淀与复用同一路径：签样引擎 + 写满内容 JSON + 插图，禁止通用壳当交付。
+  内容先写满待审，确认后再出片。触发词：复刻、沉淀、选模板生成、换主题、批量出课。
 ---
 
 # 医药课件模板沉淀与批量复用
@@ -61,16 +60,25 @@ description: >
 
 ## 两条主路径
 
-### 模式 1 · 复刻 PPT 模板
+### 模式 1 · 复刻 / 沉淀 PPT 模板
 
-**人话：** 把看好的课件学成模板存下来。
+**人话：** 把看好的课件存成**以后能反复出片**的模板（效果对齐可可康那种复用验收，不是存一堆空说明）。
 
-1. 拆页序/页型/槽位  
-2. 提取色板 → `visual/tokens.json`  
-3. 素材地图；知识图可补；包装真图位  
-4. `reuse/change-list.md`  
-5. 样例 `output/courseware.pptx`（可用参考主题或完整示意，**不要**只有空表）  
-6. 写入 `workspace/templates/<template-id>/`  
+**标准路径（与模式 2 共用引擎，见 `docs/deposit-to-reuse.md`）：**
+
+1. **定课型 / 定引擎**  
+   - 像绿「疾病+商品场景」→ 挂 `engines/disease-product-scenario-pptx-v1`  
+   - 像蓝「参课健康培训」→ 挂 `engines/disease-health-shenke-blue-v1`  
+   - 完全另一套版式 → **新建** `engines/<id>/`（布局代码 + schema + assets），禁止只写 markdown  
+2. **拆结构给人看**：页序 / page-map / 换题清单 `reuse/change-list.md`  
+3. **落内容契约**：引擎 schema 的**写满**样例 JSON（`samples/` 或 `content/`）  
+4. **视觉**：tokens/色板字阶跟参考；知识图进 assets；包装真图或命名占位  
+5. **用引擎跑通样例片** → `output/courseware.pptx`（本机能打开；需要时 LibreOffice 重存兼容 WPS）  
+6. **模板包**写入 `workspace/templates/<template-id>/`，`template-manifest.md` 写死：  
+   `engine` + `schema` + `build_with_engine.sh …` 命令  
+
+沉淀完成 = **换主题时只改 JSON/图、同一引擎能出片**。  
+未挂引擎、只能通用壳出片的，**不算**合格沉淀。  
 
 ### 模式 2 · 选模板生成 PPT（单次）— **内容先行**
 
@@ -162,15 +170,22 @@ workspace/
 
 ## 质量自检
 
-### 复刻模板
+### 复刻 / 沉淀
 
-- [ ] `workspace/templates/` 有 slots + tokens + change-list + 非空样例 pptx  
+- [ ] 模板 **挂引擎**（manifest 有 engine + 出片命令）  
+- [ ] schema 样例 **写满**，引擎命令本机跑通  
+- [ ] 样例 pptx **能打开**（WPS 不行则修复/重存后再交）  
+- [ ] change-list + tokens/assets 齐全  
+- [ ] 未用通用壳冒充签样课型交付  
 
 ### 选模板生成
 
-- [ ] **先有** 写满的 `content-draft.md`（非空壳）  
+- [ ] **先有** 写满的 `content-draft.md` / 引擎 JSON（非空壳）  
 - [ ] 业务可见「待审」标注，未冒充已审定  
 - [ ] **确认后** 才出正式 pptx  
-- [ ] 正式片走 **engines/** 对应引擎，不是通用壳  
-- [ ] chrome / 字号体系 / 页骨架与签样课型一致  
+- [ ] 正式片走 **同一引擎**，路径与沉淀一致  
 - [ ] 包装真图或命名占位，无假包装  
+
+### 验收参照
+
+- 可可康复用 run：`workspace/runs/kekang-lingzhi-reuse/`（细节可后磨，路径要对）  
