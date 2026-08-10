@@ -55,7 +55,7 @@ cd pharma-content-skills && git pull
 | 选项 | 人话 | 产物目录 |
 |------|------|----------|
 | **1 复刻 PPT 模板** | 把看好的课件存成可反复用的模板 | `workspace/templates/` |
-| **2 选模板生成 PPT** | 用已有模板换主题出课（可批量） | `workspace/runs/` |
+| **2 选模板生成 PPT** | 先内容初稿审核，确认后再出 PPT（可批量） | `workspace/runs/` |
 
 详细口语说明见 `docs/business-usage.md`。
 

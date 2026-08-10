@@ -25,9 +25,12 @@
 
 路径根（默认仅本机，不进 git）：
 
-- 沉淀模板：`workspace/templates/<template-id>/`
-- 主题生成：`workspace/runs/<template-id>/<theme-id>/`
-- 批量汇总：`workspace/runs/<template-id>/batch-summary.md`
+- 复刻模板：`workspace/templates/<template-id>/`
+- 主题 run：`workspace/runs/<template-id>/<theme-id>/`
+  - **先** `content-draft.md`（写满的内容初稿，非空壳）
+  - `fill-checklist.md`（待审 → 已确认 → 已出片）
+  - **后** `courseware.pptx`（业务确认后）
+- 批量汇总：`workspace/runs/<template-id>/batch-summary.md`（含内容状态列）
 
 ## template-id 命名
 
