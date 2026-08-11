@@ -55,3 +55,19 @@
 - 新版式：新建 engines 课型包，再沉淀 templates。  
 - WPS 打不开：默认关字体强制补丁；必要时 LibreOffice 重存。  
 - 文档：`docs/deposit-to-reuse.md`。  
+
+## 2026-08-11 · 路径通过 ≠ 穿心莲保真完成
+
+- **错：** 引擎能出 18 页 + 可可康「初步可以」= 穿心莲复刻完成。  
+- **正：** 业务明确还有 **排版 / 字体 / 标题与重点色 / 插画风格** 大差距；要 **对着金样差分升级引擎**。  
+- Skill 绿引擎相对生产 export 存在**系统字阶缩小**（chrome 标题 22 vs 27、封面主标题 32 vs 40 等）——移植 pptxgenjs 时引入，优先修。  
+- `gold-layout.inspect.ndjson` 与当前数据驱动页拓扑可能不一致（如目录竖列 vs 2×2 卡）；改拓扑前先确认签样对象，默认观感跟金样、字段仍走 schema。  
+- **保真方法必须沉淀进 Skill**（checklist + tokens + export），否则模式 1 新 PPT 只能复制「能出片」不能复制「像金样」。  
+- 交接全文：`docs/HANDOVER-2026-08-11-fidelity-upgrade.md`。  
+
+## 2026-08-11 · 保真差分方法（穿心莲 18 页）
+
+- **几何/字阶以 gold layout json 为权威**（bbox/resolvedFontSize）；inspection.ndjson 无 run 颜色 → 文本色用 PIL 采样 gold PNG（sum(p)<620 取众数）。
+- 无 Microsoft YaHei 的机器：LibreOffice 替代字体更宽 → 渲染换行/溢出是**环境差异**，不要缩字号去塞；装了雅黑即消失。
+- 金样拓扑回灌引擎用**数据触发的 opt-in 变体**（variant 字段/特征字段），中性脚本（可可康）走原路径，回归零风险。
+- 表格类金样三件套：`{text,emphasis}` 强调单元格、同值合并单元格、行级 height/size/fill/color 覆盖。

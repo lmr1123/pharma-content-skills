@@ -1,6 +1,6 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.1
+version: 0.3.2
 description: >
   医药内训课件独立 Skill（Git 可安装）。业务入口口语二选一：
   (1) 复刻/沉淀 PPT 模板；(2) 选模板生成 PPT（可批量）。
@@ -55,6 +55,7 @@ description: >
 | 疾病健康培训（参课蓝） | `engines/disease-health-shenke-blue-v1/` | 生成器 `content/*.content.json` | `scripts/build_with_engine.sh disease-health-shenke-blue <content.json> <out.pptx>` |
 
 - 首次使用：在对应引擎目录执行 `npm i`（仅 pptxgenjs）。  
+- 绿引擎金样保真：变体触发器与验收方法见 `engines/disease-product-scenario-pptx-v1/FIDELITY.md`（穿心莲 18 页差分 2026-08-11 无 🔴）。  
 - `scripts/build_pptx.py` = **通用壳烟测 only**，不得当作穿心莲/参课蓝正式复用结果。  
 - 换主题：锁引擎布局，只换内容 JSON + 业务授权图；非金样主题勿拷贝穿心莲医学关键词（引擎硬阻断）。
 
@@ -188,4 +189,7 @@ workspace/
 
 ### 验收参照
 
-- 可可康复用 run：`workspace/runs/kekang-lingzhi-reuse/`（细节可后磨，路径要对）  
+- 可可康复用 run：`workspace/runs/kekang-lingzhi-reuse/`（**路径**验收：引擎 + 写满 JSON；非穿心莲像素签样）  
+- **穿心莲高保真升级交接**（下一任必读）：仓库 `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`  
+  - 业务判定：排版/字体/标题与重点色/插画仍差金样很多  
+  - 升级后沉淀：同一引擎 + 保真清单关键帧，才能声称「新 PPT 同质」  

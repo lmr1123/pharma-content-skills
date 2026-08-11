@@ -1,0 +1,621 @@
+{
+  "schema_version": "disease-product-scenario-script/v1",
+  "meta": {
+    "theme_id": "theme.product.andrographolide-drop-pills",
+    "gold_sample": true,
+    "organization": "大参林医药集团",
+    "brand_label": "大参林 dashenlin",
+    "internal_notice": "仅限于内部学习",
+    "source_notes": [
+      "文本回填自签样可编辑重建版 inspect：chain-pharmacy-content-studio/production-library/templates/settled/disease-product-scenario-v1/穿心莲内酯滴丸_商品培训课件2_可编辑重建版.pptx.inspect.ndjson",
+      "图像为源 PDF 裁切素材（本机绝对路径，不进 git）：poc/courseware-export/courseware2-work/reused-pdf-crops/",
+      "功效/数据/话术未经药师与法务终审，仅作引擎保真验收。"
+    ]
+  },
+  "pages": {
+    "cover": {
+      "title": "清热泻火，专攻风热诸证",
+      "eyebrow": "【专业力】商品培训课件",
+      "subtitle": "——穿心莲内酯滴丸+活动权重",
+      "prepared_line": "大参林医药集团 · 内部培训课件",
+      "locked_image": "/Users/liminrong/Projects/pharma-content-skills/workspace/runs/chuanxinlian-fidelity-qa/assets/cover-locked-01.png",
+      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide09-packshot.png",
+      "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）"
+    },
+    "opening": {
+      "title": "精准辨证是中医临床的基石",
+      "variant": "thesis",
+      "kicker": "",
+      "headline": "辨证论治是中医的灵魂，而精准辨证则是临床疗效的根本保障。唯有在纷繁复杂的症状中抓住证候本质，才能实现理、法、方、药的一脉贯通。",
+      "pillars": [
+        {
+          "title": "聚焦核心：风热证",
+          "body": "深入剖析风热证的核心临床表现，从发热、咽痛、舌象等维度，提炼其最具代表性的辨证要点。"
+        },
+        {
+          "title": "关键鉴别：异于风寒",
+          "body": "对比风热与风寒证在寒热轻重、口渴与否、鼻涕性质的关键差异，厘清易混淆症状，避免辨证失误。"
+        },
+        {
+          "title": "知行合一：分型用药",
+          "body": "细化风热证的不同分型，结合经典方剂，讲解如何根据具体兼证灵活化裁，将辨证结果转化为精准用药方案。"
+        }
+      ],
+      "quote": "愿诸位练就一双辨证的“慧眼”，于细微处见真章，在临床中精准识证、果敢用药。"
+    },
+    "agenda": {
+      "title": "目 录",
+      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide03-building.png",
+      "image_alt": "源 PDF 目录页中的大参林建筑图"
+    },
+    "disease_definition": {
+      "title": "疾病篇——风热证的定义",
+      "section": "1.1"
+    },
+    "symptoms": {
+      "title": "疾病篇——风热证的典型症状",
+      "section": "1.2"
+    },
+    "comparison": {
+      "title": "疾病篇——风热证的鉴别",
+      "section": "1.3"
+    },
+    "treatment": {
+      "title": "疾病篇——风热证的治疗：辨证用药总原则",
+      "section": "1.4"
+    },
+    "subtypes": {
+      "title": "疾病篇——风热证的证候细分（常见）",
+      "section": "1.5",
+      "variant": "split-columns"
+    },
+    "product_info": {
+      "title": "商品篇——穿心莲内酯滴丸的产品信息",
+      "section": "2.1",
+      "variant": "panel"
+    },
+    "advantages": {
+      "title": "商品篇——穿心莲内酯滴丸的产品优势",
+      "section": "2.2",
+      "core": "一机理\n三优势"
+    },
+    "product_summary": {
+      "title": "商品篇——穿心莲内酯滴丸的核心优势总结",
+      "section": "2.3",
+      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide11-packshot.png",
+      "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）"
+    },
+    "audience": {
+      "title": "场景篇——什么时候推荐穿心莲内酯滴丸",
+      "section": "3.1",
+      "variant": "arrow-flow",
+      "product_image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-packshot.png"
+    },
+    "consultation": {
+      "title": "场景篇——什么时候推荐穿心莲内酯滴丸",
+      "section": "3.2",
+      "thesis": "实战销售话术：以“望闻问切”辨顾客，以专业方案做推荐"
+    },
+    "daily_care": {
+      "title": "关怀篇——日常生活叮嘱",
+      "section": "4.1"
+    },
+    "weighted_comparison": {
+      "title": "权重篇——白云山安宫＋宏济堂安宫",
+      "section": "5.2"
+    }
+  },
+  "agenda": [
+    {
+      "number": "01",
+      "title": "疾病篇 — 风热证"
+    },
+    {
+      "number": "02",
+      "title": "商品篇 — 穿心莲内酯滴丸的核心优势"
+    },
+    {
+      "number": "03",
+      "title": "场景篇 — 什么时候推荐穿心莲内酯滴丸"
+    },
+    {
+      "number": "04",
+      "title": "关怀篇 — 日常生活叮嘱"
+    },
+    {
+      "number": "05",
+      "title": "权重篇 — 活动权重"
+    }
+  ],
+  "disease": {
+    "name": "风热证",
+    "definition_title": "什么是风热证？",
+    "definition": "指风热之邪侵袭人体肌表，导致卫气被遏、肺失宣肃所表现出的证候。通俗而言，即身体受到“热风”侵袭，引发发热、咽痛、口干等一系列“热”性症状，是中医外感表证中常见的证型之一。",
+    "definition_tags": [
+      "发热重",
+      "恶寒轻",
+      "咽痛",
+      "口渴",
+      "苔薄黄"
+    ],
+    "cause": {
+      "title": "核心病因：内外合邪，热邪入侵",
+      "body": "外感风邪：多发于春季或气温骤升时节，风热之邪从口鼻、皮毛而入，侵犯肌表。\n\n内生积热：过食辛辣、油腻、温补之品，或情志不畅化火，致体内“火气”过旺。"
+    },
+    "pathogenesis": {
+      "title": "关键病机：正邪交争，肺卫失和",
+      "body": "正邪相争：风热犯表，卫阳被遏，正邪交争于肌表则发热。\n\n津伤肺逆：热邪易灼伤津液，故见口干、口渴；肺失宣肃，气逆于上，则引发咳嗽、咽喉肿痛。"
+    },
+    "definition_summary": "总结：风热证以“发热重、恶寒轻、咽痛、口渴、苔薄黄”为主要辨证要点。",
+    "symptoms": [
+      {
+        "name": "咽喉红肿疼痛",
+        "description": "最典型的特征之一，咽喉黏膜充血明显，吞咽时痛感加剧，是风热之邪侵犯肺卫的直接表现。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-throat.png",
+        "image_alt": "咽喉红肿疼痛图片（裁自源 PDF）"
+      },
+      {
+        "name": "流黄稠涕，咳黄黏痰",
+        "description": "鼻腔与呼吸道分泌物颜色发黄且质地黏稠，是热邪煎灼津液所致，与风寒证清稀分泌物形成鲜明对比。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-nose.png",
+        "image_alt": "流黄鼻涕图片（裁自源 PDF）"
+      },
+      {
+        "name": "发热重，微恶风",
+        "description": "患者自觉身体发烫，体温较高，但怕冷感觉不明显，仅稍有怕风，是风热证在体温上的核心表现。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-sputum.png",
+        "image_alt": "黄色黏痰图片（裁自源 PDF）"
+      },
+      {
+        "name": "口干口渴，喜冷饮",
+        "description": "热邪耗伤津液，导致口渴，且偏好凉水。"
+      },
+      {
+        "name": "舌尖红，苔薄黄",
+        "description": "舌尖红为热象；薄黄苔提示病邪尚在表浅。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-tongue.png",
+        "image_alt": "源 PDF 中的舌象图片"
+      }
+    ],
+    "comparison": {
+      "columns": [
+        "鉴别维度",
+        "风热证 · 热象显著",
+        "风寒证 · 寒象突出"
+      ],
+      "rows": [
+        [
+          "01 寒热汗出",
+          "发热重，恶寒轻；有汗出，体表疏松。",
+          "恶寒重，发热轻；无汗出，寒束肌表。"
+        ],
+        [
+          "02 鼻痰色泽",
+          "流黄稠涕，咳痰黄黏，里热灼津。",
+          "流清稀涕，咳痰白稀，寒邪未化热。"
+        ],
+        [
+          "03 咽喉症状",
+          "咽喉红肿疼痛，热邪上攻。",
+          "咽喉发痒，不红不痛，寒邪客于咽喉。"
+        ],
+        [
+          "04 口渴喜饮|04 口渴情况",
+          "口干渴明显，偏好冷饮。",
+          "口不渴或喜热饮，体内无明显热邪。"
+        ],
+        [
+          "05 舌脉特征",
+          "舌红、苔薄黄，脉浮数。",
+          "舌淡、苔薄白，脉浮紧。"
+        ]
+      ],
+      "memory": [
+        {
+          "title": "辨证核心口诀",
+          "body": "热重寒轻是风热，寒重热轻是风寒；有汗无汗要分清。"
+        },
+        {
+          "title": "分泌物色诊口诀",
+          "body": "黄浊黄痰是风热，清涕白痰属风寒；红肿热痛辨咽喉。"
+        },
+        {
+          "title": "津液喜恶口诀",
+          "body": "口渴喜凉为风热，口不渴属风寒；喜热饮者寒象真。"
+        }
+      ],
+      "change_note": "病情演变：清涕转黄涕，应紧扣当前主症及时调整治法，不拘泥于初期寒象。"
+    },
+    "treatment_principles": [
+      {
+        "title": "01. 禁用辛温，勿助热",
+        "body": "核心原则：风热证为“阳热”之证，绝对禁用麻黄、桂枝等辛温发汗药。\n\n机理警示：温药入体如同“火上浇油”，会加重内热，灼伤津液，导致病情由表入里。"
+      },
+      {
+        "title": "02. 分清主次，随证施方",
+        "body": "根据病程阶段与兼症针对性加减药物，不拘泥于一方一药。\n\n表热轻症单用辛凉解表；肺热偏重佐以清热化痰；咽喉肿痛则重加板蓝根、桔梗等解毒利咽之品。"
+      },
+      {
+        "title": "03. 兼顾兼证，不可偏颇",
+        "body": "临床多见风热夹湿等兼证，治疗时切忌只清热而不顾湿邪。\n\n在辛凉清热基础上，需酌情配伍藿香、佩兰、薏苡仁等化湿药物，使热得清解、湿得化除。"
+      }
+    ],
+    "subtypes": [
+      {
+        "name": "01. 风热感冒（表热轻症）",
+        "features_label": "临床表现",
+        "features": "发热、微恶风、咽痛、黄涕、薄黄苔、脉浮数。",
+        "approach_label": "治则与方药",
+        "approach": "辛凉解表。方用银翘散、桑菊饮；中成药可选维C银翘片、银翘解毒片。"
+      },
+      {
+        "name": "02. 风热犯肺（咳嗽为主）",
+        "features_label": "临床表现",
+        "features": "咳嗽频作、咳痰黏稠、咽痛、胸闷，或伴鼻流黄涕。",
+        "approach_label": "治则与方药",
+        "approach": "疏风清热、宣肺止咳。方用桑菊饮；中成药如急支糖浆、川贝枇杷膏。"
+      },
+      {
+        "name": "03. 风热上攻（头面热象偏重）",
+        "features_label": "临床表现",
+        "features": "头痛剧烈、面红目赤、咽喉肿痛、口舌生疮，或牙龈肿痛。",
+        "approach_label": "治则与方药",
+        "approach": "疏风清热、清利头目；可选黄连上清片、板蓝根颗粒、穿心莲内酯滴丸。"
+      },
+      {
+        "name": "04. 风热夹湿（夏季多见）",
+        "features_label": "临床表现",
+        "features": "发热、头昏沉、胸闷、肢体困重、舌苔黄腻，多在夏季暑湿时发生。",
+        "approach_label": "治则与方药",
+        "approach": "疏风清热，兼化湿和中。方用新加香薷饮；中成药可选甘露消毒丹。"
+      }
+    ],
+    "treatment_summary": "总结：风热证治疗核心在于“辛凉解表、清热解毒”，同时严守禁忌，辨明主次兼证。"
+  },
+  "product": {
+    "name": "穿心莲内酯滴丸",
+    "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide09-packshot.png",
+    "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）",
+    "information": [
+      {
+        "label": "【成  份】",
+        "value": "穿心莲内酯（纯度高达97%以上）；辅料为聚乙二醇、薄膜包衣预混剂。"
+      },
+      {
+        "label": "【性  状】",
+        "value": "本品为黄色的包衣滴丸，除去包衣后显类白色；味苦。"
+      },
+      {
+        "label": "【功能主治】",
+        "value": "清热解毒，抗菌消炎。用于上呼吸道感染风热证所致的咽痛。",
+        "emphasis": true
+      },
+      {
+        "label": "【规  格】",
+        "value": "每袋含穿心莲内酯0.15g。"
+      },
+      {
+        "label": "【用量用法】",
+        "value": "口服，一次1袋，一日3次。（建议首次服用两袋）",
+        "emphasis": true
+      },
+      {
+        "label": "【禁  忌】",
+        "value": "对本品过敏者禁用。"
+      }
+    ],
+    "advantages": [
+      {
+        "node": "机理",
+        "title": "抑制核转录因子表达",
+        "body": "提高机体防御能力\n减轻细菌或病毒感染带来的不适症状"
+      },
+      {
+        "node": "单",
+        "title": "百分百纯植物提取",
+        "body": "单体制剂、植物化学药\n机理确切可控，降低联合用药风险"
+      },
+      {
+        "node": "纯",
+        "title": "穿心莲内酯纯度97%",
+        "body": "质量稳定，载药量高\n疗效好"
+      },
+      {
+        "node": "快",
+        "title": "滴丸剂型固体分散技术",
+        "body": "溶散时间短\n快速吸收，起效迅速"
+      }
+    ],
+    "summary": {
+      "headline": "穿心莲内酯滴丸核心优势总结",
+      "groups": [
+        {
+          "title": "剂型优势",
+          "items": [
+            "全国独家：全国唯一穿心莲内酯滴丸剂型",
+            "起效更快：5–10分钟内全部崩解",
+            "易携带：独立包装，方便携带"
+          ]
+        },
+        {
+          "title": "工艺优势",
+          "items": [
+            "纯度高：穿心莲内酯纯度高达97%",
+            "稳定性强：高速滴丸机，含量均匀度高",
+            "安全保证：0糖0添加，纯中药制剂"
+          ]
+        },
+        {
+          "title": "组方优势",
+          "items": [
+            "植物单体制剂：经典老药，植物单体制剂",
+            "功能全面：清热解毒＋抗菌消炎",
+            "疗效显著：治疗感冒、流感、咽痛总有效率95%"
+          ]
+        }
+      ]
+    },
+    "audience": [
+      {
+        "title": "儿童",
+        "body": "学校感冒交叉感染\n→ 酸奶送服更安全",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-child.png",
+        "image_alt": "儿童插画（裁自源 PDF）",
+        "flows": [
+          {
+            "left": "学校感冒交叉感染",
+            "right": "酸奶送服更安全"
+          }
+        ]
+      },
+      {
+        "title": "中青年",
+        "body": "办公室白领 → 空调干燥易咽痛\n商旅人士 → 出差劳累抵抗力低\n老师 → 课堂授课易咽炎\n全职妈妈 → 换季更新药箱",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-adult.png",
+        "image_alt": "中青年插画（裁自源 PDF）",
+        "flows": [
+          {
+            "left": "办公室白领",
+            "right": "办公室空调干燥易咽痛"
+          },
+          {
+            "left": "商旅人士",
+            "right": "出差出行劳累抵抗力低"
+          },
+          {
+            "left": "老师",
+            "right": "课堂授课易咽炎"
+          },
+          {
+            "left": "全职妈妈",
+            "right": "换季更新药箱"
+          }
+        ]
+      },
+      {
+        "title": "老年",
+        "body": "秋冬呼吸疾病高发\n冬日晨起锻炼易感冒\n北方暖气干燥早备药",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-senior.png",
+        "image_alt": "老年人物插画（裁自源 PDF）",
+        "flows": [
+          {
+            "left": "秋冬呼吸\n疾病高发",
+            "right": "冬日晨起锻炼易感冒\n北方暖气干燥早备药"
+          }
+        ]
+      }
+    ],
+    "consultation": [
+      {
+        "step": "望",
+        "title": "观气色辨需求",
+        "question": "观察顾客神态、面色与精神状态，初步判断体质倾向，找准沟通切入点，建立专业第一印象。"
+      },
+      {
+        "step": "闻",
+        "title": "听诉求知痛点",
+        "question": "耐心倾听顾客描述身体不适与核心诉求，从话语中捕捉深层痛点，为后续辨证推荐提供依据。"
+      },
+      {
+        "step": "问",
+        "title": "询细节定方案",
+        "question": "针对性询问饮食、作息、既往病史等细节，层层递进厘清“证型”，让方案更科学。"
+      },
+      {
+        "step": "切",
+        "title": "据关键做推荐",
+        "question": "结合辨证结果，紧扣顾客核心需求，精准匹配产品与服务，用专业术语解读益处。"
+      }
+    ],
+    "scenarios": [
+      {
+        "section": "3.3",
+        "page_title": "场景篇——什么时候推荐穿心莲内酯滴丸",
+        "title": "场景1：顾客主诉“喉咙痛”",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide14-throat-person.png",
+        "image_alt": "顾客咽痛人物照片（裁自源 PDF）",
+        "blocks": [
+          {
+            "title": "辨证沟通",
+            "body": "通过关键提问“是否觉得身上热”，快速判断顾客属于风热型咽喉肿痛，而非风寒。这是精准推荐用药的第一步。"
+          },
+          {
+            "title": "核心用药",
+            "body": "主推穿心莲内酯滴丸，其核心成分穿心莲内酯清热解毒、抗菌消炎。重点强调滴丸剂型吸收快、见效迅速。"
+          },
+          {
+            "title": "关联服务",
+            "body": "关联推荐熊胆薄荷含片，内服＋外用双管齐下。同时给予多饮温水、忌辛辣刺激等饮食建议。"
+          }
+        ],
+        "summary": "服务要点：辨证精准是前提，剂型优势是卖点，关联用药是增值，健康叮嘱是保障。"
+      },
+      {
+        "section": "3.4",
+        "page_title": "场景篇——什么时候推荐穿心莲内酯滴丸",
+        "title": "场景2：顾客主诉“感冒了，发烧，有黄痰”",
+        "blocks": [
+          {
+            "title": "01 症状辨析",
+            "body": "顾客表现为发烧38℃以上、自觉身热不恶寒、咳嗽伴黄痰。这是典型的风热感冒症状，核心病机为风热之邪犯表，肺气失和，体内有热毒积聚。"
+          },
+          {
+            "title": "02 核心推荐方案",
+            "body": "推荐穿心莲内酯滴丸。它能直接清除体内热毒，从根源上解决发热、咽痛、咳黄痰等风热感冒症状；药力集中、起效快。"
+          },
+          {
+            "title": "03 联合用药解惑",
+            "body": "若顾客家中有复方氨酚烷胺片，可说明：西药缓解咳嗽、流涕等症状是“治标”；穿心莲清除热毒是“治本”，二者联用。"
+          }
+        ],
+        "summary": "关键话术：“您这是风热感冒，穿心莲内酯滴丸清除热毒是治本，复方氨酚烷胺片缓解症状是治标，一个治标一个治本，一起用效果更好。”"
+      }
+    ],
+    "daily_care": [
+      {
+        "title": "✓ 饮食之宜 · 清热生津",
+        "body": "日常多喝水，可饮菊花茶、绿豆汤，适当食用梨、西瓜、苦瓜等寒凉性蔬果。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide16-chrysanthemum.png",
+        "image_alt": "菊花图片（裁自源 PDF）"
+      },
+      {
+        "title": "✕ 饮食之忌 · 避热动火",
+        "body": "避免辛辣刺激、油腻煎炸食物，同时慎食羊肉、人参、桂圆等温补食材。",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide16-mungbean.png",
+        "image_alt": "绿豆汤图片（裁自源 PDF）"
+      },
+      {
+        "title": "保证充足休息，养足精神",
+        "body": "建议保证7–8小时高质量睡眠，避免熬夜，让脏腑功能在夜间充分休养，促进津液恢复。"
+      },
+      {
+        "title": "保持室内通风，空气清新",
+        "body": "每日开窗通风2–3次，每次30分钟。新鲜空气有助于驱散室内浊气，保持呼吸道通畅。"
+      },
+      {
+        "title": "减少过度用嗓，静养咽喉",
+        "body": "尽量少说话，避免大声喊叫或长时间交谈，让咽喉、声带充分休息，减少外界刺激。"
+      }
+    ]
+  },
+  "weighted": {
+    "items": [
+      {
+        "section": "5.1",
+        "page_title": "权重篇——广誉远安宫牛黄丸",
+        "name": "广誉远安宫牛黄丸",
+        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide17-product.png",
+        "image_alt": "广誉远安宫牛黄丸包装与商品图（裁自源 PDF）",
+        "fields": [
+          {
+            "label": "编码",
+            "value": "2205770"
+          },
+          {
+            "label": "主推",
+            "value": "A"
+          },
+          {
+            "label": "规格",
+            "value": "3克/丸\n（双天然）"
+          },
+          {
+            "label": "零售价",
+            "value": "880"
+          }
+        ],
+        "slogan": "一句话卖点（员工宣传语）：\n安宫鼻祖，胆红素含量高于同品",
+        "selling_points_label": "一、核心卖点",
+        "selling_points": [
+          "广誉远安宫被誉为安宫鼻祖。广誉远是较早规模化炮制安宫牛黄丸的厂家，早在光绪11年（1885年）开始规模化炮制；2014年获得“国家级非物质文化遗产”荣誉。"
+        ],
+        "table": {
+          "headers": [
+            "品种",
+            "牛黄",
+            "胆红素含量"
+          ],
+          "rows": [
+            [
+              "安宫牛黄丸（广誉远）",
+              "天然",
+              {
+                "text": "46.6mg/丸",
+                "emphasis": true
+              }
+            ],
+            [
+              "北京同仁堂安宫",
+              "天然",
+              "40.1mg/丸"
+            ],
+            [
+              "安宫国家标准",
+              "天然",
+              "≥18.5mg/丸"
+            ]
+          ]
+        },
+        "suitable_for_label": "二、适应症：",
+        "suitable_for": "1. 中风或脑梗塞后遗症患者；2. 癫痫、惊厥、昏迷患者；3. 心血管疾病患者；4. 神经衰弱或失眠患者；5. 儿童高热惊厥；6. 严重感染性疾病伴高热神昏者。"
+      }
+    ],
+    "comparison": {
+      "dimension_label": "对比维度",
+      "products": [
+        {
+          "name": "安宫牛黄丸（白云山中一）\n8202533（人工体培）",
+          "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/production-library/validation/courseware/disease-product-scenario-v1/upgrade-v2/before/crops-orig/slide18-product-a.png",
+          "width": 455
+        },
+        {
+          "name": "安宫牛黄丸（宏济堂）\n1185781（单天然）等",
+          "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/production-library/validation/courseware/disease-product-scenario-v1/upgrade-v2/before/crops-orig/slide18-product-b.png",
+          "width": 585
+        }
+      ],
+      "rows": [
+        {
+          "dimension": "产品图片",
+          "values": [
+            "",
+            ""
+          ],
+          "kind": "images",
+          "height": 100
+        },
+        {
+          "dimension": "核心卖点",
+          "values": [
+            "1. 药材道地：胆红素含量是国家标准2倍；\n2. 古法手工：166年老手艺纯手工制丸；\n3. 广药白云山品牌，质量保证。",
+            "1. 系出名门，与北京同仁同宗同源，百年老号；\n2. 道地选材，自研国家一类新药麝香酮，急救效果更快更安全；\n3. 优质优价，性价比高。"
+          ],
+          "height": 170,
+          "size": 21,
+          "fill": "E9F7EE"
+        },
+        {
+          "dimension": "适宜人群",
+          "values": [
+            "1. 高血压、中风病史等心脑血管高风险人群家庭备用；\n2. 用于中风（热闭证）及高热神昏的急救。",
+            "1. 高血压、中风病史等心脑血管高风险人群家庭备用；\n2. 用于中风（热闭证）及高热神昏的急救。"
+          ],
+          "height": 85,
+          "size": 19,
+          "fill": "F4FAF5"
+        },
+        {
+          "dimension": "联合用药",
+          "values": [
+            "1. 针对三高人群：按内部审核话术说明节气前备用逻辑；\n2. 针对急救：出现疑似急症应立即呼叫急救并遵循专业人员指导；\n3. 小儿高热：必须严格按内部审核和专业人员指导使用。",
+            "1. 针对三高人群：按内部审核话术说明节气前备用逻辑；\n2. 针对急救：出现疑似急症应立即呼叫急救并遵循专业人员指导；\n3. 小儿高热：必须严格按内部审核和专业人员指导使用。"
+          ],
+          "height": 150,
+          "size": 18,
+          "fill": "E9F7EE",
+          "color": "E60012"
+        }
+      ]
+    }
+  }
+}

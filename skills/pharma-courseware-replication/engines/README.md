@@ -52,3 +52,10 @@ Skill **模式 1 沉淀**与 **模式 2 复用**必须走这里（或新建同�
 | 出片后 WPS 打不开 | 默认勿开字体强制补丁；用 LibreOffice 重存一版再交 |
 
 **合格沉淀** = 业务换主题时，代理只改内容/图，仍调用同一 `export.mjs` / `build-editable.mjs` 出片。  
+
+## 高保真升级（2026-08-11 已完成 Phase A/B/D）
+
+穿心莲金样 18 页差分**无 🔴**（排版/字阶/颜色/插图逐页对齐；无雅黑机器的字体替代换行属环境差异）。  
+变体触发器与验收方法：`disease-product-scenario-pptx-v1/FIDELITY.md`。  
+差分表：`workspace/runs/chuanxinlian-fidelity-qa/FIDELITY-DIFF.md`；验收勾选：`../references/fidelity-qa-checklist.md`。  
+任务上下文：仓库根 `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`（Phase C 插画规范留待后续）。  
