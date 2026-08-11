@@ -13,10 +13,14 @@
  *   --style <tokens.json>  --qa <dir>  (qa optional; no PNG montage without extra tools)
  */
 import fs from "node:fs/promises";
+import fsSync from "node:fs";
 import path from "node:path";
+import os from "node:os";
+import crypto from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import PptxGenJS from "pptxgenjs";
+import sizeOf from "image-size";
 
 const ENGINE_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DEFAULT_STYLE = path.join(ENGINE_DIR, "tokens.json");
@@ -306,6 +310,43 @@ function plainText(value) {
   return String(value ?? "");
 }
 
+/**
+ * pptxgenjs 的 sizing.cover 用「显示框尺寸」当图尺寸，srcRect 恒为 0（等于拉伸）。
+ * 真 cover/contain 用 PIL 预裁/几何放置，再无 sizing 嵌入。
+ */
+function materializeImageFit(srcPath, boxW, boxH, mode = "cover") {
+  const key = crypto.createHash("md5").update(`${srcPath}|${boxW}x${boxH}|${mode}`).digest("hex").slice(0, 12);
+  const out = path.join(os.tmpdir(), `dps-imgfit-${key}.png`);
+  if (fsSync.existsSync(out)) return out;
+  const py = `
+from PIL import Image
+src = ${JSON.stringify(srcPath)}
+out = ${JSON.stringify(out)}
+bw, bh = ${Math.round(boxW)}, ${Math.round(boxH)}
+mode = ${JSON.stringify(mode)}
+im = Image.open(src).convert("RGBA")
+w, h = im.size
+if mode == "contain":
+    scale = min(bw / w, bh / h)
+    nw, nh = max(1, int(round(w * scale))), max(1, int(round(h * scale)))
+    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    canvas = Image.new("RGBA", (bw, bh), (255, 255, 255, 0))
+    canvas.paste(im, ((bw - nw) // 2, (bh - nh) // 2), im)
+    canvas.save(out)
+else:
+    scale = max(bw / w, bh / h)
+    nw, nh = max(1, int(round(w * scale))), max(1, int(round(h * scale)))
+    im = im.resize((nw, nh), Image.Resampling.LANCZOS)
+    left, top = (nw - bw) // 2, (nh - bh) // 2
+    im.crop((left, top, left + bw, top + bh)).save(out)
+`;
+  const r = spawnSync("python3", ["-c", py], { encoding: "utf8" });
+  if (r.status !== 0 || !fsSync.existsSync(out)) {
+    throw new Error(`image fit failed (${mode}): ${r.stderr || r.stdout || "unknown"}`);
+  }
+  return out;
+}
+
 function addImageSafe(slide, inputPath, frame, fit = "contain") {
   if (!inputPath) return null;
   const resolved = path.isAbsolute(inputPath) ? inputPath : path.resolve(dataDir, inputPath);
@@ -326,10 +367,33 @@ function addImageSafe(slide, inputPath, frame, fit = "contain") {
     return null;
   }
   try {
+    let drawPath = finalPath;
+    let drawFrame = frame;
+    // pptxgenjs sizing.cover 用显示框当图尺寸 → srcRect 恒 0（拉伸）。
+    // contain：几何信箱（对齐金样封面 24,0,1231×720）
+    // cover：PIL 预裁到框再嵌入（对齐金样目录左栏）
+    if (fit === "contain") {
+      try {
+        const dim = sizeOf(fsSync.readFileSync(finalPath));
+        const scale = Math.min(frame.width / dim.width, frame.height / dim.height);
+        const dw = Math.round(dim.width * scale);
+        const dh = Math.round(dim.height * scale);
+        drawFrame = {
+          // floor 对齐金样封面 left=24（round 会得到 25）
+          left: frame.left + Math.floor((frame.width - dw) / 2),
+          top: frame.top + Math.floor((frame.height - dh) / 2),
+          width: dw,
+          height: dh,
+        };
+      } catch { /* keep frame */ }
+    } else if (fit === "cover") {
+      try {
+        drawPath = materializeImageFit(finalPath, frame.width, frame.height, "cover");
+      } catch { /* keep original; may stretch */ }
+    }
     slide.addImage({
-      path: finalPath,
-      x: x(frame.left), y: y(frame.top), w: s(frame.width), h: s(frame.height),
-      sizing: { type: fit === "cover" ? "cover" : "contain", w: s(frame.width), h: s(frame.height) },
+      path: drawPath,
+      x: x(drawFrame.left), y: y(drawFrame.top), w: s(drawFrame.width), h: s(drawFrame.height),
     });
     return finalPath;
   } catch {
@@ -438,12 +502,17 @@ function newSlide(type, page, section = null) {
 }
 
 // 页脚（notice + 页码），chromeless 页（如金样目录）单独调用
-function addFooter(slide) {
+// 金样目录页脚：notice [1010,688,160,22] + page [1180,688,64,22]
+function addFooter(slide, opts = {}) {
+  const notice = opts.notice || { l: 860, t: 688, w: 300, h: 20 };
+  const page = opts.page || { l: 1174, t: 688, w: 70, h: 20 };
   addText(slide, data.meta.internal_notice, {
-    l: 860, t: 688, w: 300, h: 20, size: 12, color: C.muted, align: "right",
+    l: notice.l, t: notice.t, w: notice.w, h: notice.h,
+    size: 12, color: C.muted, align: "right",
   });
   addText(slide, String(pageNumber).padStart(2, "0") + " / " + String(totalPages).padStart(2, "0"), {
-    l: 1174, t: 688, w: 70, h: 20, size: 12, color: C.muted, align: "right",
+    l: page.l, t: page.t, w: page.w, h: page.h,
+    size: 12, color: C.muted, align: "right",
   });
 }
 
@@ -527,9 +596,10 @@ const totalPages = estimateTotalPages();
 {
   const page = data.pages.cover;
   if (page.locked_image) {
-    // 公司锁定封面：整幅贴图，不重排（对齐金样「封面锁定不改版」约定）
+    // 公司锁定封面：金样为源 PDF 整页 contain（左右信箱边），非 cover 裁切
     const slide = newSlide("cover", page);
-    addImageSafe(slide, page.locked_image, { left: 0, top: 0, width: Wpx, height: Hpx }, "cover");
+    const fitMode = page.locked_image_fit === "cover" ? "cover" : "contain";
+    addImageSafe(slide, page.locked_image, { left: 0, top: 0, width: Wpx, height: Hpx }, fitMode);
   } else {
   const slide = newSlide("cover", page);
   addShape(slide, { l: 0, t: 0, w: 760, h: Hpx, fill: C.teal });
@@ -591,15 +661,20 @@ const totalPages = estimateTotalPages();
   const page = data.pages.agenda;
   const items = data.agenda;
   if (page.image) {
-    // 金样穿心莲 topology：左侧整幅图 + 右侧竖排「目 录」+ chip 列表（gold slide-03）
+    // 金样穿心莲 topology：左侧整幅图 cover + 右侧「目 录」+ chip 列表（gold slide-03）
     const slide = newSlide("agenda", { ...page, chromeless: true });
+    // 左栏 580×720：建筑图 cover（与金样 srcRect t/b≈1763 一致）
     addImageSafe(slide, page.image, { left: 0, top: 0, width: 580, height: 720 }, "cover");
-    addText(slide, page.title, { l: 625, t: 80, w: 400, h: 80, size: 58, bold: true, color: C.deep, vAlign: "middle" });
+    addText(slide, page.title, {
+      l: 625, t: 80, w: 400, h: 80,
+      size: 58, bold: true, color: C.deep, vAlign: "middle",
+    });
     addShape(slide, { l: 625, t: 175, w: 520, h: 2, fill: C.line });
     items.forEach((item, index) => {
-      // 与可编辑金样 build：y=220+i*70；chip 在 y+4；标题在 y
+      // 可编辑金样 build：y=220+i*70；chip 在 y+4；标题在 y
       const yBase = 220 + index * 70;
       const chipY = yBase + 4;
+      // 椭圆内文字：水平/垂直居中（避免底形+文本框叠层偏移）
       addText(slide, item.number, {
         l: 625, t: chipY, w: 40, h: 40,
         size: 17, bold: true, color: C.white,
@@ -613,7 +688,11 @@ const totalPages = estimateTotalPages();
         size: 23, bold: true, color: C.ink, vAlign: "middle",
       });
     });
-    addFooter(slide);
+    // 金样目录页脚坐标（非通用 chrome footer）
+    addFooter(slide, {
+      notice: { l: 1010, t: 688, w: 160, h: 22 },
+      page: { l: 1180, t: 688, w: 64, h: 22 },
+    });
   } else {
   const slide = newSlide("agenda", page);
   items.forEach((item, index) => {
