@@ -34,7 +34,7 @@ function parseArgs(argv) {
     const token = argv[i];
     if (!token.startsWith('--')) continue;
     const key = token.slice(2);
-    if (['validate-only', 'preview-text-only', 'skip-sha-check', 'emit-image-plan'].includes(key)) {
+    if (['validate-only', 'preview-text-only', 'preview-with-images', 'skip-sha-check', 'emit-image-plan'].includes(key)) {
       out[key] = true;
       continue;
     }
@@ -634,6 +634,108 @@ async function main() {
       pptx: out,
       page_count: presentation.slides.items.length,
       text_slots_replaced: replaced,
+      contract: summary,
+    };
+    if (args.report) {
+      await fsp.mkdir(path.dirname(path.resolve(args.report)), {recursive: true});
+      await fsp.writeFile(path.resolve(args.report), `${JSON.stringify(report, null, 2)}\n`, 'utf8');
+    }
+    console.log(JSON.stringify(report, null, 2));
+    return;
+  }
+
+  // ---- Preview with images: replace text + whatever image assets are bound; keep gold for missing ----
+  // Demo / progressive fill. Not formal (no residue strip / no full validation).
+  if (args['preview-with-images']) {
+    const themeDir = path.dirname(themePath);
+    const resolved = {};
+    const assets = theme.assets && typeof theme.assets === 'object' ? theme.assets : {};
+    for (const [key, raw] of Object.entries(assets)) {
+      if (typeof raw !== 'string' || !raw.trim()) continue;
+      const p = path.isAbsolute(raw) ? raw : path.resolve(themeDir, raw);
+      if (fs.existsSync(p)) {
+        const bytes = await fsp.readFile(p);
+        resolved[key] = {path: p, sha256: sha256Bytes(bytes), bytes};
+      }
+    }
+    const {replaced: textReplaced} = await applyTextOnly(presentation, theme, contract);
+    let imageReplaced = 0;
+    const pageByNumber = new Map((theme.pages || []).map((page) => [Number(page.slide), page]));
+    async function ensureRef(key) {
+      const item = resolved[key];
+      if (!item) return null;
+      const newId = `/ppt/media/preview-${item.sha256.slice(0, 24)}.png`;
+      if (!presentation.images.items.some((im) => String(im.id) === newId)) {
+        presentation.images.add({id: newId, contentType: 'image/png', data: item.bytes});
+      }
+      return newId;
+    }
+    for (const pageContract of contract.pages) {
+      const slide = presentation.slides.items[pageContract.slide - 1];
+      const page = pageByNumber.get(pageContract.slide);
+      if (!page?.images) continue;
+      for (const slot of pageContract.images) {
+        const assetKey = String(page.images?.[slot.id] || '');
+        if (!assetKey || !resolved[assetKey]) continue;
+        const newId = await ensureRef(assetKey);
+        if (!newId) continue;
+        try {
+          if (slot.target.kind === 'slide-image') {
+            const image = findShape(slide.images.items, slot.id, `slide ${pageContract.slide} image`);
+            image.setImageReference(newId);
+            imageReplaced += 1;
+          } else if (slot.target.kind === 'slide-shape-fill') {
+            const shape = findShape(slide.shapes.items, slot.target.id, `slide ${pageContract.slide} fill`);
+            const oldFill = shape.data?.shape?.fill || {};
+            shape.fill = {
+              type: 'image',
+              imageReference: {id: newId},
+              ...(oldFill.alphaModFix != null ? {alphaModFix: oldFill.alphaModFix} : {}),
+              ...(oldFill.srcRect ? {srcRect: oldFill.srcRect} : {}),
+              ...(oldFill.fillRect ? {fillRect: oldFill.fillRect} : {}),
+              ...(oldFill.stretchFillRect ? {stretchFillRect: oldFill.stretchFillRect} : {}),
+            };
+            imageReplaced += 1;
+          }
+        } catch (e) {
+          // skip bad slots in preview
+        }
+      }
+    }
+    for (const slot of contract.templateImages) {
+      const assetKey = String(theme.template_images?.[slot.key] || '');
+      if (!assetKey || !resolved[assetKey]) continue;
+      const newId = await ensureRef(assetKey);
+      if (!newId) continue;
+      try {
+        let owner;
+        if (slot.target.kind === 'master-image') {
+          owner = presentation.masters.items.find((item) => String(item.id) === slot.target.owner);
+        } else {
+          owner = presentation.layouts.items.find((item) => String(item.id) === slot.target.owner);
+        }
+        if (!owner) continue;
+        const image = findShape(owner.images?.items, slot.target.id, slot.key);
+        image.setImageReference(newId);
+        imageReplaced += 1;
+      } catch (e) {
+        /* skip */
+      }
+    }
+    const pptx = await PresentationFile.exportPptx(presentation);
+    await pptx.save(out);
+    const report = {
+      ok: true,
+      engine: ENGINE_ID,
+      mode: 'preview-with-images',
+      note_zh:
+        '已替换文字 + 已绑定图槽；未绑定槽仍可能保留金样图。演示用，非正式 formal（未清金样残图/未跑全量门禁）。',
+      source_sha256: sourceSha,
+      pptx: out,
+      page_count: presentation.slides.items.length,
+      text_slots_replaced: textReplaced,
+      image_slots_replaced: imageReplaced,
+      assets_bound: Object.keys(resolved).length,
       contract: summary,
     };
     if (args.report) {
