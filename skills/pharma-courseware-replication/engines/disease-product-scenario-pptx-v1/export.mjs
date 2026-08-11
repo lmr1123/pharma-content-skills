@@ -251,11 +251,14 @@ function addText(slide, value, opts) {
     align: opts.align || "left",
     valign: opts.vAlign || "top",
     margin: 0,
-    wrap: true,
+    // 单行 chip/序号默认关 wrap，避免方框换行把居中顶偏
+    wrap: opts.wrap !== undefined ? !!opts.wrap : true,
   };
+  // 形状内文字（ellipse 序号点等）：比「底形 + 独立文本框」更易水平/垂直居中
+  if (opts.shape) o.shape = opts.shape;
   if (opts.fill) {
     o.fill = { color: hex(opts.fill) };
-    if (opts.radius) {
+    if (opts.radius && !opts.shape) {
       // pptxgenjs text box fill is rect; use shape behind for rounded
       addShape(slide, {
         l: opts.l, t: opts.t, w: opts.w, h: opts.h,
@@ -264,6 +267,7 @@ function addText(slide, value, opts) {
     } else {
       o.fill = { color: hex(opts.fill) };
       if (opts.line) o.line = { color: hex(opts.line), width: opts.lineWidth ?? 1 };
+      else if (opts.shape) o.line = { color: hex(opts.fill), width: 0 };
     }
   } else if (opts.line) {
     o.line = { color: hex(opts.line), width: opts.lineWidth ?? 1 };
@@ -593,10 +597,21 @@ const totalPages = estimateTotalPages();
     addText(slide, page.title, { l: 625, t: 80, w: 400, h: 80, size: 58, bold: true, color: C.deep, vAlign: "middle" });
     addShape(slide, { l: 625, t: 175, w: 520, h: 2, fill: C.line });
     items.forEach((item, index) => {
-      const yy = 224 + index * 70;
-      addShape(slide, { l: 625, t: yy, w: 40, h: 40, fill: C.primary, type: pptx.ShapeType.ellipse });
-      addText(slide, item.number, { l: 625, t: yy, w: 40, h: 40, size: 17, bold: true, color: C.white, align: "center", vAlign: "middle" });
-      addText(slide, item.title, { l: 685, t: yy - 4, w: 560, h: 48, size: 23, bold: true, color: C.ink, vAlign: "middle" });
+      // 与可编辑金样 build：y=220+i*70；chip 在 y+4；标题在 y
+      const yBase = 220 + index * 70;
+      const chipY = yBase + 4;
+      addText(slide, item.number, {
+        l: 625, t: chipY, w: 40, h: 40,
+        size: 17, bold: true, color: C.white,
+        align: "center", vAlign: "middle",
+        fill: C.primary,
+        shape: pptx.ShapeType.ellipse,
+        wrap: false,
+      });
+      addText(slide, item.title, {
+        l: 685, t: yBase, w: 560, h: 48,
+        size: 23, bold: true, color: C.ink, vAlign: "middle",
+      });
     });
     addFooter(slide);
   } else {
