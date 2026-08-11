@@ -133,3 +133,9 @@
   2. **禁止** 新媒体密集片用 pptxgenjs 标 gold-aligned。  
   3. 换题近 100% = 克隆 OOXML 换槽（生产 ingredient-health-edu）；未迁入前诚实说金样 100%、换题另接。  
 - 文档：`docs/ooxml-gold-fidelity.md`；失败示范勿再当签样。
+
+## 2026-08-11 · 产线 B 换题必须换图且跟 style_pack
+
+- **现象：** WorkBuddy 用辅酶Q10 扩展：字换了，图仍是金样番茄或另生成的画风不符。
+- **根因：** (1) 只用了 `preview-text-only`（设计上不换图）；(2) 生图未走 cream-red style_pack / 透明底，误用门店活力或通用医疗扁平。
+- **正：** emit-image-plan → 按 ILLUSTRATION_PROMPTS 生 PNG → bind_ooxml_assets → formal export；preview 不得当交付。

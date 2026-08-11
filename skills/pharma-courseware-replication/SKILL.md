@@ -1,11 +1,11 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.7
+version: 0.3.8
 description: >
-  医药内训课件独立 Skill。业务零选择题。复刻/换题按「参考片特征」判定产线：
-  A=已签样 JSON 引擎；B=任意富设计 OOXML 金样归档+换槽（禁止 pptxgenjs 壳冒充）。
-  判定表在 SKILL「产线判定」；课型名/商品名不是判定条件。做完默认 open。
-  触发词：复刻、沉淀、换主题、批量出课、金样、OOXML。
+  医药内训课件独立 Skill。业务零选择题。产线按参考片特征判定 A/B。
+  产线 B 换题必须：文字槽 + 图槽素材计划 + 按 style_pack 生透明 PNG 并 formal 绑定；
+  preview-text-only 仅验壳、禁止当交付。禁止门店活力默认画风套 B 金样。
+  触发词：复刻、换主题、图槽、素材计划、OOXML、辅酶。
 ---
 
 # 医药课件模板沉淀与批量复用
@@ -22,6 +22,8 @@ description: >
 | R4 | **制作完成默认打开复核**：内容初稿与 PPT 就绪后，在业务机 **立刻 `open` 两个文件**（见下「交付打开」），再请业务看。不要只丢路径。 |
 | R5 | **内容先行**：换主题时先写满 `content-draft.md` / 引擎 JSON / theme 槽；业务点头后再出正式片（明确要求预览片除外）。 |
 | R6 | **禁止** pptxgenjs/通用壳重画后写 `gold-aligned`；失败示范见 WorkBuddy 框架壳（体积骤降、媒体≈0）。 |
+| R7 | **产线 B 换题交付必须换图**：走 `emit-image-plan` → 按金样 **style_pack** 生透明 PNG → `bind_ooxml_assets` → formal export。`preview-text-only` **只验版式壳**，图仍是金样，**禁止**当「扩展主题完成」。 |
+| R8 | **生图画风跟金样 style_pack，不跟通用默认**：B 成分科普金样用 `style-pack.lycopene-health-edu-cream-red-v1`（米白+番茄红、透明底扁平）；**禁止**默认 `store-vitality-v1` / 全绿 monochrome / 不透明海报底板硬塞图槽。 |
 
 ### 意图推断（内部，不念给业务）
 
@@ -154,17 +156,28 @@ Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话
 #### 产线 B · OOXML 金样 + 换槽
 
 ```bash
-# 任意参考 PPT → 业务模板金样（pipeline: B 写入 manifest）
+# ① 归档金样
 python3 scripts/deposit_ooxml_gold.py --source "/path/to/参考.pptx" \
   --template-id <id> --name-zh "<中文名>" --open
 
-# 换题预览（壳=该金样；文字槽替换）。工具可按该模板金样配置 --source
-bash scripts/ooxml_b_pipeline.sh draft --theme-name "新主题"
-# 已绑定 ingredient 金样实例时：
-bash scripts/build_with_engine.sh ingredient-ooxml-preview <theme.json> <preview.pptx>
+# ② 文字槽草稿 + 内容初稿 open 给业务审
+bash scripts/ooxml_b_pipeline.sh draft --theme-name "新主题" --out runs/.../theme.json
+
+# ③ 图槽素材计划（必做，约 69 槽；含每槽 prompt + style_pack）
+bash scripts/ooxml_b_pipeline.sh image-plan --theme-name "新主题" --out runs/.../image-plan.json
+# 读 style-pack/ILLUSTRATION_PROMPTS.md，按 plan 生透明 PNG 到 runs/.../assets/
+
+# ④ 绑定图 → formal（禁止只停在 preview）
+python3 scripts/bind_ooxml_assets.py --theme theme.json --plan image-plan.json \
+  --assets-dir assets --out theme.bound.json
+# 业务确认 + asset_authorization + approval 后 formal export（见引擎 README）
+
+# 可选：仅验壳（图仍是金样，不得交付）
+bash scripts/ooxml_b_pipeline.sh preview --theme theme.json --out preview-壳only.pptx
 ```
 
-历史演示（非判定条件）：`workspace/runs/ooxml-b-q10-demo/`。
+**WorkBuddy 踩坑（辅酶 Q10）：** 只做了文字填充 + 通用生图/未绑槽 → 图仍是金样番茄或画风错。  
+正确：R7+R8，必须 image-plan + cream-red 透明 PNG + formal 绑定。
 
 #### 产线 A · 已签样 JSON 引擎
 

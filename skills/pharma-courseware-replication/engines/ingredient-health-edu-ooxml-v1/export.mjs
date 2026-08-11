@@ -34,7 +34,7 @@ function parseArgs(argv) {
     const token = argv[i];
     if (!token.startsWith('--')) continue;
     const key = token.slice(2);
-    if (['validate-only', 'preview-text-only', 'skip-sha-check'].includes(key)) {
+    if (['validate-only', 'preview-text-only', 'skip-sha-check', 'emit-image-plan'].includes(key)) {
       out[key] = true;
       continue;
     }
@@ -507,6 +507,107 @@ async function main() {
       );
     }
     console.log(JSON.stringify({ok: true, engine: ENGINE_ID, draft: draftPath, contract: summary}, null, 2));
+    return;
+  }
+
+  // Image slot plan for theme extension (required before formal export)
+  if (args['emit-image-plan'] || args['image-plan']) {
+    const planPath = path.resolve(args['image-plan'] || args['emit-image-plan'] || 'image-plan.json');
+    const themeName = String(args['theme-name'] || '新主题').trim();
+    const stylePackId = STYLE_PACK_ID;
+    const promptBase =
+      'Flat 2D health-education illustration, magazine-clean, soft cream paper mood, ' +
+      'accent tomato red #D32F2F and soft green #4CAF50 sparingly, centered subject 70% frame, ' +
+      'transparent background PNG, no text, no watermark, no photo realism, no 3D render';
+    const slots = [];
+    for (const page of contract.pages) {
+      for (const img of page.images) {
+        const assetKey = `s${String(page.slide).padStart(2, '0')}_${img.id}`;
+        slots.push({
+          asset_key: assetKey,
+          slide: page.slide,
+          shape_id: img.id,
+          shape_name: img.name || '',
+          source_media_id: img.source_media_id,
+          kind: img.target?.kind || 'slide-image',
+          owner: 'system_generates',
+          format: 'png',
+          transparent_bg_required: true,
+          style_pack_id: stylePackId,
+          prompt: `${promptBase}, theme: ${themeName}, slot: slide ${page.slide} ${img.name || img.id}`,
+          file_hint: `assets/${assetKey}.png`,
+        });
+      }
+    }
+    for (const img of contract.templateImages) {
+      const assetKey = `tpl_${img.key.replace(/[^a-zA-Z0-9]+/g, '_').slice(0, 48)}`;
+      slots.push({
+        asset_key: assetKey,
+        slide: null,
+        shape_id: img.id,
+        shape_name: img.name || img.key,
+        source_media_id: img.source_media_id,
+        kind: img.target?.kind || 'template-image',
+        key: img.key,
+        owner: 'system_generates',
+        format: 'png',
+        transparent_bg_required: true,
+        style_pack_id: stylePackId,
+        prompt: `${promptBase}, theme: ${themeName}, template chrome: ${img.name || img.key}`,
+        file_hint: `assets/${assetKey}.png`,
+      });
+    }
+    const plan = {
+      schema: 'ooxml-image-plan/v1',
+      engine: ENGINE_ID,
+      style_pack_id: stylePackId,
+      style_pack_docs: [
+        'engines/ingredient-health-edu-ooxml-v1/style-pack/design.md',
+        'engines/ingredient-health-edu-ooxml-v1/style-pack/ILLUSTRATION_PROMPTS.md',
+        'engines/ingredient-health-edu-ooxml-v1/style-pack/tokens.json',
+      ],
+      theme_name: themeName,
+      source_sha256: sourceSha,
+      counts: {
+        slide_image_slots: summary.slide_image_slots,
+        template_image_slots: summary.template_image_slots,
+        total: slots.length,
+      },
+      rules_zh: [
+        '正式换题必须绑定全部图槽 PNG，禁止 preview-text-only 当交付',
+        '生图必须跟 style_pack 米白番茄红，禁止 store-vitality / 全绿线稿默认',
+        '透明底 PNG；禁止不透明海报底板；禁止假包装',
+        '不得复用金样番茄/原商品图像素（SHA 门禁）',
+      ],
+      slots,
+    };
+    await fsp.mkdir(path.dirname(planPath), {recursive: true});
+    await fsp.writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, 'utf8');
+    // human-readable checklist
+    const mdPath = planPath.replace(/\.json$/i, '.md');
+    const lines = [
+      `# 素材计划 · ${themeName}`,
+      '',
+      `> pipeline: **B** · style_pack: \`${stylePackId}\` · 共 **${slots.length}** 图槽`,
+      '',
+      '## 硬规则',
+      ...plan.rules_zh.map((r) => `- ${r}`),
+      '',
+      '## 画风',
+      '- 读 `style-pack/ILLUSTRATION_PROMPTS.md`',
+      '- 米白纸感 + 番茄红点缀 + 透明底扁平插画',
+      '',
+      '## 槽位清单',
+      '',
+      '| # | asset_key | slide | file |',
+      '|---|-----------|-------|------|',
+    ];
+    slots.forEach((s, i) => {
+      lines.push(`| ${i + 1} | \`${s.asset_key}\` | ${s.slide ?? 'template'} | \`${s.file_hint}\` |`);
+    });
+    lines.push('', '## 绑定', '', '生成 PNG 后写入 theme.json 的 `assets` 与各页 `images` / `template_images`，再 formal export。', '');
+    await fsp.writeFile(mdPath, lines.join('\n'), 'utf8');
+    console.log(JSON.stringify({ok: true, engine: ENGINE_ID, image_plan: planPath, markdown: mdPath, counts: plan.counts}, null, 2));
     return;
   }
 
