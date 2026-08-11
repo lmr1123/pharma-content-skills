@@ -2,16 +2,17 @@
 
 本目录从 `chain-pharmacy-content-studio` 的**已签样金样 / 生产引擎**迁入，运行时**不依赖**生产 monorepo 路径。
 
-| 引擎 / 策略 | 对应金样 | 入口 | 依赖 |
-|-------------|----------|------|------|
-| `disease-product-scenario-pptx-v1` | 穿心莲场景课（疾病+商品场景） | `export.mjs` | `npm i`（pptxgenjs） |
-| `disease-health-shenke-blue-v1` | 参课蓝健康课 | `build-editable.mjs` | `npm i`（pptxgenjs） |
-| **OOXML 金样归档** | 任意富设计参考 | `../scripts/deposit_ooxml_gold.py` | `python-pptx` |
-| **`ingredient-health-edu-ooxml-v1`（产线 B）** | 康爱森番茄红素 20 页 | `export.mjs` 换槽 | `@oai/artifact-tool`（`vendor/` 链接） |
+| 引擎 / 策略 | 用途 | 入口 | 依赖 |
+|-------------|------|------|------|
+| `disease-product-scenario-pptx-v1` | **产线 A** · 已签样绿课型 | `export.mjs` | `npm i`（pptxgenjs） |
+| `disease-health-shenke-blue-v1` | **产线 A** · 已签样蓝课型 | `build-editable.mjs` | `npm i`（pptxgenjs） |
+| `deposit_ooxml_gold.py` | **产线 B** · **任意**富设计参考归档 | `../scripts/deposit_ooxml_gold.py` | `python-pptx` |
+| `ingredient-health-edu-ooxml-v1` | **产线 B 换槽实例** · 某一份 20 页成分科普金样 | `export.mjs` | `@oai/artifact-tool` |
 
-> **产线 A**：JSON + 引擎重生成。  
-> **产线 B**：克隆金样 OOXML → 换文字/图槽（禁止 pptxgenjs 壳）。  
-> 演示 run：`workspace/runs/ooxml-b-q10-demo/`（辅酶 Q10 文字预览，版式≈金样 10MB）。
+> **A / B 怎么选：** 见 `SKILL.md` §产线判定（媒体数/体积/SVG/是否匹配签样引擎）。  
+> **禁止**用商品名（如「番茄红素」）当 if 条件。  
+> `ingredient-health-edu-ooxml-v1` 只是 B 的一个金样实例，不是「所有 B 课型」。  
+> 演示 run（可选）：`workspace/runs/ooxml-b-q10-demo/`。
 
 ## 迁入内容
 

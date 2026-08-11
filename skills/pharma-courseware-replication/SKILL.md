@@ -1,27 +1,27 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.6
+version: 0.3.7
 description: >
-  医药内训课件独立 Skill。业务零选择题；双产线：
-  A=JSON+引擎（穿心莲绿/参课蓝换题）；B=OOXML金样换槽（康爱森类，
-  engines/ingredient-health-edu-ooxml-v1，禁止 pptxgenjs 壳）。
-  归档 deposit_ooxml_gold；预览换题 --preview-text-only；正式换图槽另接。
-  做完默认 open。触发词：复刻、换主题、康爱森、番茄红素、OOXML。
+  医药内训课件独立 Skill。业务零选择题。复刻/换题按「参考片特征」判定产线：
+  A=已签样 JSON 引擎；B=任意富设计 OOXML 金样归档+换槽（禁止 pptxgenjs 壳冒充）。
+  判定表在 SKILL「产线判定」；课型名/商品名不是判定条件。做完默认 open。
+  触发词：复刻、沉淀、换主题、批量出课、金样、OOXML。
 ---
 
 # 医药课件模板沉淀与批量复用
 
-## 对业务怎么说话（必读 · v0.3.4）
+## 对业务怎么说话（必读 · v0.3.7）
 
 ### 硬规则（不可违反）
 
 | # | 规则 |
 |---|------|
-| R1 | **不要让业务做技术选择题**（禁止开场「回 1 或 2」「选路径 A/B」「要不要高保真」）。业务只交材料与目标；你推断并执行。 |
+| R1 | **不要让业务做技术选择题**（禁止开场「回 1 或 2」「选产线 A/B」「要不要高保真」）。业务只交材料与目标；你按 **§产线判定** 推断并执行。 |
 | R2 | **默认用户级、不覆盖**：结果只写 `workspace/templates/` 与 `workspace/runs/`；**禁止**改 `skills/` 官方文件。`git pull` 不碰 workspace。见 `docs/business-own-template.md`。 |
-| R3 | **复刻 = 近 100% 视觉**。富设计参考（媒体≥15 / 含 SVG / 大体积）→ **OOXML 原片归档** `scripts/deposit_ooxml_gold.py`（`docs/ooxml-gold-fidelity.md`），**禁止** pptxgenjs 重画却写 `gold-aligned`。绿/蓝签样课型 → 挂现成引擎 + 保真清单。 |
+| R3 | **复刻 = 近 100% 视觉**。产线由 **参考 PPT 的可测特征** 决定（见 §产线判定），**不是**由商品名/课型中文绰号决定。禁止「听说是番茄红素就 B / 是穿心莲就 A」这种硬编码。 |
 | R4 | **制作完成默认打开复核**：内容初稿与 PPT 就绪后，在业务机 **立刻 `open` 两个文件**（见下「交付打开」），再请业务看。不要只丢路径。 |
-| R5 | **内容先行**：换主题时先写满 `content-draft.md` / 引擎 JSON；业务点头后再出正式片（明确要求预览片除外）。 |
+| R5 | **内容先行**：换主题时先写满 `content-draft.md` / 引擎 JSON / theme 槽；业务点头后再出正式片（明确要求预览片除外）。 |
+| R6 | **禁止** pptxgenjs/通用壳重画后写 `gold-aligned`；失败示范见 WorkBuddy 框架壳（体积骤降、媒体≈0）。 |
 
 ### 意图推断（内部，不念给业务）
 
@@ -69,21 +69,79 @@ Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话
 | 有材料按材料写；没材料也起草一版标「待审」 | 把草稿说成已审定药效；假包装图 |
 | 穿心莲/参课蓝课型用迁入引擎的版式字色插图 | 用 `scripts/build_pptx.py` 通用壳当正式交付 |
 
-## 生产级引擎（必读 · v0.3）
+## 产线判定（代理内部 · 新参考 PPT 必跑 · 不念给业务）
 
-两套金样对应能力已从生产仓**自包含迁入** `engines/`（版式、chrome、字阶、色板、插图、填写规范）。详见 `engines/README.md`。
+> **原则：看文件特征与结构匹配，不看文件名里的商品/品牌。**  
+> 「穿心莲 / 康爱森 / 番茄红素」只出现在**样例**里，**不是 if 条件。**
 
-| 课型 | 引擎 | 内容契约 | 出片 |
-|------|------|----------|------|
-| 疾病+商品场景（绿 · 产线 A） | `engines/disease-product-scenario-pptx-v1/` | `disease-product-scenario-script/v1` | `build_with_engine.sh disease-product-scenario …` |
-| 疾病健康培训（蓝 · 产线 A） | `engines/disease-health-shenke-blue-v1/` | `content/*.content.json` | `build_with_engine.sh disease-health-shenke-blue …` |
-| 成分科普米白番茄红（产线 B） | `engines/ingredient-health-edu-ooxml-v1/` | theme 槽位 JSON | `build_with_engine.sh ingredient-ooxml-preview …` 或正式 export |
+### 1. 先采集（可用 `deposit_ooxml_gold.py` 的 inventory 或 zip 统计）
 
-- 首次使用：在对应引擎目录执行 `npm i`（仅 pptxgenjs）。  
-- 绿引擎金样保真：变体触发器与验收方法见 `engines/disease-product-scenario-pptx-v1/FIDELITY.md`（穿心莲 18 页差分 2026-08-11 无 🔴）。  
-- **Workbuddy 打开测交付片：** `workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx`（说明见同目录 `README-WORKBUDDY.md`）。  
-- `scripts/build_pptx.py` = **通用壳烟测 only**，不得当作穿心莲/参课蓝正式复用结果。  
-- 换主题：锁引擎布局，只换内容 JSON + 业务授权图；非金样主题勿拷贝穿心莲医学关键词（引擎硬阻断）。
+| 信号 | 怎么看 |
+|------|--------|
+| `media_files` | `ppt/media/` 文件数 |
+| `size_bytes` | 参考 pptx 体积 |
+| 是否含 SVG/矢量 | media 扩展名 `.svg` / `.emf` |
+| 是否匹配已签样引擎结构 | 页序/chrome/字段能否挂绿或蓝 schema（对照 `references/course-types/*` + 引擎 `本课型怎么填.md`） |
+| 业务已声明模板 | `workspace/templates/<id>/template-manifest.md` 里的 `pipeline` / `engine` |
+
+### 2. 判定表（按顺序，命中即停）
+
+| 顺序 | 条件（可测） | 产线 | 动作 |
+|------|----------------|------|------|
+| ① | 业务指定已有模板且 manifest 写了 `pipeline: A` + engine | **A** | 只换 JSON/图，走该引擎出片 |
+| ② | 业务指定已有模板且 manifest 写了 `pipeline: B` + 金样路径 | **B** | 克隆该金样换槽，不重画 |
+| ③ | 页结构/字段**明确匹配**已签样绿或蓝引擎（可对 page-map / 填写规范） | **A** | 挂对应 `engines/*`，换题只改内容契约 |
+| ④ | **富设计门禁任一成立**：`media_files ≥ 15` **或** `size ≥ 2MB` **或** 含 `.svg`/`.emf` **或** 自由曲线/重阴影等（inventory/gate） | **B** | `deposit_ooxml_gold.py` 归档；换题 OOXML 换槽；**禁止**新建 pptxgenjs 壳 |
+| ⑤ | 结构简单、仅探索页序、业务未要求近 100% | **探索** | 仅 `path-only-framework`，**禁止** `gold-aligned` |
+| ⑥ | 不确定 | **默认 B 归档** | 先原片金样 + open 给业务看；再决定是否值得立项做成 A 引擎 |
+
+### 3. 产线含义（与工具映射）
+
+| 产线 | 模板「长什么样」存在哪 | 换主题 | Skill 工具 |
+|------|------------------------|--------|------------|
+| **A** | 代码引擎（JSON 驱动重生成） | 换 script/content JSON + 图 | `disease-product-scenario-pptx-v1`、`disease-health-shenke-blue-v1` 等**已签样**引擎 |
+| **B** | **该模板自己的金样 PPTX 文件** | 克隆金样 → 换文字/图槽 | ① 任意新片：`deposit_ooxml_gold.py`；② 换槽：对**该金样**跑 OOXML 引擎（`--source` 指向该模板 `output/courseware.pptx`）。`ingredient-health-edu-ooxml-v1` 只是**第一个** B 课型实例（20 页成分科普金样），**不是**「所有 B 都叫番茄红素引擎」 |
+
+### 4. 新丢来一份完全陌生的 PPT 时（最常见）
+
+```text
+跑 inventory / deposit_ooxml_gold
+  → 写 template-manifest：pipeline: B | A、fidelity、engine 或 gold 路径
+  → 若 ④ 富设计 → B：样片 SHA=原片，换题走换槽（槽位从该金样抽出）
+  → 若 ③ 匹配绿/蓝 → A：挂引擎，不要归档后当唯一路径却不用引擎
+  → open 金样/样片 + 内容清单给业务
+```
+
+**错误：** 看见「健康科普」就套 `health-popularization` 重画；或写死「番茄红素才走 B」。  
+**正确：** 用上表 ①–⑥；manifest 记下判定结果，下次换题直接读 manifest。
+
+### 5. 样例（仅帮助理解，勿当硬编码）
+
+| 样例参考 | 为何落入该产线 | 不是因为 |
+|----------|----------------|----------|
+| 穿心莲 18 页绿 | 结构匹配已签样绿引擎 + 已保真 | 文件名有「穿心莲」 |
+| 某 20 页重媒体成分科普（历史样例路径曾用康爱森番茄红素） | media≫15、体积大、含 SVG → 门禁 ④ → B | 品牌叫康爱森 |
+| WorkBuddy 0.4MB 壳 | 违反 R6 | — |
+
+细节与失败案例：`docs/ooxml-gold-fidelity.md`。
+
+---
+
+## 生产级引擎（必读）
+
+| 角色 | 引擎 / 工具 | 何时用 |
+|------|-------------|--------|
+| 产线 A · 绿 | `engines/disease-product-scenario-pptx-v1/` | 判定为 A 且结构匹配绿 |
+| 产线 A · 蓝 | `engines/disease-health-shenke-blue-v1/` | 判定为 A 且结构匹配蓝 |
+| 产线 B · 归档（**任意**参考） | `scripts/deposit_ooxml_gold.py` | 判定为 B 的沉淀金样 |
+| 产线 B · 换槽（按金样实例） | `engines/ingredient-health-edu-ooxml-v1/` 等 | 已有对应金样+契约的换题；新 B 课型可复用同套 export，换 `--source`/金样包 |
+
+- A 引擎首次：`npm i`（pptxgenjs）。  
+- B 换槽：需 `@oai/artifact-tool`（`vendor/` 或 `ARTIFACT_TOOL_ROOT`）。  
+- `scripts/build_pptx.py` = 烟测 only。  
+- 详见 `engines/README.md`。
+
+---
 
 ## 两条主路径
 
@@ -91,48 +149,37 @@ Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话
 
 **人话：** 把看好的课件存成**打开几乎和原片一样**的模板，以后还能换主题——不是「页数对了、有点像」。
 
-**先判策略（代理内部 · 不让业务选）：**
+**第一步：跑 §产线判定**（不写死商品名）→ 再执行：
 
-| 参考原片特征 | 你必须走的路 |
-|--------------|--------------|
-| 媒体多 / 含 SVG / 体积大 / 复杂阴影与纹理（例：**康爱森番茄红素**） | **`deposit_ooxml_gold.py` 原片归档** → `fidelity: gold-aligned-ooxml-v1`。详见仓库 `docs/ooxml-gold-fidelity.md` |
-| 明确是穿心莲绿 / 参课蓝结构 | 挂现成 `engines/*`，按 FIDELITY 差分 |
-| 只有简单结构探索 | 可做框架，**只能** `path-only-framework`，**禁止**写 gold-aligned |
-
-**禁止当完成的伪交付（业务已踩坑）：**
-
-| 伪交付 | 真实案例 / 为何不合格 |
-|--------|------------------------|
-| pptxgenjs 圆角卡重画 + 标 `gold-aligned` | WorkBuddy `health-popularization-lycopene-v1`：0.4MB / 媒体≈0 vs 原片 9.9MB / 97 媒体 |
-| 只写 page-map / 页序 markdown | 不能出片，也无版式 |
-| 只跑 `scripts/build_pptx.py` 通用壳 | 字号/卡片/强调/插图全不对 |
-| 未 open 原片与样片并排 | 业务无法发现「只有框架」 |
-
-#### 产线 B · OOXML 金样 + 换槽（康爱森类）
+#### 产线 B · OOXML 金样 + 换槽
 
 ```bash
-# 归档金样
+# 任意参考 PPT → 业务模板金样（pipeline: B 写入 manifest）
 python3 scripts/deposit_ooxml_gold.py --source "/path/to/参考.pptx" \
   --template-id <id> --name-zh "<中文名>" --open
 
-# 抽槽 → 填 theme → 文字预览换题（壳≈金样 10MB 级；图可暂留金样）
+# 换题预览（壳=该金样；文字槽替换）。工具可按该模板金样配置 --source
 bash scripts/ooxml_b_pipeline.sh draft --theme-name "新主题"
-bash scripts/build_with_engine.sh ingredient-ooxml-preview \
-  <theme.json> <preview.pptx>
-# 正式全量换图：engines/ingredient-health-edu-ooxml-v1/README.md（需 PNG+approval）
+# 已绑定 ingredient 金样实例时：
+bash scripts/build_with_engine.sh ingredient-ooxml-preview <theme.json> <preview.pptx>
 ```
 
-演示：`workspace/runs/ooxml-b-q10-demo/辅酶Q10_OOXML换槽预览.pptx`
+历史演示（非判定条件）：`workspace/runs/ooxml-b-q10-demo/`。
 
-#### 产线 A · 签样引擎（绿 / 蓝）
+#### 产线 A · 已签样 JSON 引擎
 
-见 `docs/deposit-to-reuse.md`：`build_with_engine.sh disease-product-scenario|disease-health-shenke-blue`
+见 `docs/deposit-to-reuse.md`：挂绿/蓝引擎 → 写满 JSON → `build_with_engine.sh`。
 
-#### 禁止
+#### 禁止的伪交付
 
-pptxgenjs 框架壳标 gold-aligned；业务定稿写入 `skills/`。
+| 伪交付 | 为何不合格 |
+|--------|------------|
+| pptxgenjs 圆角卡重画 + 标 gold-aligned | 体积/媒体崩塌，观感非原片 |
+| 只写 page-map markdown | 不能出片 |
+| 未 open 原片与样片并排 | 业务无法发现只有框架 |
+| 用商品名硬编码产线 | 新 PPT 无法判断 |
 
-沉淀完成 = 业务打开认可 + manifest 写明产线 A 或 B。  
+沉淀完成 = 业务打开认可 + **manifest 写明 `pipeline: A|B`、engine 或 gold 路径、fidelity**。  
 
 
 ### 模式 2 · 选模板生成 PPT（单次）— **内容先行**
@@ -171,11 +218,12 @@ pptxgenjs 框架壳标 gold-aligned；业务定稿写入 `skills/`。
 
 仅当业务明确同意（「通过 / 可以出 / 按这个生成」等）后：
 
-1. 把确认稿整理成引擎输入：  
-   - 绿课型 → `disease-product-scenario-script/v1` JSON（对照 `engines/.../input-schema.json` + 真题样例 `samples/gold-chuanxinlian.script.json`；换题只学结构勿抄医学结论）  
-   - 蓝课型 → 参课蓝 `content/急性上呼吸道感染.content.json` 结构  
+1. 读该模板 `template-manifest.md` 的 **pipeline**（模式 1 已判定写入）：  
+   - **A · 绿** → `disease-product-scenario-script/v1` JSON（对照 schema；换题勿抄金样医学原文）  
+   - **A · 蓝** → 参课蓝 `content/*.content.json` 结构  
+   - **B** → 对该模板金样抽/填 theme 槽 JSON（克隆 OOXML 换槽；非 pptxgenjs）  
 
-2. **用对应引擎出片**（`build_with_engine.sh`），禁止通用壳冒充  
+2. **按 manifest 产线出片**（`build_with_engine.sh` 或 B 的 export），禁止通用壳冒充  
 3. 业务包装图：路径写入 JSON；缺图用引擎占位，不伪造品牌包装  
 4. 更新 `fill-checklist.md` 阶段为「已出 PPT」  
 5. **立刻 open 正式 pptx + content-draft**（双开对照）；口语告知「两个文件已打开，请复核」  
@@ -228,12 +276,11 @@ workspace/
 ### 复刻 / 沉淀
 
 - [ ] **未**让业务选 1/2 或引擎名  
-- [ ] 模板 **挂引擎**（manifest 有 engine + 出片命令）  
-- [ ] schema 样例 **写满**，引擎命令本机跑通  
+- [ ] 已按 **§产线判定**（特征表）选择 A/B，**未**用商品名硬编码  
+- [ ] manifest 写明 `pipeline: A|B` + engine 或 gold 路径 + fidelity  
+- [ ] A：挂引擎 + schema 写满可出片；B：样片 SHA≈原片  
 - [ ] 样例 pptx **能打开**，且已 **默认 open** 内容+PPT 给业务  
-- [ ] 关键帧过保真清单（非仅 markdown 页序）  
-- [ ] change-list + tokens/assets 齐全  
-- [ ] 未用通用壳冒充签样课型交付  
+- [ ] 未用通用壳 / pptxgenjs 重画冒充 gold-aligned  
 - [ ] 产物在 `workspace/`，未改 `skills/`  
 
 ### 选模板生成

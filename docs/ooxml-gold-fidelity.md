@@ -1,8 +1,9 @@
 # 近 100% 复刻：OOXML 金样策略（业务 Skill 必读）
 
 **日期：** 2026-08-11  
-**问题案例：** WorkBuddy 对 `康爱森番茄红素.pptx` 用 pptxgenjs 重画  
-`health-popularization-v1` → 产物 ~0.4MB / 媒体≈0，却标 `gold-aligned-v1` —— **这是框架壳，不是复刻。**
+**权威判定：** `skills/pharma-courseware-replication/SKILL.md` **§产线判定**（按文件特征，不按商品名）。
+
+**问题案例（样例，非规则）：** WorkBuddy 对某富设计参考用 pptxgenjs 重画 → ~0.4MB / 媒体≈0，却标 `gold-aligned` —— **框架壳，不是复刻。**
 
 ---
 
@@ -15,26 +16,23 @@
 
 ## 两条路（代理必须选对，不让业务选）
 
-| 条件（参考原片） | 策略 | fidelity 可写 |
-|------------------|------|----------------|
-| 媒体多（≥15）、体积大、含 SVG/真图/复杂阴影/自由曲线 | **`ooxml-gold-archive`**：原片拷贝为金样 | `gold-aligned-ooxml-v1` |
-| 版式简单、可数据驱动、已有签样引擎（穿心莲绿 / 参课蓝） | **挂已有引擎** + 逐页保真差分 | 引擎 checklist 通过后 `gold-aligned-v1` |
-| 只想先跑通页序 | 可做框架探索 | **只能** `path-only-framework`，**禁止** gold-aligned |
+| 条件（**可测**参考原片特征） | 产线 | fidelity 可写 |
+|------------------------------|------|----------------|
+| `media≥15` 或 `size≥2MB` 或含 SVG/emf 或重阴影/自由曲线等富设计门禁 | **B** · `ooxml-gold-archive` + 换槽 | `gold-aligned-ooxml-v1` |
+| 页结构匹配**已签样**绿/蓝引擎 | **A** · JSON + 引擎 | 引擎 checklist 后 `gold-aligned-v1` |
+| 仅探索页序 | 探索 | **只能** `path-only-framework` |
 
-### 康爱森番茄红素（本机真源）
+**禁止：** `if 文件名包含番茄红素 then B`。新 PPT 一律跑 inventory + §产线判定。
 
-| 项 | 原片 | WorkBuddy 错误壳 |
-|----|------|------------------|
-| 路径 | `Downloads/健康科普参考文档/康爱森番茄红素.pptx` | `…/health-popularization-lycopene-v1/output/courseware.pptx` |
-| 体积 | ~9.9MB | ~0.4MB |
-| 媒体 | **97**（jpeg/png/**svg**） | ~0 |
-| 字体/观感 | Noto Sans SC、outerShdw、纹理背景 | HarmonyOS 近似色 + 形状水印番茄 |
-| 正确金样 | **原片归档**；生产 settled `kangaisen-lycopene-health-edu-v1` | 已归档为失败示范 |
+### 失败样例对照（历史）
 
-生产仓教训（已签样）：  
-`chain-pharmacy-content-studio/.../kangaisen-lycopene-health-edu-v1`  
-→ **可编辑金样 = 原片本体**；框架重建进 `archive-framework-v1/`，**不作金样**。
+| 项 | 富设计原片 | 错误 pptxgenjs 壳 |
+|----|------------|-------------------|
+| 体积 | ~10MB 级 | ~0.4MB |
+| 媒体 | 几十～上百（含 SVG） | ≈0 |
+| 正确做法 | 原片归档 = 金样；换题换槽 | 已否决 |
 
+生产仓同类结论：可编辑金样 = 原片本体；框架重建不作金样。
 ---
 
 ## 模式 1 默认动作（代理）

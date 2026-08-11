@@ -160,23 +160,24 @@ def write_manifest(
 | SHA256 | `{inv["sha256"]}` |
 | 归档日 | {date.today().isoformat()} |
 
-## 保真声明
+## 产线与保真声明（给换题读，勿改）
 
 ```text
+pipeline: B
 fidelity: gold-aligned-ooxml-v1
 strategy: ooxml-gold-archive
-engine: scripts/deposit_ooxml_gold.py  （金样样片）
-theme_extension: ooxml-slot-replace（生产 ingredient-health-edu 或后续迁入换槽器）
+deposit: scripts/deposit_ooxml_gold.py
+theme_extension: ooxml-slot-replace  # 换题=克隆本金样换槽，不是 pptxgenjs 重画
+# 判定依据：富设计门禁（media/size/svg 等），不是商品名
 ```
 
-### 为何不能标 framework / health-popularization pptxgenjs 为 gold-aligned
-
-触发富设计门禁：
+### 富设计门禁（本片为何走产线 B）
 
 {chr(10).join("- " + r for r in gate) or "- （无）"}
 
-框架壳只有页骨架与近似色，**没有**原片媒体/阴影/自由曲线/嵌入字体观感。  
-禁止把 `fidelity: gold-aligned-v1` 写在 pptxgenjs 重画产物上。
+框架壳只有页骨架与近似色，**没有**原片媒体/阴影/自由曲线观感。  
+禁止把 `fidelity: gold-aligned*` 写在 pptxgenjs 重画产物上。  
+换题时：代理读本 manifest 的 `pipeline: B`，**不要**再按文件名猜产线。
 
 ## 出片 / 换主题
 
