@@ -1,12 +1,12 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.5
+version: 0.3.6
 description: >
-  医药内训课件独立 Skill（Git 可安装）。业务零选择题：代理根据材料推断
-  复刻模板或换主题出课；默认用户级 workspace 不覆盖。
-  近100%复刻：富设计参考走 OOXML 原片归档（deposit_ooxml_gold.py），
-  禁止 pptxgenjs 框架壳标 gold-aligned；签样绿/蓝引擎另走差分路径。
-  初稿与 PPT 做完默认 open。触发词：复刻、沉淀、康爱森、番茄红素、换主题。
+  医药内训课件独立 Skill。业务零选择题；双产线：
+  A=JSON+引擎（穿心莲绿/参课蓝换题）；B=OOXML金样换槽（康爱森类，
+  engines/ingredient-health-edu-ooxml-v1，禁止 pptxgenjs 壳）。
+  归档 deposit_ooxml_gold；预览换题 --preview-text-only；正式换图槽另接。
+  做完默认 open。触发词：复刻、换主题、康爱森、番茄红素、OOXML。
 ---
 
 # 医药课件模板沉淀与批量复用

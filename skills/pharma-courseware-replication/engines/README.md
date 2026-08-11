@@ -6,10 +6,12 @@
 |-------------|----------|------|------|
 | `disease-product-scenario-pptx-v1` | 穿心莲场景课（疾病+商品场景） | `export.mjs` | `npm i`（pptxgenjs） |
 | `disease-health-shenke-blue-v1` | 参课蓝健康课 | `build-editable.mjs` | `npm i`（pptxgenjs） |
-| **OOXML 金样归档**（非 pptxgenjs） | 康爱森番茄红素等富设计参考 | `../scripts/deposit_ooxml_gold.py` | `python-pptx` |
+| **OOXML 金样归档** | 任意富设计参考 | `../scripts/deposit_ooxml_gold.py` | `python-pptx` |
+| **`ingredient-health-edu-ooxml-v1`（产线 B）** | 康爱森番茄红素 20 页 | `export.mjs` 换槽 | `@oai/artifact-tool`（`vendor/` 链接） |
 
-> **康爱森 / 米白番茄红 20 页：** 近 100% = **原片归档**，不是再写一套 `health-popularization` pptxgenjs 壳。  
-> 见仓库 `docs/ooxml-gold-fidelity.md`。生产换槽引擎在 monorepo `ingredient-health-edu-pptx-v1`（可后续迁入）。
+> **产线 A**：JSON + 引擎重生成。  
+> **产线 B**：克隆金样 OOXML → 换文字/图槽（禁止 pptxgenjs 壳）。  
+> 演示 run：`workspace/runs/ooxml-b-q10-demo/`（辅酶 Q10 文字预览，版式≈金样 10MB）。
 
 ## 迁入内容
 

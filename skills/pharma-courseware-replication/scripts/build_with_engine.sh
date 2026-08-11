@@ -9,8 +9,12 @@ OUT="${3:-}"
 usage() {
   cat <<USAGE
 Usage:
+  # 产线 A · JSON + 引擎
   build_with_engine.sh disease-product-scenario <script.json> <out.pptx>
   build_with_engine.sh disease-health-shenke-blue <content.json> <out.pptx>
+
+  # 产线 B · OOXML 换槽（文字预览；正式全图槽见 engines/.../README.md）
+  build_with_engine.sh ingredient-ooxml-preview <theme.json> <out.pptx>
 USAGE
   exit 2
 }
@@ -38,6 +42,11 @@ case "$ENGINE" in
     fi
     cp "$NEWEST" "$OUT"
     echo "Copied $NEWEST -> $OUT"
+    ;;
+  ingredient-ooxml-preview|ooxml-preview|lycopene-preview)
+    DIR="$ROOT/engines/ingredient-health-edu-ooxml-v1"
+    node "$DIR/export.mjs" --theme "$DATA" --out "$OUT" --preview-text-only \
+      --report "${OUT%.pptx}.report.json"
     ;;
   *)
     usage

@@ -32,3 +32,8 @@ venv/
 **/node_modules/
 skills/**/engines/**/*.pptx
 skills/**/engines/**/samples/out-*.pptx
+
+# OOXML gold binaries (local; too large / license-sensitive for public git)
+skills/pharma-courseware-replication/engines/**/gold/*.pptx
+skills/pharma-courseware-replication/engines/**/vendor/
+workspace/runs/
