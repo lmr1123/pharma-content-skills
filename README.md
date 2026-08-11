@@ -18,7 +18,8 @@
 | **1 复刻 PPT 模板** | 有一份看好的课件 → 存成以后能反复用的模板 |
 | **2 选模板生成 PPT** | 模板已有 → 先写满内容初稿给你审 → 你点头再出 PPT（可批量） |
 
-完整口语说明：[`docs/business-usage.md`](docs/business-usage.md)
+完整口语说明：[`docs/business-usage.md`](docs/business-usage.md)  
+**业务自有模板、升级不覆盖：** [`docs/business-own-template.md`](docs/business-own-template.md)
 
 ## 通过 Git 安装
 
@@ -33,13 +34,16 @@ cd pharma-content-skills
 
 代理「从 Git 安装 Skill」时：仓库用上面地址，入口 `skills/pharma-courseware-replication/SKILL.md`。
 
+官方更新用 `git pull`，**不会覆盖** `workspace/` 里业务自己的模板与成片。
+
 ## 原则
 
 1. 先问 1 还是 2，再用大白话带材料  
-2. 模板可批量复用：版式锁定，只换该换的  
+2. 模板可批量复用：版式锁定，只换该换的；业务定稿只写 `workspace/templates/`  
 3. **签样课型（穿心莲绿 / 参课蓝）用 `skills/.../engines/` 生产迁入引擎出片**，不是通用框  
 4. 不编造药效；不生成假包装  
 5. 运行时零外部 monorepo 路径依赖（引擎已自包含拷贝）  
+
 
 ## 生产级引擎（v0.3）
 

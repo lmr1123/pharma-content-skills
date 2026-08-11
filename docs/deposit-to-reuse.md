@@ -54,6 +54,8 @@
 - `output/` 或引擎跑通的 **样例 pptx**（真实可打开，非空表）  
 - 模板包写入 `workspace/templates/<template-id>/`，manifest 标明引擎与 schema
 
+> 业务自有模板与「官方更新不覆盖」操作说明：`docs/business-own-template.md`。
+
 ---
 
 ## 模板包目录（沉淀完成长什么样）

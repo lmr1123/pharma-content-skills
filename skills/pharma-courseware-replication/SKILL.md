@@ -35,6 +35,8 @@ description: >
 
 - 安装：`docs/install-via-git.md`  
 - 业务口令：`docs/business-usage.md`  
+- **业务自有模板 / 升级不覆盖：** 仓库 `docs/business-own-template.md`（微调只写 `workspace/`，禁止改 `skills/`）  
+
 
 ## 定位
 
@@ -77,9 +79,12 @@ description: >
 5. **用引擎跑通样例片** → `output/courseware.pptx`（本机能打开；需要时 LibreOffice 重存兼容 WPS）  
 6. **模板包**写入 `workspace/templates/<template-id>/`，`template-manifest.md` 写死：  
    `engine` + `schema` + `build_with_engine.sh …` 命令  
+   （`workspace/` 为业务本机资产，`git pull` 不覆盖；细则见 `docs/business-own-template.md`）  
 
 沉淀完成 = **换主题时只改 JSON/图、同一引擎能出片**。  
 未挂引擎、只能通用壳出片的，**不算**合格沉淀。  
+**禁止**把业务定稿写进 `skills/`（会被官方更新覆盖）。  
+
 
 ### 模式 2 · 选模板生成 PPT（单次）— **内容先行**
 

@@ -1,7 +1,8 @@
 # 业务怎么用（口语版）
 
 仓库：`pharma-content-skills`  
-安装：`docs/install-via-git.md`
+安装：`docs/install-via-git.md`  
+**自有模板、升级不覆盖：** `docs/business-own-template.md`
 
 ---
 
@@ -52,17 +53,41 @@
 - `workspace/templates/某某/`：换题清单、样例、出片方式  
 - 挂到绿/蓝等 **现成版式引擎**，或新课型时把版式也做成可出片引擎  
 
-技术说明（业务可不读）：`docs/deposit-to-reuse.md`  
+**这些目录是你自己的资产**：官方 Skill 以后 `git pull` **不会覆盖**这里。  
+详见：`docs/business-own-template.md`。  
+技术说明（业务可不读）：`docs/deposit-to-reuse.md`。
 
 ---
 
 ## 选 2 之后
 
-1. 代理列出已有模板，你选一个  
+1. 代理列出已有模板（**优先** `workspace/templates/` 里你自己的）  
 2. 你说主题（一个或多个）  
 3. 代理交出 **内容初稿**（不是空文档）  
 4. 你审核 → 通过或改 → 再出 PPT  
 5. 成品在 `workspace/runs/模板名/主题名/`
+
+---
+
+## 微调满意后 · 存成「自己的模板」（重要）
+
+```text
+请把当前确认结果沉淀到 workspace/templates/<模板名>/，
+挂官方引擎，不要改 skills/ 目录。
+```
+
+之后出片说「用我的模板 xxx」，不要再改官方 Skill 里的文件。
+
+---
+
+## 官方有更新时
+
+```text
+请 git pull 更新官方 Skill，保留 workspace 不动，
+更新后仍优先用我的 templates 列表。
+```
+
+完整说明：`docs/business-own-template.md`。
 
 ---
 
@@ -82,12 +107,20 @@
 先按能写的把内容初稿写满给我审，我点头后再出 PPT，不要先给空文档。
 ```
 
+**沉淀 / 升级：**
+
+```text
+沉淀：写入 workspace/templates/<名>/，禁止改 skills/
+升级：git pull 官方，workspace 不动
+```
+
 ---
 
 ## 给代理（业务可忽略）
 
 选项 1 → 模式 1；选项 2 → 模式 2/2b 且 **A 内容初稿 → B 修改 → C 确认后出片**。  
-见 `SKILL.md` v0.3.1+；沉淀=复用同一引擎路径见 `docs/deposit-to-reuse.md`。
+见 `SKILL.md` v0.3.3+；沉淀=复用同一引擎路径见 `docs/deposit-to-reuse.md`。  
+业务自有模板与防覆盖：`docs/business-own-template.md`（**代理必读**，安装引导后主动告知业务）。
 
 ## 版式从哪来（业务可忽略技术细节）
 

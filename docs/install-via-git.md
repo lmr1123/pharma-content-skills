@@ -41,6 +41,10 @@ docs/business-usage.md
 cd pharma-content-skills && git pull
 ```
 
+> **重要：** `git pull` 只更新官方 `skills/` / `docs/`。  
+> 业务自己的模板与成品在 `workspace/`，**不会被 pull 覆盖**。  
+> 微调后如何「存成自己的」、升级怎么不丢：见 [`docs/business-own-template.md`](business-own-template.md)。
+
 ---
 
 ## 安装后业务怎么说
@@ -57,7 +61,8 @@ cd pharma-content-skills && git pull
 | **1 复刻 PPT 模板** | 把看好的课件存成可反复用的模板 | `workspace/templates/` |
 | **2 选模板生成 PPT** | 先内容初稿审核，确认后再出 PPT（可批量） | `workspace/runs/` |
 
-详细口语说明见 `docs/business-usage.md`。
+详细口语说明见 `docs/business-usage.md`。  
+业务自有模板与防覆盖：`docs/business-own-template.md`。
 
 ---
 
@@ -65,11 +70,12 @@ cd pharma-content-skills && git pull
 
 ```text
 pharma-content-skills/
-  skills/pharma-courseware-replication/   # Skill 本体（只读、随 git 更新）
+  skills/pharma-courseware-replication/   # 官方 Skill（只读、随 git 更新）
   workspace/
-    templates/     # ★ 沉淀后的可复用模板（业务资产，默认不进 git）
-    runs/          # ★ 用模板生成的各主题成品（默认不进 git）
+    templates/     # ★ 业务自有模板（本机资产，默认不进 git，pull 不覆盖）
+    runs/          # ★ 各主题成片与草稿（默认不进 git）
   docs/
 ```
 
-`workspace/` 已在 `.gitignore`，业务素材与成品留在本机。
+`workspace/` 已在 `.gitignore`，业务素材与成品留在本机。  
+**禁止**把业务定稿写进 `skills/`——那里会被官方更新覆盖。
