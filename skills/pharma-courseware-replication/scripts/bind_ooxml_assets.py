@@ -36,11 +36,15 @@ def main() -> int:
         print(f"ERROR: assets dir missing: {assets_dir}", file=sys.stderr)
         return 2
 
+    KEEP_GOLD = "__keep_gold__"
     slots = plan.get("slots") or []
     assets: dict[str, str] = {}
     missing: list[str] = []
     for slot in slots:
+        action = slot.get("action") or "replace"
         key = slot["asset_key"]
+        if action == "keep_gold":
+            continue  # no file required
         candidates = [
             assets_dir / f"{key}.png",
             assets_dir / Path(slot.get("file_hint") or f"{key}.png").name,
@@ -49,31 +53,40 @@ def main() -> int:
         if not found:
             missing.append(key)
             continue
-        # relative path from theme out dir parent is unstable; store absolute for engine resolve
         assets[key] = str(found.resolve())
 
     # Build shape_id → asset_key maps per slide
     by_slide: dict[int, dict[str, str]] = {}
     template_map: dict[str, str] = {}
     for slot in slots:
+        action = slot.get("action") or "replace"
+        key = slot["asset_key"]
         if slot.get("slide") is None and slot.get("key"):
-            if slot["asset_key"] in assets:
-                template_map[slot["key"]] = slot["asset_key"]
+            template_map[slot["key"]] = KEEP_GOLD if action == "keep_gold" else key
+            continue
+        if slot.get("slide") is None:
             continue
         slide = int(slot["slide"])
-        by_slide.setdefault(slide, {})[str(slot["shape_id"])] = slot["asset_key"]
+        by_slide.setdefault(slide, {})[str(slot["shape_id"])] = (
+            KEEP_GOLD if action == "keep_gold" else key
+        )
 
     theme["assets"] = assets
     theme.setdefault("template_images", {})
     for k, asset_key in template_map.items():
-        theme["template_images"][k] = asset_key
+        if asset_key == KEEP_GOLD:
+            theme["template_images"][k] = KEEP_GOLD
+        elif asset_key in assets:
+            theme["template_images"][k] = asset_key
 
     for page in theme.get("pages") or []:
         slide = int(page.get("slide") or 0)
         id_map = by_slide.get(slide) or {}
         images = page.setdefault("images", {})
         for shape_id, asset_key in id_map.items():
-            if asset_key in assets:
+            if asset_key == KEEP_GOLD:
+                images[str(shape_id)] = KEEP_GOLD
+            elif asset_key in assets:
                 images[str(shape_id)] = asset_key
 
     # authorization stub for formal (agent must set real values before formal)

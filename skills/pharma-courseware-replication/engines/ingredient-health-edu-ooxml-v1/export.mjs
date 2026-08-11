@@ -17,16 +17,57 @@ const THEME_SCHEMA = 'ingredient-health-edu-theme/v1';
 const EXPECTED_SLIDES = 20;
 const ENGINE_ID = 'ingredient-health-edu-ooxml-v1';
 
-// These two files are visual chrome rather than topic/reference content.
-// Every other source media object must be replaced and removed from the PPTX.
+// Chrome textures always kept (not theme content).
 const ALLOWED_SOURCE_MEDIA_IDS = new Set([
   '/ppt/media/image2.jpeg', // neutral cream mountain texture
   '/ppt/media/image4.jpeg', // red/green line pattern used by the TOC
 ]);
 
+/** Special theme image value: keep gold media for this slot (decorative / non-semantic). */
+const KEEP_GOLD = '__keep_gold__';
+
 const PLACEHOLDER_RE = /(待补|待确认|待填写|待提供|占位|placeholder|todo|tbd|xxx|示例文案)/i;
 const SOURCE_IDENTITY_RE = /(康爱森)/i;
 const SOURCE_TOPIC_RE = /(番茄红素|lycopene)/i;
+
+/**
+ * Classify image slots: only semantic content must be replaced for a new theme.
+ * Decorative title accents, SVG icons, freeform fills, master/layout chrome → keep gold
+ * so the shell style stays consistent without 69 forced regenerations.
+ *
+ * @param {{source_media_id?: string, name?: string, target?: {kind?: string}, kind?: string}} slot
+ * @returns {{action: 'keep_gold'|'replace', reason_zh: string}}
+ */
+function classifyImageSlot(slot) {
+  const mediaId = String(slot.source_media_id || '');
+  const kind = String(slot.target?.kind || slot.kind || '');
+  const name = String(slot.name || slot.shape_name || '');
+  const ext = path.extname(mediaId).toLowerCase();
+
+  if (ALLOWED_SOURCE_MEDIA_IDS.has(mediaId)) {
+    return {action: 'keep_gold', reason_zh: '允许的 chrome 纹理'};
+  }
+  if (kind === 'master-image' || kind === 'layout-image') {
+    return {action: 'keep_gold', reason_zh: '母版/版式点缀，保留金样风格'};
+  }
+  if (kind === 'slide-shape-fill') {
+    return {action: 'keep_gold', reason_zh: '自由形/标题装饰填充，保留金样点缀'};
+  }
+  // SVG: almost always icons / bullets / chrome — keep for visual consistency
+  if (ext === '.svg') {
+    return {action: 'keep_gold', reason_zh: 'SVG 图标/点缀，保留金样矢量风格'};
+  }
+  // JPEG (and content PNG photos): semantic photos/illustrations — must retarget for new theme
+  if (ext === '.jpeg' || ext === '.jpg') {
+    return {action: 'replace', reason_zh: '位图内容图（语义），换主题必须替换且画风跟 style_pack'};
+  }
+  if (ext === '.png') {
+    // content PNG (e.g. thank-you photo) → replace; pure freeform already handled
+    return {action: 'replace', reason_zh: 'PNG 内容图，换主题替换'};
+  }
+  // unknown → replace to be safe on theme identity
+  return {action: 'replace', reason_zh: '未知类型，默认按语义图替换'};
+}
 
 function parseArgs(argv) {
   const out = {};
@@ -188,12 +229,50 @@ function buildContract(presentation) {
 }
 
 function contractSummary(contract) {
+  const allSlide = contract.pages.flatMap((page) => page.images.map((img) => ({...img, slide: page.slide})));
+  const allTpl = contract.templateImages || [];
+  const classifiedSlide = allSlide.map((img) => ({...img, ...classifyImageSlot(img)}));
+  const classifiedTpl = allTpl.map((img) => ({...img, ...classifyImageSlot({...img, kind: img.target?.kind})}));
+  const replaceSlide = classifiedSlide.filter((s) => s.action === 'replace');
+  const keepSlide = classifiedSlide.filter((s) => s.action === 'keep_gold');
+  const replaceTpl = classifiedTpl.filter((s) => s.action === 'replace');
+  const keepTpl = classifiedTpl.filter((s) => s.action === 'keep_gold');
   return {
     pages: contract.pages.length,
     text_slots: contract.pages.reduce((sum, page) => sum + page.texts.length, 0),
-    slide_image_slots: contract.pages.reduce((sum, page) => sum + page.images.length, 0),
-    template_image_slots: contract.templateImages.length,
+    slide_image_slots: allSlide.length,
+    template_image_slots: allTpl.length,
+    replace_image_slots: replaceSlide.length + replaceTpl.length,
+    keep_gold_image_slots: keepSlide.length + keepTpl.length,
   };
+}
+
+function classifyContractImages(contract) {
+  const replace = [];
+  const keep = [];
+  for (const page of contract.pages) {
+    for (const img of page.images) {
+      const c = classifyImageSlot(img);
+      const row = {
+        ...img,
+        slide: page.slide,
+        asset_key: `s${String(page.slide).padStart(2, '0')}_${img.id}`,
+        ...c,
+      };
+      (c.action === 'replace' ? replace : keep).push(row);
+    }
+  }
+  for (const img of contract.templateImages) {
+    const c = classifyImageSlot({...img, kind: img.target?.kind});
+    const row = {
+      ...img,
+      slide: null,
+      asset_key: `tpl_${String(img.key).replace(/[^a-zA-Z0-9]+/g, '_').slice(0, 48)}`,
+      ...c,
+    };
+    (c.action === 'replace' ? replace : keep).push(row);
+  }
+  return {replace, keep};
 }
 
 function draftTheme(contract, themeName, themeId) {
@@ -308,16 +387,22 @@ async function validateTheme(theme, themePath, contract, presentation) {
   }
 
   const assets = theme.assets && typeof theme.assets === 'object' && !Array.isArray(theme.assets) ? theme.assets : {};
+  const {replace: replaceSlots} = classifyContractImages(contract);
   const referencedAssetKeys = [];
-  for (const pageContract of contract.pages) {
-    const page = pageByNumber.get(pageContract.slide);
-    if (!page) continue;
-    for (const slot of pageContract.images) referencedAssetKeys.push(String(page.images?.[slot.id] || ''));
+  for (const slot of replaceSlots) {
+    let bound = '';
+    if (slot.slide != null) {
+      const page = pageByNumber.get(slot.slide);
+      bound = String(page?.images?.[slot.id] || '');
+    } else {
+      bound = String(theme.template_images?.[slot.key] || '');
+    }
+    if (!bound.trim() || bound === KEEP_GOLD) {
+      errors.push(`replace slot ${slot.asset_key} must bind a new PNG (got ${bound || 'empty'})`);
+      continue;
+    }
+    referencedAssetKeys.push(bound);
   }
-  for (const slot of contract.templateImages) {
-    referencedAssetKeys.push(String(theme.template_images?.[slot.key] || ''));
-  }
-  if (referencedAssetKeys.some((key) => !key.trim())) errors.push('every image slot must bind an asset key');
   const referenced = new Set(referencedAssetKeys.filter(Boolean));
   for (const key of referenced) if (!Object.hasOwn(assets, key)) errors.push(`asset key ${key} is not defined`);
   for (const key of Object.keys(assets)) if (!referenced.has(key)) errors.push(`unused asset key ${key}`);
@@ -345,7 +430,7 @@ async function validateTheme(theme, themePath, contract, presentation) {
   const themeSha = await sha256File(themePath);
   const assetHashMap = Object.fromEntries(Object.keys(resolvedAssets).sort().map((key) => [key, resolvedAssets[key].sha256]));
   const contentSha = sha256Bytes(Buffer.from(stableJson({assets: assetHashMap, theme_sha256: themeSha}), 'utf8'));
-  return {errors: [...new Set(errors)], resolvedAssets, contentSha};
+  return {errors: [...new Set(errors)], resolvedAssets, contentSha, replaceSlots};
 }
 
 function findShape(items, id, label) {
@@ -381,8 +466,13 @@ async function applyTextOnly(presentation, theme, contract) {
 }
 
 async function applyTheme(presentation, theme, contract, resolvedAssets) {
-  const originalIds = new Set(presentation.images.items.map((item) => String(item.id)));
   const pageByNumber = new Map(theme.pages.map((page) => [Number(page.slide), page]));
+  const {replace: replaceSlots, keep: keepSlots} = classifyContractImages(contract);
+  const replaceMediaIds = new Set(replaceSlots.map((s) => String(s.source_media_id)));
+  const keepMediaIds = new Set([
+    ...ALLOWED_SOURCE_MEDIA_IDS,
+    ...keepSlots.map((s) => String(s.source_media_id)),
+  ]);
   const bytesCache = new Map();
   async function assetBytes(key) {
     if (!bytesCache.has(key)) bytesCache.set(key, await fsp.readFile(resolvedAssets[key].path));
@@ -406,8 +496,6 @@ async function applyTheme(presentation, theme, contract, resolvedAssets) {
     for (const slot of pageContract.texts) {
       const shape = findShape(slide.shapes.items, slot.id, `slide ${pageContract.slide}`);
       shape.text.replace(slot.source, String(page.texts[slot.id]));
-      // Rich-text replace cannot span multiple source paragraphs. Keep the
-      // original shape/geometry and fall back to replacing its whole text body.
       if (normalizedText(shape.text) !== normalizedText(page.texts[slot.id])) {
         shape.text = String(page.texts[slot.id]);
       }
@@ -416,7 +504,12 @@ async function applyTheme(presentation, theme, contract, resolvedAssets) {
       }
     }
     for (const slot of pageContract.images) {
+      const cls = classifyImageSlot(slot);
+      if (cls.action === 'keep_gold') continue;
       const assetKey = String(page.images[slot.id]);
+      if (!assetKey || assetKey === KEEP_GOLD || !resolvedAssets[assetKey]) {
+        throw new Error(`missing binding for replace slot slide ${pageContract.slide} ${slot.id}`);
+      }
       if (slot.target.kind === 'slide-image') {
         const image = findShape(slide.images.items, slot.id, `slide ${pageContract.slide} image`);
         image.setImageReference(await ensureAssetReference(assetKey));
@@ -437,7 +530,12 @@ async function applyTheme(presentation, theme, contract, resolvedAssets) {
   }
 
   for (const slot of contract.templateImages) {
+    const cls = classifyImageSlot({...slot, kind: slot.target?.kind});
+    if (cls.action === 'keep_gold') continue;
     const assetKey = String(theme.template_images[slot.key]);
+    if (!assetKey || assetKey === KEEP_GOLD || !resolvedAssets[assetKey]) {
+      throw new Error(`missing binding for replace template slot ${slot.key}`);
+    }
     let owner;
     if (slot.target.kind === 'master-image') {
       owner = presentation.masters.items.find((item) => String(item.id) === slot.target.owner);
@@ -449,18 +547,25 @@ async function applyTheme(presentation, theme, contract, resolvedAssets) {
     image.setImageReference(await ensureAssetReference(assetKey));
   }
 
-  // image.replace adds approved assets before this point. Remove every unapproved
-  // original media entry so unused SVG/PNG fallbacks cannot survive in the PPTX.
+  // Strip only media that belonged to semantic replace slots (not decorative keep_gold).
   const keep = presentation.images.items.filter((item) => {
     const id = String(item.id);
-    return !originalIds.has(id) || ALLOWED_SOURCE_MEDIA_IDS.has(id);
+    if (!id.startsWith('/ppt/media/')) return true;
+    if (keepMediaIds.has(id)) return true;
+    if (replaceMediaIds.has(id)) return false; // replaced semantic gold — drop
+    // newly added business-* media
+    if (id.includes('/business-') || id.includes('/preview-')) return true;
+    // unknown original not classified — keep to avoid breaking chrome
+    return true;
   });
   presentation.images.replace(keep.map((item) => item.toProto()));
 
-  const survivingSourceIds = presentation.images.items
+  const survivingReplace = presentation.images.items
     .map((item) => String(item.id))
-    .filter((id) => originalIds.has(id) && !ALLOWED_SOURCE_MEDIA_IDS.has(id));
-  if (survivingSourceIds.length) throw new Error(`source media survived: ${survivingSourceIds.join(', ')}`);
+    .filter((id) => replaceMediaIds.has(id));
+  if (survivingReplace.length) {
+    throw new Error(`semantic gold media survived: ${survivingReplace.join(', ')}`);
+  }
 }
 
 async function validateApproval(approvalPath, contentSha) {
@@ -510,7 +615,7 @@ async function main() {
     return;
   }
 
-  // Image slot plan for theme extension (required before formal export)
+  // Image slot plan for theme extension (semantic replace only)
   if (args['emit-image-plan'] || args['image-plan']) {
     const planPath = path.resolve(args['image-plan'] || args['emit-image-plan'] || 'image-plan.json');
     const themeName = String(args['theme-name'] || '新主题').trim();
@@ -519,46 +624,46 @@ async function main() {
       'Flat 2D health-education illustration, magazine-clean, soft cream paper mood, ' +
       'accent tomato red #D32F2F and soft green #4CAF50 sparingly, centered subject 70% frame, ' +
       'transparent background PNG, no text, no watermark, no photo realism, no 3D render';
-    const slots = [];
-    for (const page of contract.pages) {
-      for (const img of page.images) {
-        const assetKey = `s${String(page.slide).padStart(2, '0')}_${img.id}`;
-        slots.push({
-          asset_key: assetKey,
-          slide: page.slide,
-          shape_id: img.id,
-          shape_name: img.name || '',
-          source_media_id: img.source_media_id,
-          kind: img.target?.kind || 'slide-image',
-          owner: 'system_generates',
-          format: 'png',
-          transparent_bg_required: true,
-          style_pack_id: stylePackId,
-          prompt: `${promptBase}, theme: ${themeName}, slot: slide ${page.slide} ${img.name || img.id}`,
-          file_hint: `assets/${assetKey}.png`,
-        });
-      }
-    }
-    for (const img of contract.templateImages) {
-      const assetKey = `tpl_${img.key.replace(/[^a-zA-Z0-9]+/g, '_').slice(0, 48)}`;
-      slots.push({
-        asset_key: assetKey,
-        slide: null,
+    const {replace, keep} = classifyContractImages(contract);
+    const slots = [
+      ...replace.map((img) => ({
+        asset_key: img.asset_key,
+        action: 'replace',
+        reason_zh: img.reason_zh,
+        slide: img.slide,
         shape_id: img.id,
-        shape_name: img.name || img.key,
+        shape_name: img.name || '',
         source_media_id: img.source_media_id,
-        kind: img.target?.kind || 'template-image',
+        kind: img.target?.kind || 'slide-image',
         key: img.key,
         owner: 'system_generates',
         format: 'png',
         transparent_bg_required: true,
         style_pack_id: stylePackId,
-        prompt: `${promptBase}, theme: ${themeName}, template chrome: ${img.name || img.key}`,
-        file_hint: `assets/${assetKey}.png`,
-      });
-    }
+        prompt: `${promptBase}, theme: ${themeName}, semantic content for slide ${img.slide ?? 'template'} ${img.name || img.id}`,
+        file_hint: `assets/${img.asset_key}.png`,
+      })),
+      ...keep.map((img) => ({
+        asset_key: img.asset_key,
+        action: 'keep_gold',
+        reason_zh: img.reason_zh,
+        slide: img.slide,
+        shape_id: img.id,
+        shape_name: img.name || '',
+        source_media_id: img.source_media_id,
+        kind: img.target?.kind || 'slide-image',
+        key: img.key,
+        owner: 'template_reuses',
+        format: 'keep',
+        transparent_bg_required: false,
+        style_pack_id: stylePackId,
+        prompt: null,
+        file_hint: null,
+        bind_value: KEEP_GOLD,
+      })),
+    ];
     const plan = {
-      schema: 'ooxml-image-plan/v1',
+      schema: 'ooxml-image-plan/v2',
       engine: ENGINE_ID,
       style_pack_id: stylePackId,
       style_pack_docs: [
@@ -569,43 +674,46 @@ async function main() {
       theme_name: themeName,
       source_sha256: sourceSha,
       counts: {
+        total: slots.length,
+        must_replace: replace.length,
+        keep_gold: keep.length,
         slide_image_slots: summary.slide_image_slots,
         template_image_slots: summary.template_image_slots,
-        total: slots.length,
       },
       rules_zh: [
-        '正式换题必须绑定全部图槽 PNG，禁止 preview-text-only 当交付',
-        '生图必须跟 style_pack 米白番茄红，禁止 store-vitality / 全绿线稿默认',
-        '透明底 PNG；禁止不透明海报底板；禁止假包装',
-        '不得复用金样番茄/原商品图像素（SHA 门禁）',
+        '只替换 action=replace 的语义内容图（多为 JPEG 照片/内容位图）',
+        'action=keep_gold 的点缀/SVG/标题装饰/母版图：保留金样，维持壳风格一致，不必重画',
+        '替换图必须跟 style_pack 画风一致（透明底扁平/科普杂志感），禁止门店活力默认、禁止假包装',
+        '禁止保留金样语义内容图（番茄水果等）在 replace 槽',
+        'preview-text-only 不得当交付；语义槽未换完不得称扩展完成',
       ],
       slots,
     };
     await fsp.mkdir(path.dirname(planPath), {recursive: true});
     await fsp.writeFile(planPath, `${JSON.stringify(plan, null, 2)}\n`, 'utf8');
-    // human-readable checklist
     const mdPath = planPath.replace(/\.json$/i, '.md');
     const lines = [
       `# 素材计划 · ${themeName}`,
       '',
-      `> pipeline: **B** · style_pack: \`${stylePackId}\` · 共 **${slots.length}** 图槽`,
+      `> pipeline: **B** · style_pack: \`${stylePackId}\``,
+      `> 必须替换 **${replace.length}** · 保留金样点缀 **${keep.length}** · 合计扫描 ${slots.length}`,
       '',
       '## 硬规则',
       ...plan.rules_zh.map((r) => `- ${r}`),
       '',
-      '## 画风',
-      '- 读 `style-pack/ILLUSTRATION_PROMPTS.md`',
-      '- 米白纸感 + 番茄红点缀 + 透明底扁平插画',
+      '## 必须替换（语义图）',
       '',
-      '## 槽位清单',
-      '',
-      '| # | asset_key | slide | file |',
-      '|---|-----------|-------|------|',
+      '| # | asset_key | slide | 原因 | file |',
+      '|---|-----------|-------|------|------|',
     ];
-    slots.forEach((s, i) => {
-      lines.push(`| ${i + 1} | \`${s.asset_key}\` | ${s.slide ?? 'template'} | \`${s.file_hint}\` |`);
+    replace.forEach((s, i) => {
+      lines.push(`| ${i + 1} | \`${s.asset_key}\` | ${s.slide ?? 'template'} | ${s.reason_zh} | \`assets/${s.asset_key}.png\` |`);
     });
-    lines.push('', '## 绑定', '', '生成 PNG 后写入 theme.json 的 `assets` 与各页 `images` / `template_images`，再 formal export。', '');
+    lines.push('', '## 保留金样（点缀/图标/装饰）', '', '| # | asset_key | slide | 原因 |', '|---|-----------|-------|------|');
+    keep.forEach((s, i) => {
+      lines.push(`| ${i + 1} | \`${s.asset_key}\` | ${s.slide ?? 'template'} | ${s.reason_zh} |`);
+    });
+    lines.push('', '## 绑定', '', '只为 must_replace 生成 PNG 并 bind；keep_gold 写 `__keep_gold__` 或不绑。', '');
     await fsp.writeFile(mdPath, lines.join('\n'), 'utf8');
     console.log(JSON.stringify({ok: true, engine: ENGINE_ID, image_plan: planPath, markdown: mdPath, counts: plan.counts}, null, 2));
     return;
@@ -644,41 +752,31 @@ async function main() {
     return;
   }
 
-  // ---- Preview with images: text + bound PNGs; when ALL slots bound, strip gold media (like formal) ----
+  // ---- Preview with images: replace SEMANTIC slots only; keep decorative gold ----
   if (args['preview-with-images']) {
     const themeDir = path.dirname(themePath);
     const resolved = {};
     const assets = theme.assets && typeof theme.assets === 'object' ? theme.assets : {};
     for (const [key, raw] of Object.entries(assets)) {
-      if (typeof raw !== 'string' || !raw.trim()) continue;
+      if (typeof raw !== 'string' || !raw.trim() || raw === KEEP_GOLD) continue;
       const p = path.isAbsolute(raw) ? raw : path.resolve(themeDir, raw);
       if (fs.existsSync(p)) {
         const bytes = await fsp.readFile(p);
         resolved[key] = {path: p, sha256: sha256Bytes(bytes), bytes};
       }
     }
-    const requiredKeys = new Set();
-    for (const page of contract.pages) {
-      for (const img of page.images) requiredKeys.add(`s${String(page.slide).padStart(2, '0')}_${img.id}`);
-    }
-    // theme maps shape id → asset key; count coverage by theme binding + file exists
-    let boundSlotCount = 0;
-    let totalSlots = summary.slide_image_slots + summary.template_image_slots;
+    const {replace: replaceSlots, keep: keepSlots} = classifyContractImages(contract);
+    const replaceMediaIds = new Set(replaceSlots.map((s) => String(s.source_media_id)));
     const pageByNumber = new Map((theme.pages || []).map((page) => [Number(page.slide), page]));
-    for (const pageContract of contract.pages) {
-      const page = pageByNumber.get(pageContract.slide);
-      for (const slot of pageContract.images) {
-        const assetKey = String(page?.images?.[slot.id] || '');
-        if (assetKey && resolved[assetKey]) boundSlotCount += 1;
-      }
+    let boundReplace = 0;
+    for (const slot of replaceSlots) {
+      let assetKey = '';
+      if (slot.slide != null) assetKey = String(pageByNumber.get(slot.slide)?.images?.[slot.id] || '');
+      else assetKey = String(theme.template_images?.[slot.key] || '');
+      if (assetKey && assetKey !== KEEP_GOLD && resolved[assetKey]) boundReplace += 1;
     }
-    for (const slot of contract.templateImages) {
-      const assetKey = String(theme.template_images?.[slot.key] || '');
-      if (assetKey && resolved[assetKey]) boundSlotCount += 1;
-    }
-    const allSlotsBound = boundSlotCount >= totalSlots && totalSlots > 0;
+    const allReplaceBound = boundReplace >= replaceSlots.length && replaceSlots.length > 0;
 
-    const originalIds = new Set(presentation.images.items.map((item) => String(item.id)));
     const {replaced: textReplaced} = await applyTextOnly(presentation, theme, contract);
     let imageReplaced = 0;
     async function ensureRef(key) {
@@ -695,6 +793,7 @@ async function main() {
       const page = pageByNumber.get(pageContract.slide);
       if (!page?.images) continue;
       for (const slot of pageContract.images) {
+        if (classifyImageSlot(slot).action === 'keep_gold') continue;
         const assetKey = String(page.images?.[slot.id] || '');
         if (!assetKey || !resolved[assetKey]) continue;
         const newId = await ensureRef(assetKey);
@@ -718,11 +817,12 @@ async function main() {
             imageReplaced += 1;
           }
         } catch (e) {
-          // skip bad slots in preview
+          /* skip */
         }
       }
     }
     for (const slot of contract.templateImages) {
+      if (classifyImageSlot({...slot, kind: slot.target?.kind}).action === 'keep_gold') continue;
       const assetKey = String(theme.template_images?.[slot.key] || '');
       if (!assetKey || !resolved[assetKey]) continue;
       const newId = await ensureRef(assetKey);
@@ -743,15 +843,16 @@ async function main() {
       }
     }
 
-    // When every slot is bound, strip gold media (same as formal) so tomatoes cannot "show through"
-    let strippedGold = false;
-    if (allSlotsBound) {
+    // Strip only semantic gold media that was replaced (keep decorative SVG/icons)
+    let strippedSemanticGold = false;
+    if (allReplaceBound) {
       const keep = presentation.images.items.filter((item) => {
         const id = String(item.id);
-        return !originalIds.has(id) || ALLOWED_SOURCE_MEDIA_IDS.has(id);
+        if (replaceMediaIds.has(id)) return false;
+        return true;
       });
       presentation.images.replace(keep.map((item) => item.toProto()));
-      strippedGold = true;
+      strippedSemanticGold = true;
     }
 
     const pptx = await PresentationFile.exportPptx(presentation);
@@ -760,17 +861,19 @@ async function main() {
       ok: true,
       engine: ENGINE_ID,
       mode: 'preview-with-images',
-      note_zh: allSlotsBound
-        ? '字+图槽已全绑并剥离金样业务图（仅保留允许的 chrome 纹理）。插画质量仍取决于 PNG 是否透明/是否按槽语义。非正式 formal 文案门禁。'
-        : '部分图槽未绑，金样图可能残留。未满槽不得当交付。',
+      note_zh: allReplaceBound
+        ? `仅替换语义图 ${imageReplaced}/${replaceSlots.length}，点缀/SVG 保留金样 ${keepSlots.length} 槽；已剥离被替换槽的金样语义媒体。`
+        : `语义图仅绑定 ${boundReplace}/${replaceSlots.length}，未换完的 JPEG 内容图可能仍是金样。`,
       source_sha256: sourceSha,
       pptx: out,
       page_count: presentation.slides.items.length,
       text_slots_replaced: textReplaced,
       image_slots_replaced: imageReplaced,
+      replace_slots_total: replaceSlots.length,
+      keep_gold_slots: keepSlots.length,
       assets_bound: Object.keys(resolved).length,
-      all_slots_bound: allSlotsBound,
-      stripped_gold_media: strippedGold,
+      all_replace_bound: allReplaceBound,
+      stripped_semantic_gold: strippedSemanticGold,
       contract: summary,
     };
     if (args.report) {

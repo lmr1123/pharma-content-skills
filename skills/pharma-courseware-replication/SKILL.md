@@ -22,8 +22,8 @@ description: >
 | R4 | **制作完成默认打开复核**：内容初稿与 PPT 就绪后，在业务机 **立刻 `open` 两个文件**（见下「交付打开」），再请业务看。不要只丢路径。 |
 | R5 | **内容先行**：换主题时先写满 `content-draft.md` / 引擎 JSON / theme 槽；业务点头后再出正式片（明确要求预览片除外）。 |
 | R6 | **禁止** pptxgenjs/通用壳重画后写 `gold-aligned`；失败示范见 WorkBuddy 框架壳（体积骤降、媒体≈0）。 |
-| R7 | **产线 B 换题交付必须换图**：走 `emit-image-plan` → 按金样 **style_pack** 生透明 PNG → `bind_ooxml_assets` → formal export。`preview-text-only` **只验版式壳**，图仍是金样，**禁止**当「扩展主题完成」。 |
-| R8 | **生图画风跟金样 style_pack，不跟通用默认**：B 成分科普金样用 `style-pack.lycopene-health-edu-cream-red-v1`（米白+番茄红、透明底扁平）；**禁止**默认 `store-vitality-v1` / 全绿 monochrome / 不透明海报底板硬塞图槽。 |
+| R7 | **产线 B 换题：只换语义内容图，点缀可留金样**：`image-plan` 分 `replace` / `keep_gold`。JPEG 等内容图必须换；SVG/标题装饰/母版点缀 **保留金样** 以稳住壳风格。语义槽未换完不得称完成；`preview-text-only` 禁止当交付。 |
+| R8 | **替换图风格与金样壳一致**：跟该模板 **style_pack**（成分科普例：米白番茄红、透明底扁平）；禁止门店活力默认、全绿线稿、不透明海报底板；禁止假包装。 |
 
 ### 意图推断（内部，不念给业务）
 
