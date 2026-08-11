@@ -1,37 +1,58 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.3
+version: 0.3.4
 description: >
-  医药内训课件独立 Skill（Git 可安装）。业务入口口语二选一：
-  (1) 复刻/沉淀 PPT 模板；(2) 选模板生成 PPT（可批量）。
-  沉淀与复用同一路径：签样引擎 + 写满内容 JSON + 插图，禁止通用壳当交付。
-  内容先写满待审，确认后再出片。触发词：复刻、沉淀、选模板生成、换主题、批量出课。
+  医药内训课件独立 Skill（Git 可安装）。业务零选择题：代理根据材料推断
+  复刻模板或换主题出课；默认用户级 workspace 不覆盖；写满内容 + 签样引擎
+  高保真颗粒度；初稿与 PPT 做完默认 open 给业务复核。禁止框架壳当交付。
+  触发词：复刻、沉淀、选模板生成、换主题、批量出课、WorkBuddy。
 ---
 
 # 医药课件模板沉淀与批量复用
 
-## 对业务怎么说话（必读）
+## 对业务怎么说话（必读 · v0.3.4）
 
-用户一上来或意图不清时，**先用口语引导，再干活**。推荐开场：
+### 硬规则（不可违反）
 
-```text
-这个技能装好了，我可以带你用。你先选一个：
+| # | 规则 |
+|---|------|
+| R1 | **不要让业务做技术选择题**（禁止开场「回 1 或 2」「选路径 A/B」「要不要高保真」）。业务只交材料与目标；你推断并执行。 |
+| R2 | **默认用户级、不覆盖**：结果只写 `workspace/templates/` 与 `workspace/runs/`；**禁止**改 `skills/` 官方文件。`git pull` 不碰 workspace。见 `docs/business-own-template.md`。 |
+| R3 | **复刻 = 金样颗粒度**，不是页序 markdown / 通用灰卡壳。必须挂/建引擎 + 写满 schema + 引擎出片 + 对照参考/金样做关键帧验收（`references/fidelity-qa-checklist.md` / 引擎 `FIDELITY.md`）。 |
+| R4 | **制作完成默认打开复核**：内容初稿与 PPT 就绪后，在业务机 **立刻 `open` 两个文件**（见下「交付打开」），再请业务看。不要只丢路径。 |
+| R5 | **内容先行**：换主题时先写满 `content-draft.md` / 引擎 JSON；业务点头后再出正式片（明确要求预览片除外）。 |
 
-1. 复刻 PPT 模板
-   ——你有一份看好的课件，想存成以后能反复用的模板
+### 意图推断（内部，不念给业务）
 
-2. 选模板生成 PPT
-   ——模板已经有了，要换成别的病种/商品（可以一次做好几个）
+| 业务实际给的 / 说的 | 内部路径 | 你怎么开口 |
+|---------------------|----------|------------|
+| 丢来一份参考 PPT /「存成模板」「复刻这份」 | **模式 1** → `workspace/templates/<id>/` | 「我按你这份课件做成以后能反复出片的模板，做好后直接打开给你看。」 |
+| 已有模板 + 新病种/商品 /「换主题」「做几个」 | **模式 2/2b** → `workspace/runs/` | 「我先按模板写满一版内容，写好后打开给你审；你点头我再出 PPT。」 |
+| 两者都像 / 意图不清 | **不问 1/2**；用**一句话确认目标**（不是菜单）：「你是要把这份课件存成模板，还是用现成模板换一个主题出课？」业务用自然语言答即可。 | 确认后立刻开工，不再展开选项表 |
 
-你回 1 或 2 就行，别的我一步步问你。
+全程少用「沉淀、槽位、tokens、schema」；改说「存模板、换病种、先出一版内容你看看、你点头我再出 PPT」。
+
+### 交付打开（默认 · 必做）
+
+内容初稿就绪时（模式 2 阶段 A / 模式 1 样例内容写满后）：
+
+```bash
+# macOS；路径换成本次 run/template 真实路径
+open "workspace/runs/<template-id>/<theme-id>/content-draft.md"
+# 若有 Word 业务更熟，可同时 open 对应 docx（若已生成）
 ```
 
-| 用户说的 | 内部路径 |
-|----------|----------|
-| 1 / 复刻 / 存成模板 | 模式 1 → `workspace/templates/` |
-| 2 / 选模板 / 生成 / 换主题 / 批量 | 模式 2 或 2b → `workspace/runs/`（**先内容初稿，再出片**） |
+正式 PPT 出片后（或明确交付预览片后）：
 
-全程少用「沉淀、槽位、tokens」；改说「存模板、换病种、先出一版内容你看看、你点头我再出 PPT」。
+```bash
+# 优先 WPS（本机已装时）；否则 open 默认应用
+open -a "wpsoffice" "…/courseware.pptx" 2>/dev/null \
+  || open "…/courseware.pptx"
+open "…/content-draft.md"   # 与 PPT 一起打开，便于对照改
+```
+
+Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话里写清「已为你打开」。  
+**禁止**只回复路径让业务自己找文件。
 
 - 安装：`docs/install-via-git.md`  
 - 业务口令：`docs/business-usage.md`  
@@ -66,23 +87,38 @@ description: >
 
 ### 模式 1 · 复刻 / 沉淀 PPT 模板
 
-**人话：** 把看好的课件存成**以后能反复出片**的模板（效果对齐可可康那种复用验收，不是存一堆空说明）。
+**人话：** 把看好的课件存成**以后能反复出片**的模板（效果对齐本仓库穿心莲金样颗粒度 / 可可康路径验收，不是「只抄页框架」）。
 
-**标准路径（与模式 2 共用引擎，见 `docs/deposit-to-reuse.md`）：**
+**禁止当完成的伪交付（业务最常踩的坑）：**
 
-1. **定课型 / 定引擎**  
+| 伪交付 | 为何不合格 |
+|--------|------------|
+| 只写 page-map / 页序 markdown | 不能出片，也无版式 |
+| 只跑 `scripts/build_pptx.py` 通用壳 | 字号/卡片/强调/插图全不对 |
+| 只抽大纲结构、不对照参考 PPT 逐页 | 「框架有了，别的都不像」 |
+| 未跑引擎、未 open 给业务看 | 业务无法复核 |
+
+**标准路径（与模式 2 共用引擎，见 `docs/deposit-to-reuse.md` + 高保真 `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`）：**
+
+1. **定课型 / 定引擎**（你判断，不让业务选引擎名）  
    - 像绿「疾病+商品场景」→ 挂 `engines/disease-product-scenario-pptx-v1`  
    - 像蓝「参课健康培训」→ 挂 `engines/disease-health-shenke-blue-v1`  
    - 完全另一套版式 → **新建** `engines/<id>/`（布局代码 + schema + assets），禁止只写 markdown  
 2. **拆结构给人看**：页序 / page-map / 换题清单 `reuse/change-list.md`  
 3. **落内容契约**：引擎 schema 的**写满**样例 JSON（`samples/` 或 `content/`）  
-4. **视觉**：tokens/色板字阶跟参考；知识图进 assets；包装真图或命名占位  
-5. **用引擎跑通样例片** → `output/courseware.pptx`（本机能打开；需要时 LibreOffice 重存兼容 WPS）  
-6. **模板包**写入 `workspace/templates/<template-id>/`，`template-manifest.md` 写死：  
-   `engine` + `schema` + `build_with_engine.sh …` 命令  
-   （`workspace/` 为业务本机资产，`git pull` 不覆盖；细则见 `docs/business-own-template.md`）  
+4. **视觉颗粒度（必须，非可选）** — 对照参考/金样，至少覆盖：  
+   - 字阶与 `design_to_delivery`（打开观感以可编辑 PPT 为准，见 `FIDELITY.md`）  
+   - 行内强调（加粗 / 标红 / 段间空行 `blankLine`）  
+   - 卡片拓扑、色板、chrome 标题条  
+   - 插图 fit（contain/cover，缺图【图位】）  
+   - 关键帧对照 `references/fidelity-qa-checklist.md`  
+5. **用引擎跑通样例片** → `workspace/templates/<id>/output/courseware.pptx`  
+6. **默认 open** 内容样例 + 样例 pptx 给业务复核（见上文「交付打开」）  
+7. **模板包**只写 `workspace/templates/<template-id>/`，`template-manifest.md` 写死：  
+   `engine` + `schema` + `build_with_engine.sh …` + `fidelity: path-only | gold-aligned-v1`  
+   （`workspace/` 为业务本机资产，`git pull` 不覆盖）  
 
-沉淀完成 = **换主题时只改 JSON/图、同一引擎能出片**。  
+沉淀完成 = **换主题时只改 JSON/图、同一引擎能出片**，且关键帧过保真清单（至少 path-only 可出片；声称「像参考/金样」须 `gold-aligned` 级）。  
 未挂引擎、只能通用壳出片的，**不算**合格沉淀。  
 **禁止**把业务定稿写进 `skills/`（会被官方更新覆盖）。  
 
@@ -93,7 +129,7 @@ description: >
 
 #### 阶段 A · 初始化内容初稿（先做这个）
 
-1. 只读模板 `workspace/templates/<template-id>/`，列出供用户选  
+1. 只读 `workspace/templates/`（**优先业务自有**）+ 官方课型说明；若只有一个可用模板直接用，**不要**列菜单让业务猜 ID  
 2. 收集：主题名、业务给的文案/说明书/大纲/包装图（有什么用什么）  
 3. **按模板页序写满一版内容**，输出到  
    `workspace/runs/<template-id>/<theme-id>/content-draft.md`  
@@ -104,17 +140,15 @@ description: >
    - **禁止**整页只写「待填」「【待业务】」交差  
    - 功效/禁忌/数据等敏感句：起草可以有，但必须标 **待审**；不得声称已医学通过  
    - 包装：有真图写路径；没有则写「占位框·待换真图」，不生成假包装  
-5. 用口语请业务审核，例如：  
+5. **立刻 open 内容初稿**（见「交付打开」），再用口语请业务审核：  
 
 ```text
-内容初稿已经写好了（路径：…/content-draft.md）。
-请你看一遍：
-- 回复「通过」或「可以出 PPT」→ 我按这个生成课件
-- 回复要改哪里 → 我改完再给你看
-- 有补充材料也可以直接丢给我
+内容初稿已经写好并打开了。
+你看一遍：说「通过」或「可以出 PPT」→ 我生成课件；
+要改哪里直接说；有补充材料也可以丢给我。
 ```
 
-6. **停在这里等业务**；在未确认前 **不生成** 正式 `courseware.pptx`（或明确标注仅内部预览且仍要审——默认推荐：确认前不出正式片）
+6. **停在这里等业务**；在未确认前 **不生成** 正式 `courseware.pptx`（明确要求预览片除外，且预览片也要 open）
 
 #### 阶段 B · 按意见改内容
 
@@ -132,6 +166,7 @@ description: >
 2. **用对应引擎出片**（`build_with_engine.sh`），禁止通用壳冒充  
 3. 业务包装图：路径写入 JSON；缺图用引擎占位，不伪造品牌包装  
 4. 更新 `fill-checklist.md` 阶段为「已出 PPT」  
+5. **立刻 open 正式 pptx + content-draft**（双开对照）；口语告知「两个文件已打开，请复核」  
 
 ### 模式 2b · 批量生成 — 同样内容先行
 
@@ -180,17 +215,20 @@ workspace/
 
 ### 复刻 / 沉淀
 
+- [ ] **未**让业务选 1/2 或引擎名  
 - [ ] 模板 **挂引擎**（manifest 有 engine + 出片命令）  
 - [ ] schema 样例 **写满**，引擎命令本机跑通  
-- [ ] 样例 pptx **能打开**（WPS 不行则修复/重存后再交）  
+- [ ] 样例 pptx **能打开**，且已 **默认 open** 内容+PPT 给业务  
+- [ ] 关键帧过保真清单（非仅 markdown 页序）  
 - [ ] change-list + tokens/assets 齐全  
 - [ ] 未用通用壳冒充签样课型交付  
+- [ ] 产物在 `workspace/`，未改 `skills/`  
 
 ### 选模板生成
 
 - [ ] **先有** 写满的 `content-draft.md` / 引擎 JSON（非空壳）  
-- [ ] 业务可见「待审」标注，未冒充已审定  
-- [ ] **确认后** 才出正式 pptx  
+- [ ] 内容初稿已 **open**；业务可见「待审」标注  
+- [ ] **确认后** 才出正式 pptx，并 **open pptx+草稿**  
 - [ ] 正式片走 **同一引擎**，路径与沉淀一致  
 - [ ] 包装真图或命名占位，无假包装  
 

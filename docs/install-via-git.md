@@ -50,20 +50,19 @@ cd pharma-content-skills && git pull
 ## 安装后业务怎么说
 
 ```text
-请安装并运行这个项目，然后带我用。
-先问我：
-1. 复刻 PPT 模板
-2. 选模板生成 PPT
+请安装并运行这个项目，然后直接带我做。
+不要让我选编号。做好内容/PPT 请打开给我看。
+只写 workspace，不要改官方 skills。
 ```
 
-| 选项 | 人话 | 产物目录 |
-|------|------|----------|
-| **1 复刻 PPT 模板** | 把看好的课件存成可反复用的模板 | `workspace/templates/` |
-| **2 选模板生成 PPT** | 先内容初稿审核，确认后再出 PPT（可批量） | `workspace/runs/` |
+| 你实际在做的事 | 产物目录 |
+|----------------|----------|
+| 复刻 / 存模板 | `workspace/templates/` |
+| 换主题出课 | `workspace/runs/` |
 
 详细口语说明见 `docs/business-usage.md`。  
-业务自有模板与防覆盖：`docs/business-own-template.md`。
-
+业务自有模板与防覆盖：`docs/business-own-template.md`。  
+代理规则：`skills/pharma-courseware-replication/SKILL.md` v0.3.4+（零选择题、默认 open、高保真复刻）。
 ---
 
 ## 目录约定（安装后）

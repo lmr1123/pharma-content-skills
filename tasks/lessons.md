@@ -111,3 +111,14 @@
 - **错：** 日常叮嘱左卡用字符串拼接 title+body，标题无 bold；胆红素表只给含量格 `emphasis`，金样是首行三格全红粗。
 - **对：** 左卡 title 独立 bold run；右卡 body 关键句 bold runs；首行三格均 `{text,emphasis:true}`。
 - 交付验收片固定：`chuanxinlian-fidelity-delivery-scale.pptx`（Workbuddy）。
+
+## 2026-08-11 · 业务零选择题 + 默认 open + 框架壳不是复刻
+
+- **错：** 开场逼业务「回 1 或 2」；做完只丢路径；把「拆页序/通用壳」当成复刻完成；问业务写用户级还是系统级。  
+- **正（v0.3.4）：**  
+  1. **零选择题** — 按材料推断模式 1/2，最多一句话确认目标，不展开菜单。  
+  2. **默认用户级不覆盖** — 只写 `workspace/`，禁止改 `skills/`。  
+  3. **做完默认 open** — 内容初稿与 PPT 就绪后立刻打开给业务复核。  
+  4. **复刻颗粒度 = 本仓金样方法** — 引擎 + 写满 JSON + 字阶/runs/拓扑/插图 fit；禁止框架壳。  
+- **为何 WorkBuddy 会「只复刻框架」：** 未强制走 `engines/*`+FIDELITY；会话在 structure markdown 停住；或误用通用 PPT 能力；高保真是逐页差分不是一次大纲生成。  
+- 文档：`SKILL.md`、`docs/business-usage.md`、`docs/deposit-to-reuse.md` §为何只复刻框架。
