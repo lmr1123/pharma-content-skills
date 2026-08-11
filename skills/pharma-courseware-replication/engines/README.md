@@ -2,10 +2,14 @@
 
 本目录从 `chain-pharmacy-content-studio` 的**已签样金样 / 生产引擎**迁入，运行时**不依赖**生产 monorepo 路径。
 
-| 引擎 | 对应金样 | 入口 | 依赖 |
-|------|----------|------|------|
+| 引擎 / 策略 | 对应金样 | 入口 | 依赖 |
+|-------------|----------|------|------|
 | `disease-product-scenario-pptx-v1` | 穿心莲场景课（疾病+商品场景） | `export.mjs` | `npm i`（pptxgenjs） |
 | `disease-health-shenke-blue-v1` | 参课蓝健康课 | `build-editable.mjs` | `npm i`（pptxgenjs） |
+| **OOXML 金样归档**（非 pptxgenjs） | 康爱森番茄红素等富设计参考 | `../scripts/deposit_ooxml_gold.py` | `python-pptx` |
+
+> **康爱森 / 米白番茄红 20 页：** 近 100% = **原片归档**，不是再写一套 `health-popularization` pptxgenjs 壳。  
+> 见仓库 `docs/ooxml-gold-fidelity.md`。生产换槽引擎在 monorepo `ingredient-health-edu-pptx-v1`（可后续迁入）。
 
 ## 迁入内容
 

@@ -122,3 +122,14 @@
   4. **复刻颗粒度 = 本仓金样方法** — 引擎 + 写满 JSON + 字阶/runs/拓扑/插图 fit；禁止框架壳。  
 - **为何 WorkBuddy 会「只复刻框架」：** 未强制走 `engines/*`+FIDELITY；会话在 structure markdown 停住；或误用通用 PPT 能力；高保真是逐页差分不是一次大纲生成。  
 - 文档：`SKILL.md`、`docs/business-usage.md`、`docs/deposit-to-reuse.md` §为何只复刻框架。
+
+## 2026-08-11 · 康爱森番茄红素：pptxgenjs 壳 ≠ 近 100%（v0.3.5）
+
+- **现象：** WorkBuddy 沉淀 `health-popularization-lycopene-v1`，引擎 `health-popularization-v1` 重画 20 页，manifest 竟写 `fidelity: gold-aligned-v1`。  
+- **数据对照：** 原片 ~9.9MB / **97 媒体（含 SVG）** / 245 shapes；壳 ~0.4MB / 媒体≈0 / 形状堆砌。  
+- **根因：** 把「可换页型的生成器」当成「复刻」；未走生产仓已锁定的 **OOXML 原片金样**（`kangaisen-lycopene-health-edu-v1`：金样=原片，框架重建已 archive）。  
+- **正：**  
+  1. 富设计参考 → `scripts/deposit_ooxml_gold.py` 归档，`fidelity: gold-aligned-ooxml-v1`。  
+  2. **禁止** 新媒体密集片用 pptxgenjs 标 gold-aligned。  
+  3. 换题近 100% = 克隆 OOXML 换槽（生产 ingredient-health-edu）；未迁入前诚实说金样 100%、换题另接。  
+- 文档：`docs/ooxml-gold-fidelity.md`；失败示范勿再当签样。
