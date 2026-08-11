@@ -75,8 +75,9 @@ Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话
 
 | 课型 | 引擎 | 内容契约 | 出片 |
 |------|------|----------|------|
-| 疾病+商品场景（绿 · 穿心莲骨架） | `engines/disease-product-scenario-pptx-v1/` | `disease-product-scenario-script/v1`（`input-schema.json`） | `scripts/build_with_engine.sh disease-product-scenario <script.json> <out.pptx>` |
-| 疾病健康培训（参课蓝） | `engines/disease-health-shenke-blue-v1/` | 生成器 `content/*.content.json` | `scripts/build_with_engine.sh disease-health-shenke-blue <content.json> <out.pptx>` |
+| 疾病+商品场景（绿 · 产线 A） | `engines/disease-product-scenario-pptx-v1/` | `disease-product-scenario-script/v1` | `build_with_engine.sh disease-product-scenario …` |
+| 疾病健康培训（蓝 · 产线 A） | `engines/disease-health-shenke-blue-v1/` | `content/*.content.json` | `build_with_engine.sh disease-health-shenke-blue …` |
+| 成分科普米白番茄红（产线 B） | `engines/ingredient-health-edu-ooxml-v1/` | theme 槽位 JSON | `build_with_engine.sh ingredient-ooxml-preview …` 或正式 export |
 
 - 首次使用：在对应引擎目录执行 `npm i`（仅 pptxgenjs）。  
 - 绿引擎金样保真：变体触发器与验收方法见 `engines/disease-product-scenario-pptx-v1/FIDELITY.md`（穿心莲 18 页差分 2026-08-11 无 🔴）。  
@@ -107,30 +108,31 @@ Windows / 无 `open`：用系统默认方式打开同一对文件，并在对话
 | 只跑 `scripts/build_pptx.py` 通用壳 | 字号/卡片/强调/插图全不对 |
 | 未 open 原片与样片并排 | 业务无法发现「只有框架」 |
 
-#### 路径 A · OOXML 金样归档（近 100% 默认）
+#### 产线 B · OOXML 金样 + 换槽（康爱森类）
 
 ```bash
-python3 scripts/deposit_ooxml_gold.py \
-  --source "/path/to/参考.pptx" \
-  --template-id <id> \
-  --name-zh "<中文名>" \
-  --open
+# 归档金样
+python3 scripts/deposit_ooxml_gold.py --source "/path/to/参考.pptx" \
+  --template-id <id> --name-zh "<中文名>" --open
+
+# 抽槽 → 填 theme → 文字预览换题（壳≈金样 10MB 级；图可暂留金样）
+bash scripts/ooxml_b_pipeline.sh draft --theme-name "新主题"
+bash scripts/build_with_engine.sh ingredient-ooxml-preview \
+  <theme.json> <preview.pptx>
+# 正式全量换图：engines/ingredient-health-edu-ooxml-v1/README.md（需 PNG+approval）
 ```
 
-- 样片 `workspace/templates/<id>/output/courseware.pptx` **SHA256 = 原片**  
-- 同时写出 `inventory.json`、`reuse/content-draft.md` 并 open  
-- 换题量产：克隆 OOXML 换槽（生产 `ingredient-health-edu-pptx-v1`）；Skill 未迁入换槽器前，**诚实**说明「金样 100%，换题引擎另接」
+演示：`workspace/runs/ooxml-b-q10-demo/辅酶Q10_OOXML换槽预览.pptx`
 
-#### 路径 B · 已有签样引擎（绿 / 蓝）
+#### 产线 A · 签样引擎（绿 / 蓝）
 
-见 `docs/deposit-to-reuse.md` + `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`：挂引擎 → 写满 JSON → 保真清单 → open。
+见 `docs/deposit-to-reuse.md`：`build_with_engine.sh disease-product-scenario|disease-health-shenke-blue`
 
-#### 路径 C · 新版式且必须数据驱动（少见）
+#### 禁止
 
-新建 `engines/<id>/` 后，**在未过关键帧对照前只能 path-only**；媒体密集参考**不得**用本路径冒充 100%。
+pptxgenjs 框架壳标 gold-aligned；业务定稿写入 `skills/`。
 
-沉淀完成 = 业务打开样片认可「就是这份课件」+ 换题路径写进 manifest。  
-**禁止**把业务定稿写进 `skills/`。  
+沉淀完成 = 业务打开认可 + manifest 写明产线 A 或 B。  
 
 
 ### 模式 2 · 选模板生成 PPT（单次）— **内容先行**
