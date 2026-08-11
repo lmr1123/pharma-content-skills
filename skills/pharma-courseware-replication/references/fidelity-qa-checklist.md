@@ -43,15 +43,17 @@
 
 ## 插图
 
-- [ ] 知识插画同一画风（见后续 `illustration-style-green-v1.md`）
+- [ ] 知识插画同一画风：默认 `illustration-medical-flat-color-v1`（彩色多色）
+- [ ] **非**全绿 monochrome / 深绿线稿唯一色
 - [ ] 包装为业务真图或明确命名占位，无假包装
 - [ ] 非金样主题未复用穿心莲症状/包装像素
 
 ## 换题回归
 
-- [ ] 中性 sample 可出片  
+- [ ] 真题 sample `gold-chuanxinlian.script.json` 可出片  
 - [ ] 至少一换题（如可可康 script）可出片且 chrome 仍正确  
 - [ ] 未打开 `GOLD_FORBIDDEN` 误伤金样验收 theme  
+
 
 ## 打开兼容
 

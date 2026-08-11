@@ -8,7 +8,7 @@
   "canonical_confirmed_at": "2026-08-04",
   "generator": "production-library/engines/disease-product-scenario-pptx-v1/export.mjs",
   "structured_input": "production-library/engines/disease-product-scenario-pptx-v1/input-schema.json",
-  "structured_sample": "production-library/engines/disease-product-scenario-pptx-v1/samples/neutral-theme.json",
+  "structured_sample": "samples/gold-chuanxinlian.script.json",
   "business_route_ids": [
     "product-pptx-disease-scenario-v1"
   ],

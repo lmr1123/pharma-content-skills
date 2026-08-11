@@ -5,6 +5,9 @@
 **Skill：** `skills/pharma-courseware-replication` v0.3.1  
 **本交接目标：** 把「穿心莲」签样视觉真正对齐到可编辑金样，并把**对齐方法**写回 Skill，使业务**沉淀新 PPT**也能达到同级质量。
 
+> **后续补丁（v0.3.3）：** 中性假数据 `samples/neutral-theme.json` 已删除；默认样例改为 `gold-chuanxinlian.script.json`。  
+> 知识插图默认改为 `illustration-medical-flat-color-v1`（彩色）。下文若仍写 `neutral-theme.json`，以 samples 目录与 `engines/README.md` 为准。
+
 ---
 
 ## 0. 给下一任代理的一句话

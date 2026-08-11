@@ -21,16 +21,17 @@
 |----|------|
 | `@oai/artifact-tool` | 穿心莲生产原用；Skill 内改为 **pptxgenjs 同布局移植**，见 `export.prod-artifact-tool.mjs` 存档 |
 | 金样 PPT 二进制 / 业务包装真图 | 不进仓库；换题用业务授权图 |
-| 穿心莲医学正文 | 非 `gold_sample` 输入硬阻断金样关键词；演示用 `samples/neutral-theme.json` |
+| 穿心莲医学正文 | **默认演示样例**为真题 `samples/gold-chuanxinlian.script.json`（对标蓝的真实病种样例）；非 `gold_sample` 输入硬阻断金样关键词，换题用业务新 script（如可可康） |
 | PNG 逐页 QA / montage | 原 artifact-tool 能力；现 `--qa` 只写 `generate-report.json` |
+| 中性假数据样例 | **已移除**（不再提供 `neutral-theme.json`） |
 
 ## 出片命令
 
 ```bash
-# 疾病+商品场景（绿）
+# 疾病+商品场景（绿 · 穿心莲真题，对标蓝「急性上呼吸道感染」）
 cd engines/disease-product-scenario-pptx-v1
 npm i
-node export.mjs --data samples/neutral-theme.json --out /tmp/out.pptx --qa /tmp/qa
+node export.mjs --data samples/gold-chuanxinlian.script.json --out /tmp/out.pptx --qa /tmp/qa
 
 # 疾病健康培训（参课蓝）
 cd engines/disease-health-shenke-blue-v1
@@ -58,4 +59,5 @@ Skill **模式 1 沉淀**与 **模式 2 复用**必须走这里（或新建同�
 穿心莲金样 18 页差分**无 🔴**（排版/字阶/颜色/插图逐页对齐；无雅黑机器的字体替代换行属环境差异）。  
 变体触发器与验收方法：`disease-product-scenario-pptx-v1/FIDELITY.md`。  
 差分表：`workspace/runs/chuanxinlian-fidelity-qa/FIDELITY-DIFF.md`；验收勾选：`../references/fidelity-qa-checklist.md`。  
-任务上下文：仓库根 `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`（Phase C 插画规范留待后续）。  
+任务上下文：仓库根 `docs/HANDOVER-2026-08-11-fidelity-upgrade.md`。  
+知识插图默认：`illustration-medical-flat-color-v1`（彩色；**禁止**全绿 monochrome）。  

@@ -1,6 +1,6 @@
 ---
 name: pharma-courseware-replication
-version: 0.3.2
+version: 0.3.3
 description: >
   医药内训课件独立 Skill（Git 可安装）。业务入口口语二选一：
   (1) 复刻/沉淀 PPT 模板；(2) 选模板生成 PPT（可批量）。
@@ -120,8 +120,9 @@ description: >
 仅当业务明确同意（「通过 / 可以出 / 按这个生成」等）后：
 
 1. 把确认稿整理成引擎输入：  
-   - 绿课型 → `disease-product-scenario-script/v1` JSON（对照 `engines/.../input-schema.json` + `samples/neutral-theme.json`）  
-   - 蓝课型 → 参课蓝 `content/*.content.json` 结构  
+   - 绿课型 → `disease-product-scenario-script/v1` JSON（对照 `engines/.../input-schema.json` + 真题样例 `samples/gold-chuanxinlian.script.json`；换题只学结构勿抄医学结论）  
+   - 蓝课型 → 参课蓝 `content/急性上呼吸道感染.content.json` 结构  
+
 2. **用对应引擎出片**（`build_with_engine.sh`），禁止通用壳冒充  
 3. 业务包装图：路径写入 JSON；缺图用引擎占位，不伪造品牌包装  
 4. 更新 `fill-checklist.md` 阶段为「已出 PPT」  
@@ -141,7 +142,7 @@ description: >
 | 层 | 规则 |
 |----|------|
 | PPT 版式 | **签样课型用迁入引擎**；业务另有参考时从参考抽 tokens 并尽量对齐引擎 chrome |
-| 知识插图 | 参课蓝用引擎 `assets/`；绿课型用业务图 + 引擎占位；缺知识图可补门店活力画风，不改母版 |
+| 知识插图 | 参课蓝用引擎 `assets/`；绿课型用业务图 + 引擎占位；**缺知识图默认 `illustration-medical-flat-color-v1`（彩色）**，禁止全绿 monochrome；暖色回落 `store-vitality-v1`；不改 PPT 母版绿 |
 
 出片阶段再补插图亦可；**内容审过之前以文案草稿为主**。
 

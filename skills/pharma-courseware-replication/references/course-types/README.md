@@ -4,7 +4,7 @@
 
 | course_type_id | 业务名 | 预制 PPT | 预制插图 |
 |----------------|--------|----------|----------|
-| `disease-product-scenario-v1` | 疾病+商品场景 | `ppt-courseware-green-v1` | `illustration-medical-flat-green-v1` |
+| `disease-product-scenario-v1` | 疾病+商品场景 | `ppt-courseware-green-v1` | `illustration-medical-flat-color-v1` |
 | `disease-health-training-v1` | 疾病健康知识培训 | `ppt-health-training-blue-v1` | `illustration-medical-flat-blue-v1` |
 
 每课型含：`source-pointer.md`、`page-map.md`、`change-list.md`。

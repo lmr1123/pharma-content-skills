@@ -39,7 +39,7 @@
 
 - 绿：`disease-product-scenario-script/v1`（见引擎 `input-schema.json`）  
 - 蓝：生成器 `content/*.content.json` 的 `scene_type` + 字段  
-- 沉淀物里放：`samples/` 或 `content/` 一份**写满的**中性/签样样例（禁止只放空壳）
+- 沉淀物里放：`samples/` 或 `content/` 一份**写满的**签样/真实主题样例（绿课型默认 `gold-chuanxinlian.script.json`；禁止假数据壳或空壳）
 
 ### 3. 视觉与插图
 

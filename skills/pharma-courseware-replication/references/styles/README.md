@@ -14,9 +14,10 @@
 
 | id | 说明 |
 |----|------|
-| `illustration-medical-flat-green-v1` | 绿母版配套知识插图 |
+| `illustration-medical-flat-color-v1` | **绿课型默认**知识插图（彩色多色；母版可绿、图不单绿） |
 | `illustration-medical-flat-blue-v1` | 蓝母版配套知识插图 |
-| `store-vitality-v1` | 门店活力：通用缺图回落（**不**改 PPT 母版） |
+| `store-vitality-v1` | 门店活力：暖色缺图回落（**不**改 PPT 母版） |
+| `illustration-medical-flat-green-v1` | 历史 id（非默认；易全绿，新任务改用 color-v1） |
 
 ## 原则
 

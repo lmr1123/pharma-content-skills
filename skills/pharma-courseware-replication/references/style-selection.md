@@ -23,10 +23,11 @@
 ```text
 需要 system_generate？
   ├─ 参考图可用 → 跟参考画风
-  ├─ PPT 为绿母版 → illustration-medical-flat-green-v1
+  ├─ PPT 为绿母版 → illustration-medical-flat-color-v1（彩色；禁止全绿 monochrome）
   ├─ PPT 为蓝母版 → illustration-medical-flat-blue-v1
   └─ 其他 / 业务要暖色 → store-vitality-v1
 包装/logo → 永远 business_asset，不生成假包装
+历史 id illustration-medical-flat-green-v1 → 改绑 color-v1，勿再默认使用
 ```
 
 ## 写入

@@ -18,7 +18,7 @@
 
 - [x] **Phase A** 绿引擎字阶 + chrome + 封面 对齐生产 export；回写 `tokens.json`（2026-08-11）
 - [x] **Phase B** 穿心莲真题出片 + 18 页 `FIDELITY-DIFF`；修 🔴 页（8 页全修复，2026-08-11）
-- [ ] **Phase C** 知识插画风格规范写进 `references/`；换题图跟规范
+- [x] **Phase C** 知识插画：默认 `illustration-medical-flat-color-v1`（彩色）；去掉中性假数据样例，默认真题 gold-chuanxinlian（2026-08-11 v0.3.3）
 - [x] **Phase D** `fidelity-qa-checklist.md` + 引擎 `FIDELITY.md` + SKILL 版本（0.3.2，2026-08-11）；业务模式 1 试跑留待触发
 - [x] 可可康回归出片不破（18 页 / 0 缺图 / 0 违禁，2026-08-11 复测）
 - [ ] 真实业务参考走一遍模式 1（挂引擎 + 保真清单）→ 模式 2 换题
@@ -43,6 +43,13 @@
 - 已知 🟡：行内强调 run 未逐字转写（引擎已具备 run 数组能力）；无雅黑机器 LibreOffice 字体替代换行为环境差异（方法见 FIDELITY-DIFF.md）
 - 引擎新增：addText run 数组；schema 增 memory/change_note/treatment_summary/variant/flows/blocks/locked_image/weighted 行级参数等（全 opt-in，可可康回归常绿）
 - 产物：`workspace/runs/chuanxinlian-fidelity-qa/`（pptx + render + compare/pair-NN + FIDELITY-DIFF.md）；方法沉淀 `engines/.../FIDELITY.md` + `references/fidelity-qa-checklist.md`
+
+## Review · v0.3.3 业务默认体验（2026-08-11）
+
+- **不要中性样例：** 删除 `samples/neutral-theme.json`（及 prod-paths）；文档/package/SKILL 默认改为 `gold-chuanxinlian.script.json`
+- **examples shell** 改为穿心莲真实内容摘要（对标蓝「急性上呼吸道感染」可理解）
+- **插图默认彩色：** 新增 `illustration-medical-flat-color-v1`；绿课型不再默认绿 monochrome 生图
+- Skill 版本 0.3.3
 
 ## Out of scope
 

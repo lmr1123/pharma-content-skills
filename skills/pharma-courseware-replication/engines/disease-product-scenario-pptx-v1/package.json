@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node export.mjs --data samples/neutral-theme.json --out /tmp/dps-neutral.pptx",
-    "build:sample": "node export.mjs --data samples/neutral-theme.json --out samples/out-neutral.pptx"
+    "build": "node export.mjs --data samples/gold-chuanxinlian.script.json --out /tmp/dps-chuanxinlian.pptx",
+    "build:sample": "node export.mjs --data samples/gold-chuanxinlian.script.json --out samples/out-chuanxinlian.pptx"
   },
   "dependencies": {
     "pptxgenjs": "^3.12.0"

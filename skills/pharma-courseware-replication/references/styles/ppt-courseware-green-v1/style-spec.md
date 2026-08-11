@@ -24,4 +24,4 @@
 
 ## 配套插图
 
-引擎输入里的 `image` 字段；演示用 `engines/.../assets/placeholders/`。缺知识图可用 `illustration-medical-flat-green-v1` 补，不改 PPT chrome。
+引擎输入里的 `image` 字段；演示真题见 `engines/.../samples/gold-chuanxinlian.script.json`。缺知识图默认 `illustration-medical-flat-color-v1`（彩色）补，**不改** PPT chrome 主绿。

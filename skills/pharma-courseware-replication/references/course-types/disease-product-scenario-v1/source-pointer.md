@@ -17,6 +17,8 @@
 ## 使用
 
 1. 对照 `page-map.md` / `change-list.md` 与引擎 `input-schema.json` 写内容  
-2. 中性样例：`engines/disease-product-scenario-pptx-v1/samples/neutral-theme.json`  
+2. **真题样例（默认）：** `engines/disease-product-scenario-pptx-v1/samples/gold-chuanxinlian.script.json`（穿心莲内酯滴丸 · 对标蓝真实病种样例）  
 3. 出片：`scripts/build_with_engine.sh disease-product-scenario <script.json> <out.pptx>`  
-4. **禁止**用 `scripts/build_pptx.py` 当本课型正式交付  
+4. 换题回归可参考 `workspace/runs/kekang-lingzhi-reuse/green/`（真实换题，非假数据壳）  
+5. **禁止**用 `scripts/build_pptx.py` 当本课型正式交付；**已移除**中性假数据 `neutral-theme.json`  
+

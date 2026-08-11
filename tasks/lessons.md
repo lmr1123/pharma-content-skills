@@ -69,5 +69,11 @@
 
 - **几何/字阶以 gold layout json 为权威**（bbox/resolvedFontSize）；inspection.ndjson 无 run 颜色 → 文本色用 PIL 采样 gold PNG（sum(p)<620 取众数）。
 - 无 Microsoft YaHei 的机器：LibreOffice 替代字体更宽 → 渲染换行/溢出是**环境差异**，不要缩字号去塞；装了雅黑即消失。
-- 金样拓扑回灌引擎用**数据触发的 opt-in 变体**（variant 字段/特征字段），中性脚本（可可康）走原路径，回归零风险。
+- 金样拓扑回灌引擎用**数据触发的 opt-in 变体**（variant 字段/特征字段），换题脚本（可可康）走原路径，回归零风险。
 - 表格类金样三件套：`{text,emphasis}` 强调单元格、同值合并单元格、行级 height/size/fill/color 覆盖。
+
+## 2026-08-11 · 业务默认不要中性假数据 + 插图不要全绿
+
+- **错：** 绿课型默认 `neutral-theme`（示例证候A）+ `illustration-medical-flat-green-v1` 深绿线稿。  
+- **正：** 默认真题 `gold-chuanxinlian.script.json`（对标蓝真实病种）；知识插图默认 `illustration-medical-flat-color-v1`（母版可绿、图须彩色）。  
+- 中性假数据壳已删除；换题回归用真实业务 script（如可可康），不是虚构壳。  
