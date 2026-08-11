@@ -77,3 +77,9 @@
 - **错：** 绿课型默认 `neutral-theme`（示例证候A）+ `illustration-medical-flat-green-v1` 深绿线稿。  
 - **正：** 默认真题 `gold-chuanxinlian.script.json`（对标蓝真实病种）；知识插图默认 `illustration-medical-flat-color-v1`（母版可绿、图须彩色）。  
 - 中性假数据壳已删除；换题回归用真实业务 script（如可可康），不是虚构壳。  
+
+## 2026-08-11 · 声称的运行行为必须实测（soft-missing 崩溃）
+
+- **错：** 评估他人提交时凭代码注释（"soft-missing → placeholders"）就断言「他机跑 gold 样例会显示占位框」，没真跑。实际缺图直接崩在 pptxgenjs write。
+- **正：** 评估/文档里写「某输入下引擎会怎样」之前，真的构造那个输入跑一遍（这次 = 把脚本拷到无 assets 的目录跑）。
+- 顺带暴露的叠加 bug：`findAssetRefs` 记录缺 `input` 字段（缺图时 addImageSafe 按 input 查找永远 miss）；`hit?.resolved ?? resolved` 对 null 穿透；发现条件只认 `image` 键（`locked_image`/`product_image` 不发现、缺了也不计数）。三处凑齐才崩，单看每处都像对的。

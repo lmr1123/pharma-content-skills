@@ -50,8 +50,8 @@
 
 ## 换题回归
 
-- [ ] 真题 sample `gold-chuanxinlian.script.json` 可出片  
-- [ ] 至少一换题（如可可康 script）可出片且 chrome 仍正确  
+- [ ] 真题 sample `gold-chuanxinlian.script.json` 可出片（他机无真图 → 占位框 + missing 计数，属预期）  
+- [ ] else 原路径回归夹具 `samples/kekang-lingzhi.script.json` 可出片（pages=18 且 forbidden=0；无图片二进制 → 15 张占位属预期）且 chrome 仍正确  
 - [ ] 未打开 `GOLD_FORBIDDEN` 误伤金样验收 theme  
 
 

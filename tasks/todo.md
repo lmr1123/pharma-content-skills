@@ -51,6 +51,12 @@
 - **插图默认彩色：** 新增 `illustration-medical-flat-color-v1`；绿课型不再默认绿 monochrome 生图
 - Skill 版本 0.3.3
 
+## Review · v0.3.3 补丁：else 路径回归夹具 + 缺图崩溃修复（2026-08-11）
+
+- 评估 v0.3.3 后补两个缺口：① else 原路径失去 tracked 回归夹具 → 收 `samples/kekang-lingzhi.script.json`（可可康真题，meta 注明夹具角色；图片二进制不进 git，15 张占位属预期）；② fresh clone 跑默认样例行为文档缺失 → examples/README + engines/README + checklist + FIDELITY 补「占位框 + missing 计数属预期」
+- **修引擎 bug（补缺口时实测暴露）：** soft-missing 机制自迁入起从未生效——`findAssetRefs` 记录缺 `input` 字段 + `?? ` 对 null 穿透 + 发现条件只认 `image` 键，缺图直接崩 pptxgenjs write；三处最小修复
+- 三线验证绿：夹具无图 18 页 / 0 违禁 / 15 占位；gold 18 页 / 0 缺；可可康原脚本（有图）18 页 / 0 缺
+
 ## Out of scope
 
 - 其他 monorepo、数字人、设备密钥

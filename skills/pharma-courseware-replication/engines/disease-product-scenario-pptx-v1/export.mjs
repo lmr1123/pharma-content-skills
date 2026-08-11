@@ -141,8 +141,8 @@ function findAssetRefs(value, owner = "data", records = []) {
     return records;
   }
   for (const [key, child] of Object.entries(value)) {
-    if (key === "image" && typeof child === "string" && child.trim()) {
-      records.push({ owner: `${owner}.${key}`, resolved: resolveAsset(child, `${owner}.${key}`) });
+    if (key.endsWith("image") && typeof child === "string" && child.trim()) {
+      records.push({ owner: `${owner}.${key}`, input: child, resolved: resolveAsset(child, `${owner}.${key}`) });
     } else {
       findAssetRefs(child, `${owner}.${key}`, records);
     }
@@ -269,7 +269,8 @@ function addImageSafe(slide, inputPath, frame, fit = "contain") {
   const resolved = path.isAbsolute(inputPath) ? inputPath : path.resolve(dataDir, inputPath);
   // check access sync via discovered list
   const hit = discoveredAssets.find((a) => a.input === inputPath || a.resolved === resolved);
-  const finalPath = hit?.resolved ?? resolved;
+  // hit.resolved === null means soft-missing → placeholder; no hit means undiscovered key → pass through
+  const finalPath = hit ? hit.resolved : resolved;
   if (!finalPath) {
     // placeholder frame
     addShape(slide, {

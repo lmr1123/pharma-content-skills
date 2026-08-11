@@ -15,7 +15,8 @@
 ## 金样变体触发器（opt-in，数据驱动）
 
 所有金样拓扑都是**数据字段触发的变体**；换题脚本（如可可康）不带金样变体字段时走原路径，回归不受影响。  
-默认演示样例：`samples/gold-chuanxinlian.script.json`（真题；中性假数据样例已移除）。
+默认演示样例：`samples/gold-chuanxinlian.script.json`（真题；中性假数据样例已移除）。  
+else 原路径回归夹具：`samples/kekang-lingzhi.script.json`（真题，不含图片二进制；改引擎后必跑，pages=18 且 forbidden=0）。
 
 | 页 | 触发 | 变体拓扑 |
 |----|------|----------|
