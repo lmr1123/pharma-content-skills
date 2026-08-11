@@ -256,7 +256,7 @@ bash scripts/ooxml_b_pipeline.sh preview --theme theme.json --out preview-壳onl
 | 层 | 规则 |
 |----|------|
 | PPT 版式 | **签样课型用迁入引擎**；业务另有参考时从参考抽 tokens 并尽量对齐引擎 chrome |
-| 知识插图 | 参课蓝用引擎 `assets/`；绿课型用业务图 + 引擎占位；**缺知识图默认 `illustration-medical-flat-color-v1`（彩色）**，禁止全绿 monochrome；暖色回落 `store-vitality-v1`；不改 PPT 母版绿 |
+| 知识插图 | 参课蓝用引擎 `assets/`；绿课型：业务图 + `samples/assets` / `assets/gold-sample` 演示图；**缺路径或文件不存在时引擎自动填 `assets/placeholders/` 示意图（禁止空白图位）**；正式交付仍应换本主题彩色知识图（`illustration-medical-flat-color-v1`，禁止全绿 monochrome） |
 
 出片阶段再补插图亦可；**内容审过之前以文案草稿为主**。
 

@@ -12,7 +12,8 @@
       "功效/数据/话术未经药师与法务终审，仅作引擎保真验收。",
       "行内加粗/标红 run 自可编辑金样 PPTX 抽回（2026-08-11）：opening/definition/symptoms/scenarios",
       "p7 treatment 行内加粗/标红 run 自可编辑金样抽回（含「绝对禁用」红字）",
-      "p16 宜忌标题加粗 + 右卡关键句加粗；p17 胆红素表首行整行 emphasis 红粗（2026-08-11 打开验收）"
+      "p16 宜忌标题加粗 + 右卡关键句加粗；p17 胆红素表首行整行 emphasis 红粗（2026-08-11 打开验收）",
+      "图片路径已改为引擎内 assets/gold-sample/（相对 samples/），clone 可复现"
     ],
     "notes": [
       "行内加粗/标红/blankLine 已对齐可编辑金样（2026-08-11 人工打开验收）：含 p4 段空行、p5 绿底条去重、p7 禁用红、p11 标签粗、p16 宜忌标题粗+右卡关键句粗、p17 胆红素首行整行红粗。",
@@ -25,9 +26,9 @@
       "eyebrow": "【专业力】商品培训课件",
       "subtitle": "——穿心莲内酯滴丸+活动权重",
       "prepared_line": "大参林医药集团 · 内部培训课件",
-      "locked_image": "/Users/liminrong/Projects/pharma-content-skills/workspace/runs/chuanxinlian-fidelity-qa/assets/cover-locked-01.png",
+      "locked_image": "../assets/gold-sample/cover-locked-01.png",
       "locked_image_fit": "contain",
-      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide09-packshot.png",
+      "image": "../assets/gold-sample/slide09-packshot.png",
       "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）"
     },
     "opening": {
@@ -139,7 +140,7 @@
     },
     "agenda": {
       "title": "目 录",
-      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide03-building.png",
+      "image": "../assets/gold-sample/slide03-building.png",
       "image_alt": "源 PDF 目录页中的大参林建筑图"
     },
     "disease_definition": {
@@ -176,14 +177,14 @@
     "product_summary": {
       "title": "商品篇——穿心莲内酯滴丸的核心优势总结",
       "section": "2.3",
-      "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide11-packshot.png",
+      "image": "../assets/gold-sample/slide11-packshot.png",
       "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）"
     },
     "audience": {
       "title": "场景篇——什么时候推荐穿心莲内酯滴丸",
       "section": "3.1",
       "variant": "arrow-flow",
-      "product_image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-packshot.png"
+      "product_image": "../assets/gold-sample/slide12-packshot.png"
     },
     "consultation": {
       "title": "场景篇——什么时候推荐穿心莲内酯滴丸",
@@ -327,7 +328,7 @@
             "text": "，吞咽时痛感加剧，是风热之邪侵犯肺卫的直接表现。"
           }
         ],
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-throat.png",
+        "image": "../assets/gold-sample/slide05-throat.png",
         "image_alt": "咽喉红肿疼痛图片（裁自源 PDF）"
       },
       {
@@ -344,7 +345,7 @@
             "text": "，是热邪煎灼津液所致，与风寒证清稀分泌物形成鲜明对比。"
           }
         ],
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-nose.png",
+        "image": "../assets/gold-sample/slide05-nose.png",
         "image_alt": "流黄鼻涕图片（裁自源 PDF）"
       },
       {
@@ -361,7 +362,7 @@
             "text": "，但怕冷感觉不明显，仅稍有怕风，是风热证在体温上的核心表现。"
           }
         ],
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-sputum.png",
+        "image": "../assets/gold-sample/slide05-sputum.png",
         "image_alt": "黄色黏痰图片（裁自源 PDF）"
       },
       {
@@ -379,7 +380,7 @@
             "text": "舌尖红为热象；薄黄苔提示病邪尚在表浅。"
           }
         ],
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide05-tongue.png",
+        "image": "../assets/gold-sample/slide05-tongue.png",
         "image_alt": "源 PDF 中的舌象图片"
       }
     ],
@@ -574,7 +575,7 @@
   },
   "product": {
     "name": "穿心莲内酯滴丸",
-    "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide09-packshot.png",
+    "image": "../assets/gold-sample/slide09-packshot.png",
     "image_alt": "穿心莲内酯滴丸包装（裁自源 PDF）",
     "information": [
       {
@@ -659,7 +660,7 @@
       {
         "title": "儿童",
         "body": "学校感冒交叉感染\n→ 酸奶送服更安全",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-child.png",
+        "image": "../assets/gold-sample/slide12-child.png",
         "image_alt": "儿童插画（裁自源 PDF）",
         "flows": [
           {
@@ -671,7 +672,7 @@
       {
         "title": "中青年",
         "body": "办公室白领 → 空调干燥易咽痛\n商旅人士 → 出差劳累抵抗力低\n老师 → 课堂授课易咽炎\n全职妈妈 → 换季更新药箱",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-adult.png",
+        "image": "../assets/gold-sample/slide12-adult.png",
         "image_alt": "中青年插画（裁自源 PDF）",
         "flows": [
           {
@@ -695,7 +696,7 @@
       {
         "title": "老年",
         "body": "秋冬呼吸疾病高发\n冬日晨起锻炼易感冒\n北方暖气干燥早备药",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide12-senior.png",
+        "image": "../assets/gold-sample/slide12-senior.png",
         "image_alt": "老年人物插画（裁自源 PDF）",
         "flows": [
           {
@@ -732,7 +733,7 @@
         "section": "3.3",
         "page_title": "场景篇——什么时候推荐穿心莲内酯滴丸",
         "title": "场景1：顾客主诉“喉咙痛”",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide14-throat-person.png",
+        "image": "../assets/gold-sample/slide14-throat-person.png",
         "image_alt": "顾客咽痛人物照片（裁自源 PDF）",
         "blocks": [
           {
@@ -894,13 +895,13 @@
       {
         "title": "✓ 饮食之宜 · 清热生津",
         "body": "日常多喝水，可饮菊花茶、绿豆汤，适当食用梨、西瓜、苦瓜等寒凉性蔬果。",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide16-chrysanthemum.png",
+        "image": "../assets/gold-sample/slide16-chrysanthemum.png",
         "image_alt": "菊花图片（裁自源 PDF）"
       },
       {
         "title": "✕ 饮食之忌 · 避热动火",
         "body": "避免辛辣刺激、油腻煎炸食物，同时慎食羊肉、人参、桂圆等温补食材。",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide16-mungbean.png",
+        "image": "../assets/gold-sample/slide16-mungbean.png",
         "image_alt": "绿豆汤图片（裁自源 PDF）"
       },
       {
@@ -953,7 +954,7 @@
         "section": "5.1",
         "page_title": "权重篇——广誉远安宫牛黄丸",
         "name": "广誉远安宫牛黄丸",
-        "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/poc/courseware-export/courseware2-work/reused-pdf-crops/slide17-product.png",
+        "image": "../assets/gold-sample/slide17-product.png",
         "image_alt": "广誉远安宫牛黄丸包装与商品图（裁自源 PDF）",
         "fields": [
           {
@@ -1020,12 +1021,12 @@
       "products": [
         {
           "name": "安宫牛黄丸（白云山中一）\n8202533（人工体培）",
-          "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/production-library/validation/courseware/disease-product-scenario-v1/upgrade-v2/before/crops-orig/slide18-product-a.png",
+          "image": "../assets/gold-sample/slide18-product-a.png",
           "width": 455
         },
         {
           "name": "安宫牛黄丸（宏济堂）\n1185781（单天然）等",
-          "image": "/Users/liminrong/Projects/chain-pharmacy-content-studio/production-library/validation/courseware/disease-product-scenario-v1/upgrade-v2/before/crops-orig/slide18-product-b.png",
+          "image": "../assets/gold-sample/slide18-product-b.png",
           "width": 585
         }
       ],

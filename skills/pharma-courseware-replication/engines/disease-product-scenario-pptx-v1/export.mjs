@@ -130,15 +130,125 @@ if (inputForbiddenHits.length) {
 }
 
 const dataDir = path.dirname(dataPath);
+const PLACEHOLDERS_DIR = path.join(ENGINE_DIR, "assets", "placeholders");
+const SAMPLES_ASSETS_DIR = path.join(ENGINE_DIR, "samples", "assets");
+const PLACEHOLDER_FILES = {
+  packshot: "packshot.png",
+  "cover-product": "cover-product.png",
+  disease: "disease.png",
+  symptom: "symptom.png",
+  audience: "audience.png",
+  care: "care.png",
+  default: "disease.png",
+};
+
+function placeholderPath(kind = "default") {
+  const file = PLACEHOLDER_FILES[kind] || PLACEHOLDER_FILES.default;
+  return path.join(PLACEHOLDERS_DIR, file);
+}
+
+/** Infer semantic slot kind from JSON path / filename for placeholder fallback. */
+function inferImageKind(owner = "", inputPath = "") {
+  const s = `${owner} ${inputPath}`.toLowerCase();
+  if (/locked_image|cover-product|pages\.cover\.image|pages\.cover\.locked/.test(s)) return "cover-product";
+  if (/symptom/.test(s)) return "symptom";
+  if (/audience/.test(s)) return "audience";
+  if (/daily_care|care[-_]|care\.png/.test(s)) return "care";
+  if (/disease|agenda|definition|building/.test(s)) return "disease";
+  if (/packshot|product\.image|product_image|weighted|comparison\.products|product-summary|pages\.product_summary/.test(s)) {
+    return "packshot";
+  }
+  if (/cover/.test(s)) return "cover-product";
+  return "default";
+}
+
+/**
+ * Resolve an image path against data dir, basename under data/assets,
+ * engine samples/assets, then placeholders. Returns absolute path or null.
+ */
+function resolveExistingPath(relativeOrAbsolute) {
+  if (typeof relativeOrAbsolute !== "string" || !relativeOrAbsolute.trim()) return null;
+  const raw = relativeOrAbsolute.trim();
+  const base = path.basename(raw);
+  const candidates = [];
+  if (path.isAbsolute(raw)) {
+    candidates.push(raw);
+  } else {
+    candidates.push(path.resolve(dataDir, raw));
+    candidates.push(path.resolve(dataDir, "assets", base));
+    candidates.push(path.join(SAMPLES_ASSETS_DIR, base));
+    candidates.push(path.join(PLACEHOLDERS_DIR, base));
+  }
+  // also try samples when absolute path is missing (cross-machine gold scripts)
+  if (path.isAbsolute(raw)) {
+    candidates.push(path.join(SAMPLES_ASSETS_DIR, base));
+    candidates.push(path.join(ENGINE_DIR, "assets", "gold-sample", base));
+    candidates.push(path.join(PLACEHOLDERS_DIR, base));
+  }
+  for (const c of candidates) {
+    try {
+      if (fsSync.existsSync(c)) return c;
+    } catch { /* continue */ }
+  }
+  return null;
+}
+
 const assetRecords = [];
 function resolveAsset(relativeOrAbsolute, owner) {
   if (typeof relativeOrAbsolute !== "string" || !relativeOrAbsolute.trim()) return null;
-  const resolved = path.isAbsolute(relativeOrAbsolute)
-    ? relativeOrAbsolute
-    : path.resolve(dataDir, relativeOrAbsolute);
+  const resolved = resolveExistingPath(relativeOrAbsolute)
+    ?? (path.isAbsolute(relativeOrAbsolute)
+      ? relativeOrAbsolute
+      : path.resolve(dataDir, relativeOrAbsolute));
   assetRecords.push({ owner, input: relativeOrAbsolute, resolved });
   return resolved;
 }
+
+function isImageFieldKey(key) {
+  return key === "image" || key === "locked_image" || key === "product_image" || key.endsWith("_image");
+}
+
+/** Owners auto-filled with engine placeholders (empty field → default image). */
+const defaultImageFills = [];
+
+/**
+ * Fill empty image fields used by layouts so pages never ship blank slots.
+ * Paths point at engine placeholders (absolute); real assets still preferred when set.
+ */
+function ensureDefaultImageFields(root) {
+  const fill = (obj, key, kind, owner) => {
+    if (!obj || typeof obj !== "object") return;
+    const cur = obj[key];
+    if (typeof cur === "string" && cur.trim()) return;
+    obj[key] = placeholderPath(kind);
+    defaultImageFills.push({ owner: owner || key, kind });
+  };
+  const pages = root.pages || {};
+  fill(pages.cover, "image", "cover-product", "pages.cover.image");
+  fill(pages.agenda, "image", "disease", "pages.agenda.image");
+  fill(pages.disease_definition, "image", "disease", "pages.disease_definition.image");
+  fill(pages.product_summary, "image", "packshot", "pages.product_summary.image");
+  fill(pages.audience, "product_image", "packshot", "pages.audience.product_image");
+  fill(root.product, "image", "packshot", "product.image");
+  (root.disease?.symptoms || []).forEach((s, i) => fill(s, "image", "symptom", `disease.symptoms[${i}].image`));
+  (root.product?.audience || []).forEach((a, i) => fill(a, "image", "audience", `product.audience[${i}].image`));
+  (root.product?.scenarios || []).forEach((sc, i) => fill(sc, "image", "disease", `product.scenarios[${i}].image`));
+  // daily_care：金样 5 条布局 = 前 2 有图、后 3 无图；勿强行给后 3 填图
+  const care = root.product?.daily_care || [];
+  const goldCareLayout = care.length === 5
+    && care[0]?.image && care[1]?.image
+    && care.slice(2).every((item) => !(typeof item?.image === "string" && item.image.trim()));
+  if (!goldCareLayout) {
+    care.forEach((c, i) => fill(c, "image", "care", `product.daily_care[${i}].image`));
+  }
+  (root.weighted?.items || []).forEach((w, i) => fill(w, "image", "packshot", `weighted.items[${i}].image`));
+  (root.weighted?.comparison?.products || []).forEach((p, i) => {
+    fill(p, "image", "packshot", `weighted.comparison.products[${i}].image`);
+  });
+}
+
+ensureDefaultImageFields(data);
+
 function findAssetRefs(value, owner = "data", records = []) {
   if (!value || typeof value !== "object") return records;
   if (Array.isArray(value)) {
@@ -146,8 +256,12 @@ function findAssetRefs(value, owner = "data", records = []) {
     return records;
   }
   for (const [key, child] of Object.entries(value)) {
-    if (key.endsWith("image") && typeof child === "string" && child.trim()) {
-      records.push({ owner: `${owner}.${key}`, input: child, resolved: resolveAsset(child, `${owner}.${key}`) });
+    if (isImageFieldKey(key) && typeof child === "string" && child.trim()) {
+      records.push({
+        owner: `${owner}.${key}`,
+        input: child,
+        resolved: resolveAsset(child, `${owner}.${key}`),
+      });
     } else {
       findAssetRefs(child, `${owner}.${key}`, records);
     }
@@ -155,14 +269,18 @@ function findAssetRefs(value, owner = "data", records = []) {
   return records;
 }
 const discoveredAssets = findAssetRefs(data);
-// Soft-missing images: mark null rather than hard-fail (skill local demos use placeholders).
+// Missing paths → engine placeholders (never leave empty image slots).
 const missingAssets = [];
+const placeholderFallbacks = [];
 for (const rec of discoveredAssets) {
-  try {
-    await fs.access(rec.resolved);
-  } catch {
+  const exists = rec.resolved && fsSync.existsSync(rec.resolved);
+  if (!exists) {
     missingAssets.push(rec);
-    rec.resolved = null;
+    const kind = inferImageKind(rec.owner, rec.input);
+    const ph = placeholderPath(kind);
+    rec.resolved = fsSync.existsSync(ph) ? ph : null;
+    rec.used_placeholder = !!rec.resolved;
+    if (rec.resolved) placeholderFallbacks.push({ owner: rec.owner, kind, placeholder: rec.resolved });
   }
 }
 
@@ -347,15 +465,33 @@ else:
   return out;
 }
 
-function addImageSafe(slide, inputPath, frame, fit = "contain") {
-  if (!inputPath) return null;
-  const resolved = path.isAbsolute(inputPath) ? inputPath : path.resolve(dataDir, inputPath);
-  // check access sync via discovered list
-  const hit = discoveredAssets.find((a) => a.input === inputPath || a.resolved === resolved);
-  // hit.resolved === null means soft-missing → placeholder; no hit means undiscovered key → pass through
-  const finalPath = hit ? hit.resolved : resolved;
+/**
+ * Embed an image; never leave a blank slot.
+ * Resolution order: discoveredAssets → path search → kind placeholder → mint【图位】.
+ * @param {string|null|undefined} inputPath
+ * @param {{left:number,top:number,width:number,height:number}} frame
+ * @param {"contain"|"cover"|"product-summary"} fit
+ * @param {string} kind placeholder kind when path empty/missing
+ */
+function addImageSafe(slide, inputPath, frame, fit = "contain", kind = "default") {
+  const ph = placeholderPath(kind);
+  let finalPath = null;
+  if (inputPath && String(inputPath).trim()) {
+    const resolved = path.isAbsolute(inputPath) ? inputPath : path.resolve(dataDir, inputPath);
+    const hit = discoveredAssets.find(
+      (a) => a.input === inputPath || a.resolved === resolved || a.resolved === inputPath,
+    );
+    if (hit?.resolved && fsSync.existsSync(hit.resolved)) {
+      finalPath = hit.resolved;
+    } else {
+      finalPath = resolveExistingPath(inputPath);
+    }
+  }
+  if (!finalPath || !fsSync.existsSync(finalPath)) {
+    finalPath = fsSync.existsSync(ph) ? ph : null;
+  }
   if (!finalPath) {
-    // soft-missing：薄荷绿占位框 + 【图位】，禁止空白无提示
+    // last resort: mint box (placeholders missing from install)
     addShape(slide, {
       l: frame.left, t: frame.top, w: frame.width, h: frame.height,
       fill: C.mint, line: C.line, lineWidth: 1, radius: 12,
@@ -391,13 +527,23 @@ function addImageSafe(slide, inputPath, frame, fit = "contain") {
         drawPath = materializeImageFit(finalPath, frame.width, frame.height, "cover");
       } catch { /* keep original; may stretch */ }
     }
+    // "product-summary" / other: full-frame embed (same as pre-fallback behavior)
     slide.addImage({
       path: drawPath,
       x: x(drawFrame.left), y: y(drawFrame.top), w: s(drawFrame.width), h: s(drawFrame.height),
     });
     return finalPath;
   } catch {
-    // write 失败同样出占位，避免「空位无框」
+    // embed failed → try placeholder once more, else mint box
+    if (finalPath !== ph && fsSync.existsSync(ph)) {
+      try {
+        slide.addImage({
+          path: ph,
+          x: x(frame.left), y: y(frame.top), w: s(frame.width), h: s(frame.height),
+        });
+        return ph;
+      } catch { /* fall through */ }
+    }
     addShape(slide, {
       l: frame.left, t: frame.top, w: frame.width, h: frame.height,
       fill: C.mint, line: C.line, lineWidth: 1, radius: 12,
@@ -1408,6 +1554,11 @@ const report = {
   pages: slideRecords,
   input_images: discoveredAssets.length,
   missing_images: missingAssets.map((m) => m.owner),
+  placeholder_fallbacks: placeholderFallbacks.map((p) => p.owner),
+  default_image_fills: defaultImageFills.map((p) => p.owner),
+  images_resolved: discoveredAssets.filter((a) => a.resolved && fsSync.existsSync(a.resolved)).length,
+  /** true when every discovered image path resolved to an existing file (incl. placeholders) */
+  all_image_slots_filled: discoveredAssets.every((a) => a.resolved && fsSync.existsSync(a.resolved)),
   forbidden_input_hits: inputForbiddenHits,
   font: FONT,
   font_patched: (!skipFontPatch) && fontPatch.status === 0,

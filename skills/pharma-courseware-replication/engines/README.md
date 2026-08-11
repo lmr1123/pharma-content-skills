@@ -27,10 +27,11 @@
 | 项 | 说明 |
 |----|------|
 | `@oai/artifact-tool` | 穿心莲生产原用；Skill 内改为 **pptxgenjs 同布局移植**，见 `export.prod-artifact-tool.mjs` 存档 |
-| 金样 PPT 二进制 / 业务包装真图 | 不进仓库；样例引用本机绝对路径，**他机跑显示占位框 + report 有 missing 计数，属预期**；换题用业务授权图 |
+| 金样 PPT 二进制 / 业务包装真图 | 正式业务真包装仍不进仓库；**演示级图已进 git**：绿引擎 `assets/gold-sample/`、`samples/assets/`、`assets/placeholders/` |
 | 穿心莲医学正文 | **默认演示样例**为真题 `samples/gold-chuanxinlian.script.json`（对标蓝的真实病种样例）；非 `gold_sample` 输入硬阻断金样关键词，换题用业务新 script（如可可康） |
 | PNG 逐页 QA / montage | 原 artifact-tool 能力；现 `--qa` 只写 `generate-report.json` |
-| 中性假数据样例 | **已移除**（不再提供 `neutral-theme.json`）；else 原路径回归夹具 = `disease-product-scenario-pptx-v1/samples/kekang-lingzhi.script.json`（真题，图片二进制不进 git，占位属预期） |
+| 中性假数据样例 | **已移除**；回归夹具 = `samples/kekang-lingzhi.script.json` + `samples/assets/`（图已入库） |
+| 缺图行为 | 绿引擎 **永不留白图位**：缺路径/缺文件 → `assets/placeholders/` 示意 PNG；report 记 `missing_images` / `placeholder_fallbacks` |
 
 ## 出片命令
 
