@@ -3,14 +3,24 @@
 > 引擎：`disease-product-scenario-pptx-v1/export.mjs`（pptxgenjs，自包含）
 > 金样真源：生产仓 `production-library/validation/courseware/disease-product-scenario-v1/qa-editable/slide-NN.{png,layout.json}`
 > 差分表：`workspace/runs/chuanxinlian-fidelity-qa/FIDELITY-DIFF.md`（18 页 🔴/🟡/🟢 + 对照图）
-> 最近对齐：2026-08-11（18/18 排版拓扑一致，无 🔴）
+> 最近对齐：2026-08-11（18/18 排版拓扑一致，无 🔴）  
+> **行内强调 / 字阶交付**：同日已按可编辑金样 PPTX 收敛（`blankLine`、绿底条去重、p16 标题加粗、p17 首行标红等）；交付产物见下方 Workbuddy 入口。
 
-## 验证方法（重要）
+## 验证方法（重要）— 真源分层（2026-08-11 纠正）
 
-1. **几何/字阶以 gold `slide-NN.layout.json` 为权威**：逐元素比 `bbox` / `resolvedFontSize`。
-2. **文本颜色**：inspection.ndjson 不含 run 颜色 → 用 PIL 对 gold PNG 采样（阈值 `sum(p)<620` 取文本像素众数）。
-3. **PNG 渲染差分仅作拓扑/颜色/插图辅助**：无 Microsoft YaHei 的机器上 LibreOffice 会用更宽 CJK 替代字体，文本换行/溢出是**环境差异不是引擎缺陷**（字阶经 layout json 核实）。验收时不要把 ⚠️font 当 bug 修（尤其不要为塞下文本而缩字号）。
-4. 渲染管线：`soffice --headless --convert-to pdf` + `pdftoppm -png -r 96`；对照图 = 左 gold 右保真 + 36px 标签带。
+| 维度 | 权威真源 | 说明 |
+|------|----------|------|
+| **几何 / 拓扑 / bbox** | gold `slide-NN.layout.json` + qa PNG | 卡片位置、变体拓扑 |
+| **交付字号（打开 PPT 看到的）** | **可编辑金样 PPTX 内嵌 `a:sz`** | 用户验收以此为准 |
+| **代码字面 size** | design unit（≈ layout `resolvedFontSize`） | 经 `tokens.type_scale.design_to_delivery`（**0.75**）写入 PPTX |
+
+**禁止再犯：** 只把 layout.json 的 27/21 写进 PPTX 却声称「对齐金样」——可编辑重建版内嵌字号是设计值的 **0.75 倍**（chrome 标题 20.25 而非 27）。扩题观感应对齐**可打开的金样 PPTX**。
+
+1. **出片后必跑** `node verify-type-scale.mjs --candidate <out.pptx> [--gold <可编辑重建版.pptx>]`（median 与 slide2 首段字号相对金样 |ratio−1|≤4%）。
+2. **几何**仍可对 layout.json / pair PNG；**字阶**以 verify 脚本 + 打开 PPT 为准，不以 layout `resolvedFontSize` 直接当交付 pt。
+3. **文本颜色**：inspection.ndjson 不含 run 颜色 → PIL 对 gold PNG 采样（`sum(p)<620` 取众数）。
+4. **PNG 渲染差分**仅作拓扑/颜色/插图辅助：无雅黑时 LO 替代字体更宽 → 换行溢出是环境差异；**不要**为塞字再改 `design_to_delivery`。
+5. 渲染管线：`soffice --headless --convert-to pdf` + `pdftoppm -png -r 96`。
 
 ## 金样变体触发器（opt-in，数据驱动）
 
@@ -38,11 +48,38 @@ else 原路径回归夹具：`samples/kekang-lingzhi.script.json`（真题，不
 | 17 权重明细 | （基础几何已按 gold 重写，无需触发） | 信息表四栏 [90,90,160,125]、胆红素表 [260,120,210]；单元格 `{text,emphasis}` 红粗 |
 | 18 权对照 | `comparison.products[].image` | 图片行 `rows[].kind:"images"` + 显式行高 `height` + 行字阶 `size` + 行填充 `fill` + 行色 `color` + 同值合并单元格 + 列宽 `products[].width` |
 
+## Workbuddy / 本机验收入口（2026-08-11）
+
+```bash
+# 出片（本机需有裁图绝对路径；他机缺图 → 薄荷绿【图位】）
+cd skills/pharma-courseware-replication/engines/disease-product-scenario-pptx-v1
+node export.mjs \
+  --data samples/gold-chuanxinlian.script.json \
+  --out ../../../workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx
+
+# 字阶门禁（对照可编辑金样 PPTX）
+node verify-type-scale.mjs \
+  --candidate ../../../workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx \
+  --gold <生产仓>/…/穿心莲内酯滴丸_商品培训课件2_可编辑重建版.pptx
+
+# 换题回归（opt-in 变体不得破坏）
+node export.mjs --data samples/kekang-lingzhi.script.json --out /tmp/kekang-reg.pptx
+```
+
+| 角色 | 路径 |
+|------|------|
+| **交付 PPT（打开验收）** | `workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx` |
+| 金样 script | `engines/…/samples/gold-chuanxinlian.script.json` |
+| 可编辑金样 PPTX | 生产仓 `…/settled/disease-product-scenario-v1/穿心莲…_可编辑重建版.pptx` |
+| 差分表 | `workspace/runs/chuanxinlian-fidelity-qa/FIDELITY-DIFF.md` |
+
+**run 字段约定：** `{text,bold?,color?,breakLine?,blankLine?}`；`blankLine`=段后空行（金样 `\n\n`）。表格单元格可用 `{text,emphasis:true}` 红粗。
+
 ## 已知可接受差异（🟡）
 
-- 行内强调 run（红/绿加粗）引擎已支持（`addText` run 数组），金样脚本部分页正文仍是纯字符串未逐字转写（p2/4/14/15）。
-- p17 信息表数据行统一 fs17；gold 主推/零售价为 fs19（差 2pt）。
-- gold 页 18 表头 B 列 fs16（生产侧自动缩排），引擎统一 fs17。
+- p17 信息表数据行统一 design→delivery 后约 fs12.75 档；gold 个别格略大（差约 1–2pt design），不单独改表。
+- gold 页 18 表头 B 列偶发自动缩排；引擎统一字号。
+- 无雅黑时 LO 渲染换行 ⚠️font 属环境差，不是引擎回归失败。
 
 ## 红线（不得回退）
 

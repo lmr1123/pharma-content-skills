@@ -60,3 +60,12 @@
 ## Out of scope
 
 - 其他 monorepo、数字人、设备密钥
+
+## Review · 2026-08-11 晚（Workbuddy 前）
+
+- [x] p16 宜忌标题加粗 + 右卡关键句加粗
+- [x] p17 胆红素首行整行标红
+- [x] p4 blankLine / p5 绿底条去重 / 缺图【图位】等已并入
+- [x] 文档：FIDELITY.md、FIDELITY-DIFF.md、fidelity-qa-checklist、README-WORKBUDDY.md
+- [x] kekang 回归 pages=18 forbidden=0
+- **交付片：** `workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx`

@@ -5,28 +5,32 @@
 > 变体触发器与验证方法：`engines/disease-product-scenario-pptx-v1/FIDELITY.md`。  
 > 穿心莲 18 页差分结论：`workspace/runs/chuanxinlian-fidelity-qa/FIDELITY-DIFF.md`（2026-08-11，无 🔴）。
 
-## 对照物
+## 对照物（真源分层）
 
 | 角色 | 路径 |
 |------|------|
-| 视觉真源 | 生产仓 `…/disease-product-scenario-v1/qa-editable/slide-NN.{png,layout.json}`（几何/字阶权威） |
-| 当前引擎 | `engines/disease-product-scenario-pptx-v1/export.mjs` + `tokens.json` |
+| **交付字号权威** | 生产仓 `…/穿心莲…_可编辑重建版.pptx`（打开 PPT 的 `a:sz`） |
+| 几何/拓扑 | `…/qa-editable/slide-NN.{png,layout.json}`（bbox；layout 字号是 design unit） |
+| 当前引擎 | `engines/disease-product-scenario-pptx-v1/export.mjs` + `tokens.json`（`design_to_delivery: 0.75`） |
 | 出片 | `node export.mjs --data <script.json> --out <out.pptx>` |
-| 渲染差分 | `soffice --headless --convert-to pdf` + `pdftoppm -png -r 96`，左 gold 右保真拼图 |
+| **字阶门禁** | `node verify-type-scale.mjs --candidate <out.pptx> --gold <可编辑重建版.pptx>` |
+| 渲染差分 | `soffice` + `pdftoppm`，左 gold 右保真（拓扑/色；字阶以 verify 为准） |
 
-> ⚠️ 无 Microsoft YaHei 的机器上 LibreOffice 替代字体更宽，文本换行/溢出是环境差异；字阶以 layout json 比对为准，**不要为塞下文本缩字号**。
+> ⚠️ **layout.json 的 27pt ≠ 可编辑 PPT 的 27pt。** 可编辑金样内嵌约 ×0.75（页标题约 **20.25**）。无雅黑时 LO 替代字体更宽是环境差，不要为塞字改 scale。
 
 ## 全局（chrome / 字 / 色）
 
 - [ ] 画布 13.333×7.5 in（1280×720 px @96）
 - [ ] 字体默认微软雅黑（或 tokens 声明字体），标题加粗层级清晰
-- [ ] chrome 节号块：深绿底白字，字号对齐生产（目标 ~20pt）
-- [ ] chrome 标题：深墨色，字号对齐生产（目标 ~27pt），非发灰小字
+- [ ] **`verify-type-scale.mjs` PASS**（median + slide2 相对可编辑金样）
+- [ ] chrome 节号：深绿底白字，**打开后约 15pt**（design 20 ×0.75）
+- [ ] chrome 标题：深墨色，**打开后约 20.25pt**（design 27 ×0.75），非 layout 的 27 直接写入
 - [ ] chrome 绿强调短条 + 分隔线位置接近金样
 - [ ] 品牌右上：secondary 绿，不抢主标题
 - [ ] 页脚「仅限内部」+ 页码可读
 - [ ] 主绿 `#009900` / 深绿 `#066A2F` 用于重点，不是随机装饰色
 - [ ] 重点红 `#E60012` 仅用于警示/禁忌类，不滥涂
+- [ ] 加粗 / 标红 run 仍在；只缩交付 scale，不删强调逻辑
 
 ## 关键帧（沉淀最低五帧）
 
@@ -63,10 +67,17 @@
 ## 金样级差分（穿心莲 18 页 · 2026-08-11 已验收）
 
 - [x] 18/18 页排版拓扑与 gold 一致（差分表无 🔴；8 页原 🔴 已由数据触发的金样变体修复：6/7/8/9/12/16/17/18）
-- [x] 字阶逐页经 layout json `resolvedFontSize` 核实（仅 p17 数据行 2pt 统一化、p18 表头 B 列自动缩排差异）
+- [x] **交付字阶**以可编辑金样 PPTX 为准：`tokens.design_to_delivery=0.75` + `verify-type-scale.mjs`
+- [x] **行内强调**（加粗/标红/`blankLine`/绿底条去重/p16 宜忌标题/p17 胆红素首行）与可编辑金样对齐
 - [x] 文本/填充色经 gold PNG 像素采样核实（含 #33413A 软墨、#E60012 强调红、双色板 #00B98F/#2F8AFF）
-- [x] 插图全部就位；金样真图走本机绝对路径不进 git
-- [x] 可可康回归：18 页出片、0 缺图、0 违禁命中（变体全部 opt-in，旧路径不受影响）
+- [x] 插图全部就位；缺图出【图位】；金样真图走本机绝对路径不进 git
+- [x] 可可康回归：18 页出片、forbidden=0（变体全部 opt-in）
+
+### Workbuddy 快速测
+
+1. 打开 `workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx`
+2. 对照可编辑金样：`…/穿心莲内酯滴丸_商品培训课件2_可编辑重建版.pptx`
+3. 重点扫：字号体感、p4 段空行、p5 绿底条不重复、p7 禁用标红、p11 标签加粗、p14–17 图与强调
 
 ## 沉淀声明
 

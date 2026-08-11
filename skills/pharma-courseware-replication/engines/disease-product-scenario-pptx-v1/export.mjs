@@ -3,7 +3,8 @@
  * disease-product-scenario-pptx-v1  (self-contained for pharma-content-skills)
  *
  * Port of production-library/engines/disease-product-scenario-pptx-v1/export.mjs
- * Layout / chrome / type scale preserved from the signed production engine.
+ * Geometry (bbox) follows design / layout.json; **delivery type scale** follows the
+ * openable gold editable PPTX (see tokens.json type_scale.ssot + design_to_delivery).
  * Rendering: pptxgenjs (no @oai/artifact-tool / monorepo path dependency).
  *
  * Required:
@@ -169,6 +170,23 @@ const PX = 1 / 96;
 const W = Wpx * PX; // 13.333
 const H = Hpx * PX; // 7.5
 const FONT = style.font_family ?? "Microsoft YaHei";
+/**
+ * Delivery font scale SSOT = 可编辑金样 PPTX embedded sz (not layout.json alone).
+ * Code/layout still use design-unit pt (chrome 27, body 21…); gold editable PPTX
+ * writes those values × 0.75 (e.g. 27→20.25). All sizes pass through pt() once.
+ * Override: tokens.json type_scale.design_to_delivery (default 0.75).
+ */
+const DESIGN_TO_DELIVERY = Number(
+  style.type_scale?.design_to_delivery ?? style.design_to_delivery ?? 0.75,
+);
+if (!(DESIGN_TO_DELIVERY > 0 && DESIGN_TO_DELIVERY <= 2)) {
+  fail(`type_scale.design_to_delivery must be in (0, 2], got ${DESIGN_TO_DELIVERY}`);
+}
+/** design-unit pt → delivery pt written into PPTX (OOXML hundredths). */
+function pt(designPt) {
+  if (designPt == null || Number.isNaN(Number(designPt))) return designPt;
+  return Math.round(Number(designPt) * DESIGN_TO_DELIVERY * 100) / 100;
+}
 const C = {
   primary: (style.colors?.primary ?? "#009900").replace("#", ""),
   deep: (style.colors?.primary_deep ?? "#066A2F").replace("#", ""),
@@ -226,7 +244,8 @@ function addText(slide, value, opts) {
   const o = {
     x: x(opts.l), y: y(opts.t), w: s(opts.w), h: s(opts.h),
     fontFace: FONT,
-    fontSize: opts.size ?? 18,
+    // Single choke point: design-unit size → delivery pt matching gold editable PPTX
+    fontSize: pt(opts.size ?? 18),
     color: hex(opts.color || C.ink),
     bold: !!opts.bold,
     align: opts.align || "left",
@@ -250,18 +269,37 @@ function addText(slide, value, opts) {
     o.line = { color: hex(opts.line), width: opts.lineWidth ?? 1 };
   }
   if (Array.isArray(value)) {
-    // run 数组：[{ text, bold?, color?, breakLine? }] —— 行内强调（gold 双色鉴别页等）
-    slide.addText(value.map((run) => ({
-      text: String(run.text ?? ""),
-      options: {
-        ...(run.bold !== undefined ? { bold: !!run.bold } : {}),
-        ...(run.color ? { color: hex(run.color) } : {}),
-        ...(run.breakLine ? { breakLine: true } : {}),
-      },
-    })), o);
+    // run 数组：[{ text, bold?, color?, breakLine?, blankLine? }]
+    // breakLine = 换行；blankLine = 段后空行（对齐可编辑金样 \n\n）
+    // 每段显式 bold/color，避免继承父级 bold 导致整段加粗、强调丢失
+    const runs = [];
+    for (const run of value) {
+      if (!run || (run.text == null && !run.breakLine && !run.blankLine)) continue;
+      runs.push({
+        text: String(run.text ?? ""),
+        options: {
+          bold: run.bold === true,
+          color: run.color ? hex(run.color) : hex(opts.color || C.ink),
+          ...(run.breakLine || run.blankLine ? { breakLine: true } : {}),
+        },
+      });
+      // 金样多段正文：段间空行 = 额外空段落
+      if (run.blankLine) {
+        runs.push({ text: "", options: { breakLine: true } });
+      }
+    }
+    slide.addText(runs.length ? runs : [{ text: "", options: {} }], o);
     return;
   }
   slide.addText(String(value ?? ""), o);
+}
+
+/** Flatten run array or string for places that still need plain text. */
+function plainText(value) {
+  if (Array.isArray(value)) {
+    return value.map((r) => String(r?.text ?? "")).join("");
+  }
+  return String(value ?? "");
 }
 
 function addImageSafe(slide, inputPath, frame, fit = "contain") {
@@ -272,7 +310,7 @@ function addImageSafe(slide, inputPath, frame, fit = "contain") {
   // hit.resolved === null means soft-missing → placeholder; no hit means undiscovered key → pass through
   const finalPath = hit ? hit.resolved : resolved;
   if (!finalPath) {
-    // placeholder frame
+    // soft-missing：薄荷绿占位框 + 【图位】，禁止空白无提示
     addShape(slide, {
       l: frame.left, t: frame.top, w: frame.width, h: frame.height,
       fill: C.mint, line: C.line, lineWidth: 1, radius: 12,
@@ -291,9 +329,14 @@ function addImageSafe(slide, inputPath, frame, fit = "contain") {
     });
     return finalPath;
   } catch {
+    // write 失败同样出占位，避免「空位无框」
     addShape(slide, {
       l: frame.left, t: frame.top, w: frame.width, h: frame.height,
       fill: C.mint, line: C.line, lineWidth: 1, radius: 12,
+    });
+    addText(slide, "【图位】", {
+      l: frame.left, t: frame.top + frame.height / 2 - 16,
+      w: frame.width, h: 32, size: 14, color: C.muted, align: "center",
     });
     return null;
   }
@@ -372,7 +415,8 @@ function addChrome(slide, section, titleValue) {
   addShape(slide, { l: 32, t: 73, w: 1216, h: 1, fill: C.line });
   addShape(slide, { l: 118, t: 70, w: 74, h: 5, fill: C.primary, radius: 2 });
   addText(slide, data.meta.internal_notice, {
-    l: 860, t: 688, w: 300, h: 20, size: 11, color: C.muted, align: "right",
+    // design 12 → delivery 9（可编辑金样页脚）
+    l: 860, t: 688, w: 300, h: 20, size: 12, color: C.muted, align: "right",
   });
   // 页码对齐金样观感 `02 / 18`（生产 export 仅序号；保留 total 格式）
   addText(slide, String(pageNumber).padStart(2, "0") + " / " + String(totalPages).padStart(2, "0"), {
@@ -392,11 +436,44 @@ function newSlide(type, page, section = null) {
 // 页脚（notice + 页码），chromeless 页（如金样目录）单独调用
 function addFooter(slide) {
   addText(slide, data.meta.internal_notice, {
-    l: 860, t: 688, w: 300, h: 20, size: 11, color: C.muted, align: "right",
+    l: 860, t: 688, w: 300, h: 20, size: 12, color: C.muted, align: "right",
   });
   addText(slide, String(pageNumber).padStart(2, "0") + " / " + String(totalPages).padStart(2, "0"), {
     l: 1174, t: 688, w: 70, h: 20, size: 12, color: C.muted, align: "right",
   });
+}
+
+/**
+ * 金样常见「标签：正文」：标签加粗；item 也可为 run 数组。
+ * 例：全国独家：全国唯一… → 「全国独家：」bold
+ */
+function labelBoldRuns(item) {
+  if (Array.isArray(item)) return item.map((r) => ({ ...r }));
+  const s = String(item ?? "");
+  const idx = s.search(/[：:]/);
+  if (idx >= 0) {
+    return [
+      { text: s.slice(0, idx + 1), bold: true },
+      { text: s.slice(idx + 1) },
+    ];
+  }
+  return [{ text: s }];
+}
+
+/** 多条要点 → 带 • 与换行的 run 数组（surfaceCard / 整段正文用） */
+function bulletRunBody(items) {
+  const runs = [];
+  (items || []).forEach((item, index) => {
+    runs.push({ text: "• " });
+    const parts = labelBoldRuns(item);
+    parts.forEach((r, ri) => {
+      const copy = { text: r.text, bold: r.bold === true };
+      if (r.color) copy.color = r.color;
+      if (ri === parts.length - 1 && index < items.length - 1) copy.breakLine = true;
+      runs.push(copy);
+    });
+  });
+  return runs;
 }
 
 function bulletList(slide, items, l, t, w, rowHeight, opts = {}) {
@@ -405,7 +482,11 @@ function bulletList(slide, items, l, t, w, rowHeight, opts = {}) {
     addShape(slide, {
       l, t: yy + 10, w: 14, h: 14, fill: opts.dot || C.primary, type: pptx.ShapeType.ellipse,
     });
-    addText(slide, item, {
+    // 支持 string | run[]；默认对「标签：」加粗（对齐金样 p11）
+    const line = Array.isArray(item) || opts.labelBold !== false
+      ? (Array.isArray(item) ? item : labelBoldRuns(item))
+      : item;
+    addText(slide, line, {
       l: l + 28, t: yy, w: w - 28, h: rowHeight - 2,
       size: opts.size ?? 18, color: opts.color || C.ink, bold: !!opts.bold, vAlign: "middle",
     });
@@ -581,7 +662,33 @@ const totalPages = estimateTotalPages();
     symptoms.slice(3, 5).forEach((symptom, index) => {
       const xx = 70 + index * 385;
       addShape(slide, { l: xx, t: 520, w: 350, h: 92, fill: C.primary, radius: 12 });
-      addText(slide, `${symptom.name}\n${symptom.description}`, {
+      // 绿底条：第一行 name（加粗）+ 第二行 description。
+      // description 不得再写一遍 name（金样：口干口渴，喜冷饮\n热邪耗伤…）
+      const name = String(symptom.name ?? "");
+      let descRuns = Array.isArray(symptom.description)
+        ? symptom.description.map((r) => ({ ...r }))
+        : [{ text: plainText(symptom.description) }];
+      // 防御：抽回时若 description 以 name 开头，剥掉避免「标题写两遍」
+      let acc = "";
+      let drop = 0;
+      for (let i = 0; i < descRuns.length; i++) {
+        acc += String(descRuns[i]?.text ?? "");
+        if (acc === name) {
+          drop = i + 1;
+          break;
+        }
+        if (acc.length >= name.length) break;
+      }
+      if (drop) descRuns = descRuns.slice(drop);
+      const greenBody = [
+        { text: name, bold: true, breakLine: true },
+        ...descRuns.map((r) => ({
+          text: r.text,
+          bold: r.bold === true,
+          color: r.color || "FFFFFF",
+        })),
+      ];
+      addText(slide, greenBody, {
         l: xx + 14, t: 530, w: 322, h: 72, size: 18, color: C.white, vAlign: "middle",
       });
       if (symptom.image) addImageSafe(slide, symptom.image, { left: 845, top: 505, width: 210, height: 120 }, "cover");
@@ -845,7 +952,8 @@ const totalPages = estimateTotalPages();
         fail(`product.summary.groups[${index}].items must contain 1..4 items`);
       }
       const s = slots[index];
-      surfaceCard(slide, s.l, s.t, s.w, s.h, group.title, group.items.map((it) => `• ${it}`).join("\n"), {
+      // 不可 join 成纯字符串，否则丢失金样「标签：」加粗
+      surfaceCard(slide, s.l, s.t, s.w, s.h, group.title, bulletRunBody(group.items), {
         titleSize: 26, bodySize: 22, titleColor: C.deep,
       });
     });
@@ -1004,7 +1112,20 @@ for (const [scenarioIndex, scenario] of data.product.scenarios.entries()) {
       const xx = 70 + index * 265;
       addImageSafe(slide, item.image, { left: xx, top: 130, width: 245, height: 190 });
       addShape(slide, { l: xx, t: 350, w: 245, h: 190, fill: tintedFills[index], radius: 12 });
-      addText(slide, `${item.title}\n${item.body}`, { l: xx + 14, t: 360, w: 217, h: 170, size: 17, color: GOLD_INK_SOFT });
+      // 金样：标题加粗 + 正文（body 可为 run 数组）
+      const careBody = Array.isArray(item.body)
+        ? item.body.map((r) => ({
+            text: r.text,
+            bold: r.bold === true,
+            color: r.color,
+            breakLine: r.breakLine === true,
+            blankLine: r.blankLine === true,
+          }))
+        : [{ text: plainText(item.body) }];
+      addText(slide, [
+        { text: String(item.title ?? ""), bold: true, breakLine: true },
+        ...careBody,
+      ], { l: xx + 14, t: 360, w: 217, h: 170, size: 17, color: GOLD_INK_SOFT });
     });
     care.slice(2, 5).forEach((item, index) => {
       surfaceCard(slide, 650, 120 + index * 165, 550, 145, item.title, item.body, {

@@ -58,6 +58,7 @@ description: >
 
 - 首次使用：在对应引擎目录执行 `npm i`（仅 pptxgenjs）。  
 - 绿引擎金样保真：变体触发器与验收方法见 `engines/disease-product-scenario-pptx-v1/FIDELITY.md`（穿心莲 18 页差分 2026-08-11 无 🔴）。  
+- **Workbuddy 打开测交付片：** `workspace/runs/chuanxinlian-fidelity-qa/output/chuanxinlian-fidelity-delivery-scale.pptx`（说明见同目录 `README-WORKBUDDY.md`）。  
 - `scripts/build_pptx.py` = **通用壳烟测 only**，不得当作穿心莲/参课蓝正式复用结果。  
 - 换主题：锁引擎布局，只换内容 JSON + 业务授权图；非金样主题勿拷贝穿心莲医学关键词（引擎硬阻断）。
 

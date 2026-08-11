@@ -67,10 +67,21 @@
 
 ## 2026-08-11 · 保真差分方法（穿心莲 18 页）
 
-- **几何/字阶以 gold layout json 为权威**（bbox/resolvedFontSize）；inspection.ndjson 无 run 颜色 → 文本色用 PIL 采样 gold PNG（sum(p)<620 取众数）。
+- **几何**以 gold layout json / qa PNG 为权威（bbox、拓扑）；**交付字号**以**可编辑金样 PPTX 内嵌 sz** 为权威（见下条纠正）。
 - 无 Microsoft YaHei 的机器：LibreOffice 替代字体更宽 → 渲染换行/溢出是**环境差异**，不要缩字号去塞；装了雅黑即消失。
 - 金样拓扑回灌引擎用**数据触发的 opt-in 变体**（variant 字段/特征字段），换题脚本（可可康）走原路径，回归零风险。
 - 表格类金样三件套：`{text,emphasis}` 强调单元格、同值合并单元格、行级 height/size/fill/color 覆盖。
+
+## 2026-08-11 · 字阶真源分层（根本纠正）
+
+- **现象：** 业务扩题时旧引擎字号（chrome≈22）几乎贴金样；保真升级按 layout.json/生产 export 抬到 27/21 后「字体好大」。
+- **根因：** 存在两套数字——(1) layout `resolvedFontSize` / 生产 export 字面量 = design unit；(2) **可编辑重建版.pptx 内嵌 sz = design × 0.75**。升级只验 (1)，用户打开的是 (2)。
+- **正：**
+  - **打开 PPT 的观感** = 可编辑金样 PPTX（交付 SSOT）。
+  - 代码可保留 design unit 字面量；`addText` 经 `tokens.type_scale.design_to_delivery`（**0.75**）**唯一出口**换算。
+  - 门禁：`node verify-type-scale.mjs --candidate out.pptx --gold 可编辑重建版.pptx`，禁止再只对 layout 抬字号。
+  - 几何仍跟 layout；加粗/标红/拓扑变体保留，只校正交付 scale。
+- **错：** 把「Skill 比生产 export 小」当成缺陷无脑放大；或文档写「字阶以 layout 为准」却让业务对照可编辑 PPT。
 
 ## 2026-08-11 · 业务默认不要中性假数据 + 插图不要全绿
 
@@ -83,3 +94,20 @@
 - **错：** 评估他人提交时凭代码注释（"soft-missing → placeholders"）就断言「他机跑 gold 样例会显示占位框」，没真跑。实际缺图直接崩在 pptxgenjs write。
 - **正：** 评估/文档里写「某输入下引擎会怎样」之前，真的构造那个输入跑一遍（这次 = 把脚本拷到无 assets 的目录跑）。
 - 顺带暴露的叠加 bug：`findAssetRefs` 记录缺 `input` 字段（缺图时 addImageSafe 按 input 查找永远 miss）；`hit?.resolved ?? resolved` 对 null 穿透；发现条件只认 `image` 键（`locked_image`/`product_image` 不发现、缺了也不计数）。三处凑齐才崩，单看每处都像对的。
+
+## 2026-08-11 · 金样段间空行 vs 图位
+
+- **错：** run 抽回只写了 `breakLine: true`（单换行），金样可编辑 inspect 实际是 `\n\n`（空段落）；第4页病因/病机、第7页三原则卡都会挤在一起。
+- **对：** 段间空行用 `blankLine: true`（引擎展开为 break + 空段落）；列表项之间仍用 `breakLine`。
+- **图位：** 第14/16/17 金样有裁图，script 有路径且 delivery 已嵌入；「空且无占位」不正确。缺图必须走 soft-missing 薄荷绿+【图位】，write 失败也要占位。
+
+## 2026-08-11 · 症状页绿底条标题重复
+
+- **错：** 绿底条渲染写一遍 `name`，script `description` 又把 title 当第一 run，结果「口干口渴，喜冷饮」出现两次。
+- **对：** description 只写解释句；引擎对「description 以 name 开头」做剥除防御。
+
+## 2026-08-11 · p16 标题加粗 / p17 首行整行标红
+
+- **错：** 日常叮嘱左卡用字符串拼接 title+body，标题无 bold；胆红素表只给含量格 `emphasis`，金样是首行三格全红粗。
+- **对：** 左卡 title 独立 bold run；右卡 body 关键句 bold runs；首行三格均 `{text,emphasis:true}`。
+- 交付验收片固定：`chuanxinlian-fidelity-delivery-scale.pptx`（Workbuddy）。
