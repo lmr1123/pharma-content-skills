@@ -644,8 +644,7 @@ async function main() {
     return;
   }
 
-  // ---- Preview with images: replace text + whatever image assets are bound; keep gold for missing ----
-  // Demo / progressive fill. Not formal (no residue strip / no full validation).
+  // ---- Preview with images: text + bound PNGs; when ALL slots bound, strip gold media (like formal) ----
   if (args['preview-with-images']) {
     const themeDir = path.dirname(themePath);
     const resolved = {};
@@ -658,9 +657,30 @@ async function main() {
         resolved[key] = {path: p, sha256: sha256Bytes(bytes), bytes};
       }
     }
+    const requiredKeys = new Set();
+    for (const page of contract.pages) {
+      for (const img of page.images) requiredKeys.add(`s${String(page.slide).padStart(2, '0')}_${img.id}`);
+    }
+    // theme maps shape id → asset key; count coverage by theme binding + file exists
+    let boundSlotCount = 0;
+    let totalSlots = summary.slide_image_slots + summary.template_image_slots;
+    const pageByNumber = new Map((theme.pages || []).map((page) => [Number(page.slide), page]));
+    for (const pageContract of contract.pages) {
+      const page = pageByNumber.get(pageContract.slide);
+      for (const slot of pageContract.images) {
+        const assetKey = String(page?.images?.[slot.id] || '');
+        if (assetKey && resolved[assetKey]) boundSlotCount += 1;
+      }
+    }
+    for (const slot of contract.templateImages) {
+      const assetKey = String(theme.template_images?.[slot.key] || '');
+      if (assetKey && resolved[assetKey]) boundSlotCount += 1;
+    }
+    const allSlotsBound = boundSlotCount >= totalSlots && totalSlots > 0;
+
+    const originalIds = new Set(presentation.images.items.map((item) => String(item.id)));
     const {replaced: textReplaced} = await applyTextOnly(presentation, theme, contract);
     let imageReplaced = 0;
-    const pageByNumber = new Map((theme.pages || []).map((page) => [Number(page.slide), page]));
     async function ensureRef(key) {
       const item = resolved[key];
       if (!item) return null;
@@ -722,20 +742,35 @@ async function main() {
         /* skip */
       }
     }
+
+    // When every slot is bound, strip gold media (same as formal) so tomatoes cannot "show through"
+    let strippedGold = false;
+    if (allSlotsBound) {
+      const keep = presentation.images.items.filter((item) => {
+        const id = String(item.id);
+        return !originalIds.has(id) || ALLOWED_SOURCE_MEDIA_IDS.has(id);
+      });
+      presentation.images.replace(keep.map((item) => item.toProto()));
+      strippedGold = true;
+    }
+
     const pptx = await PresentationFile.exportPptx(presentation);
     await pptx.save(out);
     const report = {
       ok: true,
       engine: ENGINE_ID,
       mode: 'preview-with-images',
-      note_zh:
-        '已替换文字 + 已绑定图槽；未绑定槽仍可能保留金样图。演示用，非正式 formal（未清金样残图/未跑全量门禁）。',
+      note_zh: allSlotsBound
+        ? '字+图槽已全绑并剥离金样业务图（仅保留允许的 chrome 纹理）。插画质量仍取决于 PNG 是否透明/是否按槽语义。非正式 formal 文案门禁。'
+        : '部分图槽未绑，金样图可能残留。未满槽不得当交付。',
       source_sha256: sourceSha,
       pptx: out,
       page_count: presentation.slides.items.length,
       text_slots_replaced: textReplaced,
       image_slots_replaced: imageReplaced,
       assets_bound: Object.keys(resolved).length,
+      all_slots_bound: allSlotsBound,
+      stripped_gold_media: strippedGold,
       contract: summary,
     };
     if (args.report) {
