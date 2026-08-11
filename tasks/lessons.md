@@ -139,3 +139,12 @@
 - **现象：** WorkBuddy 用辅酶Q10 扩展：字换了，图仍是金样番茄或另生成的画风不符。
 - **根因：** (1) 只用了 `preview-text-only`（设计上不换图）；(2) 生图未走 cream-red style_pack / 透明底，误用门店活力或通用医疗扁平。
 - **正：** emit-image-plan → 按 ILLUSTRATION_PROMPTS 生 PNG → bind_ooxml_assets → formal export；preview 不得当交付。
+
+## 2026-08-11 · 绿模板换题图位为空
+
+- **错：** 认为 git 缺代码；实际是绿引擎故意不入库业务图，script 空路径时 `addImageSafe` 直接跳过 → 真·空坑。  
+- **正：**  
+  1. 演示图进 git（`assets/gold-sample/`、`samples/assets/`、升级版 `placeholders/`）  
+  2. 引擎硬兜底：空字段/缺文件 → 语义占位 PNG，`all_image_slots_filled`  
+  3. 正式交付仍看 `default_image_fills` / `placeholder_fallbacks`，换成主题真图  
+- 蓝课型自带 28 张知识图；绿课型不能假设「只换字就有图」。
